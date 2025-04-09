@@ -6,7 +6,6 @@ import "../css/app.css";
 const appName = import.meta.env.VITE_APP_NAME || "Gestion des locations";
 
 createInertiaApp({
-    title: (title) => `${title ?? "Gestion des locations"} - ${appName}`,
     resolve: (name) =>
         resolvePageComponent(
             `./pages/${name}.jsx`,
