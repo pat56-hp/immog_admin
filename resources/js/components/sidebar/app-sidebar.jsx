@@ -30,7 +30,7 @@ export function AppSidebar() {
         dashboard: [
             {
                 title: "Tableau de bord",
-                url: "$route('dashboard')",
+                url: route("dashboard"),
                 icon: Home,
                 isActive: url.startsWith("/dashboard"),
             },

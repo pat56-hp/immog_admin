@@ -43,7 +43,7 @@ export default function NavMain({ items, groupLabel = null }) {
                                     </SidebarMenuButton>
                                 </CollapsibleTrigger>
                             ) : (
-                                <Link href="/dashboard">
+                                <Link href={item.url}>
                                     <SidebarMenuButton
                                         tooltip={item.title}
                                         className="!py-5 data-[active=true]:bg-red-400 data-[active=true]:text-white data-[active=true]:hover:bg-red-400 data-[active=true]:hover:text-white data-[state=open]:data-[active=true]:hover:bg-red-400 data-[state=open]:data-[active=true]:hover:text-white hover:cursor-pointer"

@@ -28,7 +28,7 @@ export default function ForgotPassword() {
                                 id="email"
                                 type="email"
                                 placeholder="adresse-email@example.com"
-                                className="h-12 pr-10 border-gray-300 dark:border-gray-600 focus:ring-red-500 focus:border-red-500 rounded-lg"
+                                className="h-12 pr-10 border-gray-300 focus:ring-red-500 focus:border-red-500 rounded-lg"
                                 required
                             />
                             <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
