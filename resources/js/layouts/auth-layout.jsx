@@ -1,8 +1,8 @@
 import { Head, usePage } from "@inertiajs/react";
 import React from "react";
 import { Card, CardContent } from "../components/ui/card";
-import { GalleryVerticalEnd } from "lucide-react";
 import { Separator } from "../components/ui/separator";
+import { Toaster } from "@/components/ui/sonner";
 
 const appName = import.meta.env.VITE_APP_NAMe || "ImmoG";
 
@@ -60,6 +60,7 @@ export default function AuthLayout({ children }) {
                     </div>
                 </div>
             </div>
+            <Toaster />
         </>
     );
 }

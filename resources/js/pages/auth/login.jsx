@@ -78,7 +78,7 @@ export default function Login({ status, canResetPassword }) {
                                 <span className="text-red-400">*</span>
                             </Label>
                             <Link
-                                href="/auth/password-reset"
+                                href={route("password.request")}
                                 className="ml-auto text-sm underline-offset-2 hover:underline text-red-400"
                             >
                                 Mot de passe oublié ?
