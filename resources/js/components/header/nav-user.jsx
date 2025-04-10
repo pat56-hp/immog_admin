@@ -43,14 +43,14 @@ export default function NavUser() {
                 sideOffset={4}
             >
                 <DropdownMenuGroup>
-                    <Link href={route("profile.edit")} className="w-full">
-                        <DropdownMenuItem className="hover:cursor-pointer">
+                    <Link href={route("profile.edit")}>
+                        <DropdownMenuItem>
                             <BadgeCheck />
                             Mon profil
                         </DropdownMenuItem>
                     </Link>
-                    <Link href={route("profile.password")} className="w-full">
-                        <DropdownMenuItem className="hover:cursor-pointer">
+                    <Link href={route("profile.password")}>
+                        <DropdownMenuItem>
                             <LockKeyhole />
                             Mot de passe
                         </DropdownMenuItem>
@@ -58,7 +58,7 @@ export default function NavUser() {
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
                 <Link href={route("logout")} method="post" className="w-full">
-                    <DropdownMenuItem className="hover:cursor-pointer">
+                    <DropdownMenuItem>
                         <LogOut />
                         Se déconnecter
                     </DropdownMenuItem>

@@ -38,6 +38,7 @@ export default function EditPassword() {
         e.preventDefault();
 
         put(route("profile.password"), {
+            preserveScroll: true,
             onSuccess: () => {
                 reset();
                 toast.success("Mise à jour du mot de passe éffectuée");

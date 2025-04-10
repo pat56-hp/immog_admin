@@ -50,7 +50,7 @@ PhoneInput.displayName = "PhoneInput";
 
 const InputComponent = React.forwardRef(({ className, ...props }, ref) => (
     <Input
-        className={cn("rounded-e-lg rounded-s-none", className)}
+        className={cn("rounded-e-lg rounded-s-none h-12", className)}
         {...props}
         ref={ref}
     />
@@ -69,7 +69,7 @@ const CountrySelect = ({
                 <Button
                     type="button"
                     variant="outline"
-                    className="flex gap-1 rounded-e-none rounded-s-lg border-r-0 px-3 focus:z-10"
+                    className="flex gap-1 rounded-e-none rounded-s-lg border-r-0 px-3 focus:z-10 h-12"
                     disabled={disabled}
                 >
                     <FlagComponent
@@ -86,10 +86,10 @@ const CountrySelect = ({
             </PopoverTrigger>
             <PopoverContent className="w-[300px] p-0">
                 <Command>
-                    <CommandInput placeholder="Search country..." />
+                    <CommandInput placeholder="Rechercher un pays..." />
                     <CommandList>
                         <ScrollArea className="h-72">
-                            <CommandEmpty>No country found.</CommandEmpty>
+                            <CommandEmpty>Aucun pays trouvé.</CommandEmpty>
                             <CommandGroup>
                                 {countryList.map(({ value, label }) =>
                                     value ? (

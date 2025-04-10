@@ -13,6 +13,8 @@ import {
 } from "../../components/ui/select";
 import { PhoneInput } from "../../components/phone-input";
 import { Button } from "../../components/ui/button";
+import { toast } from "sonner";
+import { Loader } from "lucide-react";
 
 export default function Edit() {
     const user = usePage().props.auth.user;
@@ -28,6 +30,7 @@ export default function Edit() {
         e.preventDefault();
 
         patch(route("profile.update"), {
+            preserveScroll: true,
             onSuccess: () =>
                 toast.success("Informations modifiées avec succes"),
         });
@@ -140,7 +143,7 @@ export default function Edit() {
                             <div>
                                 <Label htmlFor="phone">Contact</Label>
                                 <PhoneInput
-                                    className="mt-2 w-full !h-12"
+                                    className="mt-2 w-full"
                                     placeholder="Entrer votre contact"
                                     onChange={(e) => setData("phone", e)}
                                     value={data.phone}

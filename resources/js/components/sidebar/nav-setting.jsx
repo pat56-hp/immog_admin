@@ -21,10 +21,11 @@ import {
     CreditCard,
     LogOut,
     Settings,
+    Settings2,
     Sparkles,
+    SquareActivity,
 } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-
+import { Link } from "@inertiajs/react";
 export default function NavSetting(user) {
     const { isMobile } = useSidebar();
     return (
@@ -34,7 +35,7 @@ export default function NavSetting(user) {
                     <DropdownMenuTrigger asChild>
                         <SidebarMenuButton
                             size="lg"
-                            className=" data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+                            className=" data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground hover:cursor-pointer"
                         >
                             <Settings className="text-sm" />
                             <div className="text-center text-sm leading-tight">
@@ -49,32 +50,38 @@ export default function NavSetting(user) {
                         align="end"
                         sideOffset={4}
                     >
-                        <DropdownMenuGroup>
-                            <DropdownMenuItem>
-                                <Sparkles />
-                                Upgrade to Pro
-                            </DropdownMenuItem>
-                        </DropdownMenuGroup>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuGroup>
-                            <DropdownMenuItem>
-                                <BadgeCheck />
-                                Account
-                            </DropdownMenuItem>
+                        <Link href="#">
                             <DropdownMenuItem>
                                 <CreditCard />
-                                Billing
+                                Roles
                             </DropdownMenuItem>
+                        </Link>
+                        <Link href="#">
                             <DropdownMenuItem>
-                                <Bell />
-                                Notifications
+                                <Sparkles />
+                                Permissions
                             </DropdownMenuItem>
-                        </DropdownMenuGroup>
+                        </Link>
+                        <Link href="#">
+                            <DropdownMenuItem>
+                                <BadgeCheck />
+                                Comptes utilisateur
+                            </DropdownMenuItem>
+                        </Link>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem>
-                            <LogOut />
-                            Log out
-                        </DropdownMenuItem>
+                        <Link href="#">
+                            <DropdownMenuItem>
+                                <SquareActivity />
+                                Historique d'activité
+                            </DropdownMenuItem>
+                        </Link>
+                        <DropdownMenuSeparator />
+                        <Link href="#">
+                            <DropdownMenuItem>
+                                <Settings2 />
+                                Paramètres
+                            </DropdownMenuItem>
+                        </Link>
                     </DropdownMenuContent>
                 </DropdownMenu>
             </SidebarMenuItem>
