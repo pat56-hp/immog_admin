@@ -24,14 +24,14 @@ export default function BreadcrumbUi({ breadcrumb }) {
                         );
                     } else {
                         return (
-                            <>
-                                <BreadcrumbItem key={key}>
+                            <React.Fragment key={key}>
+                                <BreadcrumbItem>
                                     <BreadcrumbLink href={item.link}>
                                         {item.title}
                                     </BreadcrumbLink>
                                 </BreadcrumbItem>
                                 <BreadcrumbSeparator />
-                            </>
+                            </React.Fragment>
                         );
                     }
                 })}

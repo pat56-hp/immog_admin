@@ -12,7 +12,7 @@ import DashboardContrat from "./data/dashboard-contrat";
 
 export default function DataRecent() {
     return (
-        <Card className="mb-6">
+        <Card className="">
             <CardHeader>
                 <CardTitle className="text-base font-medium">
                     Contrats & rappels

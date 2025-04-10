@@ -3,7 +3,7 @@ import BreadcrumbUi from "./breadcrumb-ui";
 
 export default function PageTitle({ title, breadcrumb }) {
     return (
-        <div className="title-section flex justify-between">
+        <div className="title-section flex justify-between pb-5">
             <h2 className="text-xl md:text-xl font-bold tracking-tight">
                 {title}
             </h2>

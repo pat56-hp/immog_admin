@@ -19,11 +19,12 @@ export default function ForgotPassword({ status }) {
 
         post(
             route("password.email", {
-                onFinish: () => reset(),
-                onSuccess: () =>
+                onFinish: () => {
+                    reset();
                     toast(
                         "Nous vous avons envoyé par e-mail votre lien de réinitialisation de mot de passe."
-                    ),
+                    );
+                },
             })
         );
     };

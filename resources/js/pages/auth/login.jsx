@@ -4,7 +4,7 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import AuthLayout from "@/layouts/auth-layout";
 import { Link, useForm } from "@inertiajs/react";
-import { Lock, Mail, EyeClosed, Eye } from "lucide-react";
+import { Mail, EyeClosed, Eye } from "lucide-react";
 import InputError from "@/components/InputError";
 import { useState } from "react";
 

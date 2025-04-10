@@ -4,6 +4,7 @@ import { AppSidebar } from "../components/sidebar/app-sidebar";
 import AppHeader from "../components/header/app-header";
 import { Separator } from "../components/ui/separator";
 import { Head, usePage } from "@inertiajs/react";
+import { Toaster } from "../components/ui/sonner";
 
 const appName = import.meta.env.VITE_APP_NAME || "ImmoG";
 
@@ -25,7 +26,7 @@ export default function AppLayout({ children }) {
                     <AppHeader />
                     <div className="p-8 bg-gray-100 h-full">
                         {children}
-                        <div className="mt-2 flex justify-center items-center text-gray-500 text-xs">
+                        <div className="mt-8 flex justify-center items-center text-gray-500 text-xs">
                             <span>© Copyright {new Date().getFullYear()}</span>
                             <Separator
                                 orientation="vertical"
@@ -43,6 +44,11 @@ export default function AppLayout({ children }) {
                             </span>
                         </div>
                     </div>
+                    <Toaster
+                        theme="system"
+                        position="bottom-right"
+                        closeButton={true}
+                    />
                 </SidebarInset>
             </SidebarProvider>
         </>

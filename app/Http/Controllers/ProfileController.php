@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PasswordRequest;
 use App\Http\Requests\ProfileUpdateRequest;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -19,8 +21,7 @@ class ProfileController extends Controller
     public function edit(Request $request): Response
     {
         return Inertia::render('Profile/Edit', [
-            'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
-            'status' => session('status'),
+            'title' => 'Mon profil'
         ]);
     }
 
@@ -38,6 +39,31 @@ class ProfileController extends Controller
         $request->user()->save();
 
         return Redirect::route('profile.edit');
+    }
+
+    /**
+     * Redirect password view
+     *
+     * @return void
+     */
+    public function password(){
+        return Inertia::render('Profile/edit-password', [
+            'title' => 'Modifier mon mot de passe'
+        ]);
+    }
+
+    /**
+     * Update password profile
+     *
+     * @param PasswordRequest $request
+     * @return void
+     */
+    public function passwordUpdate(PasswordRequest $request){
+        $request->user()->update([
+            'password' => Hash::make($request->validated('password'))
+        ]);
+
+        return back();
     }
 
     /**

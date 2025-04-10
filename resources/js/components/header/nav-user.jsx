@@ -43,18 +43,18 @@ export default function NavUser() {
                 sideOffset={4}
             >
                 <DropdownMenuGroup>
-                    <DropdownMenuItem>
-                        <BadgeCheck />
-                        Mon profil
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
-                        <LockKeyhole />
-                        Mot de passe
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
-                        <Bell />
-                        Notifications
-                    </DropdownMenuItem>
+                    <Link href={route("profile.edit")} className="w-full">
+                        <DropdownMenuItem className="hover:cursor-pointer">
+                            <BadgeCheck />
+                            Mon profil
+                        </DropdownMenuItem>
+                    </Link>
+                    <Link href={route("profile.password")} className="w-full">
+                        <DropdownMenuItem className="hover:cursor-pointer">
+                            <LockKeyhole />
+                            Mot de passe
+                        </DropdownMenuItem>
+                    </Link>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
                 <Link href={route("logout")} method="post" className="w-full">
