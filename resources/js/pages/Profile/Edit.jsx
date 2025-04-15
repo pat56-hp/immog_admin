@@ -16,13 +16,13 @@ import { Button } from "../../components/ui/button";
 import { toast } from "sonner";
 import { Loader } from "lucide-react";
 
-export default function Edit() {
+export default function Edit({ roles }) {
     const user = usePage().props.auth.user;
 
     const { data, setData, patch, errors, processing } = useForm({
         name: user.name,
         email: user.email,
-        role: user.role,
+        role: user.role_id,
         phone: user.phone,
     });
 
@@ -123,15 +123,14 @@ export default function Edit() {
                                         <SelectValue placeholder="Sélectionnez un rôle" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="1">
-                                            Administrateur
-                                        </SelectItem>
-                                        <SelectItem value="2">
-                                            Superviseur
-                                        </SelectItem>
-                                        <SelectItem value="3">
-                                            Commercial
-                                        </SelectItem>
+                                        {roles.map((role, key) => (
+                                            <SelectItem
+                                                key={key}
+                                                value={String(role.id)}
+                                            >
+                                                {role.libelle}
+                                            </SelectItem>
+                                        ))}
                                     </SelectContent>
                                 </Select>
                                 <InputError

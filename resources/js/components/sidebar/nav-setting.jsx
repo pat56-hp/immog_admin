@@ -50,7 +50,7 @@ export default function NavSetting(user) {
                         align="end"
                         sideOffset={4}
                     >
-                        <Link href="#">
+                        <Link href={route("roles.index")}>
                             <DropdownMenuItem>
                                 <CreditCard />
                                 Roles
