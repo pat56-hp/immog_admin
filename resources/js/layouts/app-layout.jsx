@@ -1,15 +1,22 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { SidebarInset, SidebarProvider } from "../components/ui/sidebar";
 import { AppSidebar } from "../components/sidebar/app-sidebar";
 import AppHeader from "../components/header/app-header";
 import { Separator } from "../components/ui/separator";
 import { Head, usePage } from "@inertiajs/react";
 import { Toaster } from "../components/ui/sonner";
+import { toast } from "sonner";
 
 const appName = import.meta.env.VITE_APP_NAME || "ImmoG";
 
 export default function AppLayout({ children }) {
-    const { title } = usePage().props;
+    const { title, error, success } = usePage().props;
+
+    useEffect(() => {
+        error && toast.error("Oups, une erreur s'est produite");
+        success && toast.success(success);
+        error && console.log(error);
+    }, [children]);
 
     return (
         <>

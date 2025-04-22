@@ -155,6 +155,33 @@
     --sidebar-ring: oklch(0.556 0 0);
 }
 
+@layer components {
+    .react-international-phone-input {
+        @apply flex-1 !h-12 border-gray-300 dark:border-gray-600 focus:ring-red-500 focus:border-red-500 !rounded-r-lg;
+    }
+
+    .react-international-phone-country-selector
+        .react-international-phone-country-selector-button {
+        @apply !h-12 border-gray-300 dark:border-gray-600 focus:ring-red-500 focus:border-red-500 !rounded-l-lg;
+    }
+
+    .react-international-phone-country-selector-button__button-content {
+        @apply px-1;
+    }
+
+    .react-international-phone-country-selector-dropdown {
+        @apply rounded-lg p-2 mt-2 ml-2 !top-12 !left-1;
+    }
+
+    input {
+        @apply block w-full !h-12 pr-10 border-gray-300 dark:border-gray-600 focus:ring-red-500 focus:border-red-500 rounded-lg;
+    }
+
+    /* .react-international-phone-input-container {
+        @apply;
+    } */
+}
+
 @layer base {
     * {
         @apply border-border outline-ring/50;

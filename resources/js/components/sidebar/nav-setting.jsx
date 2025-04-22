@@ -62,7 +62,7 @@ export default function NavSetting(user) {
                                 Permissions
                             </DropdownMenuItem>
                         </Link>
-                        <Link href="#">
+                        <Link href={route("users.index")}>
                             <DropdownMenuItem>
                                 <BadgeCheck />
                                 Comptes utilisateur

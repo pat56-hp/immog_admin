@@ -38,7 +38,7 @@ class RoleController extends Controller
     {
         $validate = $request->validate([
             'libelle' => 'required|string|max:20',
-            'status' => 'required|integer',
+            'status' => 'required',
         ]);
 
         $role->update($validate);

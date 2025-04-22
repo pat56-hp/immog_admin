@@ -64,7 +64,7 @@ const CountrySelect = ({
     onChange,
 }) => {
     return (
-        <Popover>
+        <Popover className="PhoneInputPopperWrapper">
             <PopoverTrigger asChild>
                 <Button
                     type="button"
@@ -87,7 +87,7 @@ const CountrySelect = ({
             <PopoverContent className="w-[300px] p-0">
                 <Command>
                     <CommandInput placeholder="Rechercher un pays..." />
-                    <CommandList>
+                    <CommandList className="PhoneInputCountrySelect">
                         <ScrollArea className="h-72">
                             <CommandEmpty>Aucun pays trouvé.</CommandEmpty>
                             <CommandGroup>
