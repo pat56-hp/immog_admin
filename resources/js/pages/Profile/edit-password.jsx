@@ -8,6 +8,7 @@ import { Button } from "../../components/ui/button";
 import { Loader } from "lucide-react";
 import { useForm } from "@inertiajs/react";
 import { toast } from "sonner";
+import Required from "../../components/required";
 
 export default function EditPassword() {
     const passwordInput = useRef();
@@ -82,8 +83,7 @@ export default function EditPassword() {
                         >
                             <div>
                                 <Label htmlFor="currentPassword">
-                                    Mot de passe actuel{" "}
-                                    <span className="text-red-400">*</span>
+                                    Mot de passe actuel <Required />
                                 </Label>
                                 <Input
                                     ref={currentPasswordInput}
@@ -108,8 +108,7 @@ export default function EditPassword() {
                             </div>
                             <div>
                                 <Label htmlFor="password">
-                                    Nouveau mot de passe
-                                    <span className="text-red-400">*</span>
+                                    Nouveau mot de passe <Required />
                                 </Label>
                                 <Input
                                     ref={passwordInput}
@@ -131,8 +130,7 @@ export default function EditPassword() {
                             </div>
                             <div>
                                 <Label htmlFor="passwordConfirmation">
-                                    Confirmation du mot de passe
-                                    <span className="text-red-400">*</span>
+                                    Confirmation du mot de passe <Required />
                                 </Label>
                                 <Input
                                     id="password_confirmation"

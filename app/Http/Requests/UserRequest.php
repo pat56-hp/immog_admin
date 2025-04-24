@@ -22,14 +22,14 @@ class UserRequest extends FormRequest
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
     public function rules(): array
-    {
+    {        
         return [
             'name' => 'required',
-            'email' => ['required', 'email', request()->method('POST') ? Rule::unique('users') : Rule::unique('users')->ignore(request('user'))],
-            'phone' => 'nullable',
-            'status' => 'nullable',
-            'role' => 'required',
-            'password' => [request()->method('POST') ? 'required' : 'sometimes', Password::defaults()]
+            'email' => ['required', 'email', request()->method() === 'POST' ? Rule::unique('users', 'email') : Rule::unique('users', 'email')->ignore(request('user'))],
+            'phone' => ['nullable', 'string'],
+            'status' => ['nullable', 'boolean'],
+            'role' => ['required', 'exists:roles,id'],
+            'password' => [request()->method() === 'POST' ? 'required' : 'nullable', Password::default()]
         ];
     }
 }

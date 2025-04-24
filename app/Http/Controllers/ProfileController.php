@@ -19,11 +19,10 @@ class ProfileController extends Controller
     /**
      * Display the user's profile form.
      */
-    public function edit(Request $request): Response
+    public function edit(): Response
     {
         return Inertia::render('Profile/Edit', [
             'title' => 'Mon profil',
-            'roles' => Role::where('status', 1)->get()
         ]);
     }
 
@@ -35,7 +34,6 @@ class ProfileController extends Controller
         $request->user()->fill([
             'name' => $request->validated('name'),
             'email' => $request->validated('email'),
-            'role_id' => $request->validated('role'),
             'phone' => $request->validated('phone')
         ]);
 

@@ -4,25 +4,18 @@ import { useForm, usePage } from "@inertiajs/react";
 import { Label } from "../../components/ui/label";
 import { Input } from "../../components/ui/input";
 import InputError from "../../components/InputError";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "../../components/ui/select";
-import { PhoneInput } from "../../components/phone-input";
 import { Button } from "../../components/ui/button";
 import { toast } from "sonner";
 import { Loader } from "lucide-react";
+import { PhoneInput } from "react-international-phone";
+import Required from "../../components/required";
 
-export default function Edit({ roles }) {
+export default function Edit() {
     const user = usePage().props.auth.user;
 
     const { data, setData, patch, errors, processing } = useForm({
         name: user.name,
         email: user.email,
-        role: user.role_id,
         phone: user.phone,
     });
 
@@ -33,6 +26,10 @@ export default function Edit({ roles }) {
             preserveScroll: true,
             onSuccess: () =>
                 toast.success("Informations modifiées avec succes"),
+            onError: (errors) => {
+                console.log(errors);
+                toast.error("Une erreur est survenue");
+            },
         });
     };
 
@@ -66,8 +63,7 @@ export default function Edit({ roles }) {
                         <form onSubmit={submit} className="mt-6 space-y-4">
                             <div>
                                 <Label htmlFor="name">
-                                    Nom & prénom(s){" "}
-                                    <span className="text-red-400">*</span>
+                                    Nom & prénom(s) <Required />
                                 </Label>
 
                                 <Input
@@ -90,8 +86,7 @@ export default function Edit({ roles }) {
 
                             <div>
                                 <Label htmlFor="email">
-                                    Email{" "}
-                                    <span className="text-red-400">*</span>
+                                    Email <Required />
                                 </Label>
 
                                 <Input
@@ -111,34 +106,6 @@ export default function Edit({ roles }) {
                                     message={errors.email}
                                 />
                             </div>
-
-                            <div>
-                                <Label htmlFor="role">Rôle</Label>
-
-                                <Select
-                                    defaultValue={String(data.role)}
-                                    onValueChange={(e) => setData("role", e)}
-                                >
-                                    <SelectTrigger className="mt-2 w-full !h-12">
-                                        <SelectValue placeholder="Sélectionnez un rôle" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {roles.map((role, key) => (
-                                            <SelectItem
-                                                key={key}
-                                                value={String(role.id)}
-                                            >
-                                                {role.libelle}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                                <InputError
-                                    className="mt-2"
-                                    message={errors.role}
-                                />
-                            </div>
-
                             <div>
                                 <Label htmlFor="phone">Contact</Label>
                                 <PhoneInput

@@ -18,24 +18,25 @@ import {
 import { Checkbox } from "../../../../components/ui/checkbox";
 
 export default function UpdateUser({ user, roles }) {
-    const dropdownRef = useRef(null);
+    const itemRef = useRef(null);
+
     const [open, setOpen] = useState(false);
-    const { data, patch, setData, processing, errors } = useForm({
-        name: user.name,
-        email: user.email,
-        phone: user.phone,
-        status: user.status,
-        role: user.role_id,
+    const { data, patch, setData, processing, errors, reset } = useForm({
+        name: user?.name,
+        email: user?.email,
+        phone: user?.phone,
+        status: user?.status,
+        role: user?.role_id,
         password: "",
     });
 
     useEffect(() => {
         setData({
-            name: user.name,
-            email: user.email,
-            phone: user.phone,
-            status: user.status,
-            role: user.role_id,
+            name: user?.name,
+            email: user?.email,
+            phone: user?.phone,
+            status: user?.status,
+            role: user?.role_id,
             password: "",
         });
     }, [user]);
@@ -43,11 +44,22 @@ export default function UpdateUser({ user, roles }) {
     return (
         <>
             <DropdownMenuItem
+                ref={itemRef}
                 onSelect={(e) => {
                     e.preventDefault();
+
+                    const menu = itemRef.current?.closest(
+                        "[data-radix-popper-content-wrapper]"
+                    );
+
+                    if (menu) {
+                        menu.setAttribute("style", "display: none");
+                    }
+
+                    // Lancer modale après un tout petit délai
                     setTimeout(() => {
                         setOpen(true);
-                    }, 100);
+                    }, 80);
                 }}
             >
                 <Edit className="h-4 w-4" /> Modifier
@@ -56,9 +68,27 @@ export default function UpdateUser({ user, roles }) {
                 open={open}
                 onOpenChange={setOpen}
                 title={`Modifier un utilisateur`}
-                description={`Modifier l'utilisateur ${user.name}`}
+                description={`Modifier l'utilisateur ${user?.name}`}
                 processing={processing}
-                onConfirm={async () => {}}
+                onConfirm={async () => {
+                    return new Promise((resolve, reject) => {
+                        patch(route("users.update", user?.id), {
+                            preserveScroll: true,
+                            onSuccess: () => {
+                                resolve(true);
+                                reset();
+                                const menu = itemRef.current?.closest(
+                                    "[data-radix-popper-content-wrapper]"
+                                );
+                                menu?.setAttribute("style", "display: initial");
+                            },
+                            onError: (errors) => {
+                                console.log(errors);
+                                reject(errors);
+                            },
+                        });
+                    });
+                }}
                 content={
                     <div className="space-y-4 max-h-[70vh] overflow-y-auto">
                         <div className="w-full">
@@ -129,17 +159,14 @@ export default function UpdateUser({ user, roles }) {
                             <InputError message={errors.role} />
                         </div>
                         <div className="w-full">
-                            <Label htmlFor="password">
-                                Mot de passe <Required />
-                            </Label>
+                            <Label htmlFor="password">Mot de passe</Label>
                             <Input
                                 id="password"
                                 type="password"
                                 name="password"
-                                value={data.password}
+                                //value={data.password}
                                 className="mt-2 "
                                 placeholder="Mot de passe"
-                                required
                                 onChange={(e) =>
                                     setData("password", e.target.value)
                                 }

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef, useState } from "react";
 import ContentLayout from "../../../layouts/content-layout";
 import Datatable from "../../../components/datatable";
 import { getDate } from "../../../helper/helper";
@@ -74,22 +74,7 @@ export default function User({ title, users, roles }) {
                         key: "action",
                         label: "Actions",
                         render: (user) => (
-                            <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                    <EllipsisVertical className="h-4 w-4" />
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent
-                                    className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
-                                    side={"bottom"}
-                                    align="end"
-                                    sideOffset={4}
-                                >
-                                    <DropdownMenuGroup>
-                                        <DeleteUser user={user} />
-                                        <UpdateUser user={user} roles={roles} />
-                                    </DropdownMenuGroup>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
+                            <UserActions user={user} roles={roles} />
                         ),
                     },
                 ]}
@@ -97,3 +82,26 @@ export default function User({ title, users, roles }) {
         </ContentLayout>
     );
 }
+
+const UserActions = ({ user, roles }) => {
+    const [isOpen, setIsOpen] = useState(false);
+
+    return (
+        <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
+            <DropdownMenuTrigger asChild>
+                <EllipsisVertical className="h-4 w-4" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+                className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
+                side={"bottom"}
+                align="end"
+                sideOffset={4}
+            >
+                <DropdownMenuGroup>
+                    <DeleteUser user={user} asChild />
+                    <UpdateUser user={user} roles={roles} asChild />
+                </DropdownMenuGroup>
+            </DropdownMenuContent>
+        </DropdownMenu>
+    );
+};

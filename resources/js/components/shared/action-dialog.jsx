@@ -34,7 +34,6 @@ export default function ActionDialog({
 
         try {
             await onConfirm();
-            setOpen(false);
             onOpenChange(false);
         } catch (err) {
             console.log(err);
