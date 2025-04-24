@@ -1,0 +1,22 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Repositories\Interfaces\ActivityInterface;
+use App\Services\ActivityService;
+use Inertia\Inertia;
+
+class ActivityController extends Controller
+{
+    public function __construct(private ActivityInterface $activityRepository, private ActivityService $activityService){}
+
+    public function index(){
+        //Activity Log
+        $this->activityService->save('Ouverture de l\'historique d\'activités');
+
+        return Inertia::render(('configurations/activities/index'), [
+            'title' => 'Historique d\'activités',
+            'activities' => $this->activityRepository->get(),
+        ]);
+    }
+}

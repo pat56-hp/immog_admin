@@ -4,8 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\PasswordRequest;
 use App\Http\Requests\ProfileUpdateRequest;
-use App\Models\Role;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Services\ActivityService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -16,12 +15,16 @@ use Inertia\Response;
 
 class ProfileController extends Controller
 {
+    public function __construct(private ActivityService $activityService){}
     /**
      * Display the user's profile form.
      */
     public function edit(): Response
     {
-        return Inertia::render('Profile/Edit', [
+        //Activity Log
+        $this->activityService->save('Ouverture de la page de modification de profil');
+
+        return Inertia::render('profile/edit', [
             'title' => 'Mon profil',
         ]);
     }
@@ -43,6 +46,9 @@ class ProfileController extends Controller
 
         $request->user()->save();
 
+        //Activity Log
+        $this->activityService->save('Modification de profil');
+
         return Redirect::route('profile.edit');
     }
 
@@ -52,7 +58,10 @@ class ProfileController extends Controller
      * @return void
      */
     public function password(){
-        return Inertia::render('Profile/edit-password', [
+        //Activity Log
+        $this->activityService->save('Ouverture de la page de modification de mot de passe');
+
+        return Inertia::render('profile/edit-password', [
             'title' => 'Modifier mon mot de passe'
         ]);
     }
@@ -68,27 +77,9 @@ class ProfileController extends Controller
             'password' => Hash::make($request->validated('password'))
         ]);
 
+        //Activity Log
+        $this->activityService->save('Modification de mot de passe');
+
         return back();
-    }
-
-    /**
-     * Delete the user's account.
-     */
-    public function destroy(Request $request): RedirectResponse
-    {
-        $request->validate([
-            'password' => ['required', 'current_password'],
-        ]);
-
-        $user = $request->user();
-
-        Auth::logout();
-
-        $user->delete();
-
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-
-        return Redirect::to('/');
     }
 }
