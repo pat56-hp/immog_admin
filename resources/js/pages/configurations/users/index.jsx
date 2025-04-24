@@ -48,12 +48,12 @@ export default function User({ title, users, roles }) {
                         ),
                     },
                     {
-                        key: "role",
+                        key: "role_label",
                         label: "Rôle",
                         sortable: true,
                         render: (user) => (
                             <span className="px-2 py-1 rounded-full text-xs bg-yellow-100 text-yellow-800">
-                                {user.role?.libelle}
+                                {user.role_label}
                             </span>
                         ),
                     },

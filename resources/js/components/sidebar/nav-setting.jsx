@@ -69,7 +69,7 @@ export default function NavSetting(user) {
                             </DropdownMenuItem>
                         </Link>
                         <DropdownMenuSeparator />
-                        <Link href="#">
+                        <Link href={route("activities.index")}>
                             <DropdownMenuItem>
                                 <SquareActivity />
                                 Historique d'activité

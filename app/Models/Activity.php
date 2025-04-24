@@ -16,8 +16,17 @@ class Activity extends Model
         'url'
     ];
 
+    protected $appends = [
+        'user_name'
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function getUserNameAttribute()
+    {
+        return $this->user->name ?? 'Utilisateur introuvable';
     }
 }

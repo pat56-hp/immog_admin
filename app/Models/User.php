@@ -27,6 +27,10 @@ class User extends Authenticatable
         'created_by'
     ];
 
+    protected $appends = [
+        'role_label'
+    ];
+
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -52,5 +56,9 @@ class User extends Authenticatable
 
     public function role(){
         return $this->belongsTo(Role::class);
+    }
+
+    public function getRoleLabelAttribute(){
+        return $this->role->libelle ?? 'Introuvable';
     }
 }

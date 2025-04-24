@@ -4,16 +4,15 @@ const getDate = (data) => {
     const month = String(date.getMonth() + 1).padStart(2, "0");
     const year = date.getFullYear();
 
-    return day + "/" + month + "/" + year;
+    return (
+        day +
+        "/" +
+        month +
+        "/" +
+        year +
+        " à " +
+        date.toLocaleTimeString().slice(0, 5)
+    );
 };
 
-const blurFocusedElement = () => {
-    if (
-        typeof document !== "undefined" &&
-        document.activeElement instanceof HTMLElement
-    ) {
-        document.activeElement.blur();
-    }
-};
-
-export { getDate, blurFocusedElement };
+export { getDate };

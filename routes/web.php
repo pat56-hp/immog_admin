@@ -1,24 +1,33 @@
 <?php
 
+use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
 Route::get('/', function(){
     return redirect('/dashboard');
 });
 
 Route::middleware('auth')->group(function () {
+    //Dashboard Route
     Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
-    Route::get('profile/update-password', [ProfileController::class, 'password'])->name('profile.password');
-    Route::put('profile/update-password', [ProfileController::class, 'passwordUpdate']);
     
+    //Profile Routes
+    Route::controller(ProfileController::class)->group(function (){
+        Route::group(['prefix' => 'profile', 'as' => 'profile.'], function (){
+            Route::get('/', 'index')->name('index');
+            Route::patch('/', 'update')->name('edit');
+            Route::delete('/', 'destroy')->name('destroy');
+            Route::get('/update-password', 'password')->name('password');
+            Route::put('/update-password', 'passwordUpdate');
+        });
+    });
+    
+    //Activity Routes
+    Route::get('/activities', [ActivityController::class, 'index'])->name('activities.index');
+
+
     require __DIR__.'/role.php';
     require __DIR__.'/user.php';
 });

@@ -16,7 +16,7 @@ class UserRepository implements UserInterface{
     }
 
     public function get(){
-        return $this->user->with('role')->latest()->get();
+        return $this->user->latest()->get();
     }
 
     public function save(array $data): mixed{
