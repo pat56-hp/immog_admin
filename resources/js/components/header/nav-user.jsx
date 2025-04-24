@@ -32,7 +32,14 @@ export default function NavUser() {
                         <span className="truncate font-semibold">
                             {user.name}
                         </span>
-                        <span className="truncate text-xs">{user.email}</span>
+                        <div className="truncate text-xs block">
+                            <span>
+                                {user.email} <br />
+                            </span>
+                            <div className="text-xs text-yellow-800">
+                                {user.role_label}
+                            </div>
+                        </div>
                     </div>
                 </div>
             </DropdownMenuTrigger>

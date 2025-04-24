@@ -36,9 +36,10 @@ export default function Activities({ title, activities }) {
                         label: "Pays & Adresse IP",
                         sortable: true,
                         render: (activity) => (
-                            <div className="flex flex-col gap-2">
+                            <div className="flex flex-col gap-2 text-center">
                                 <span className="px-2 py-1 rounded-full text-xs bg-yellow-100 text-yellow-800">
-                                    {activity.country !== null
+                                    {activity.country !== "" &&
+                                    activity.country !== null
                                         ? activity.country
                                         : "Pays introuvable"}
                                 </span>

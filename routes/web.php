@@ -26,6 +26,7 @@ Route::middleware('auth')->group(function () {
     
     //Activity Routes
     Route::get('/activities', [ActivityController::class, 'index'])->name('activities.index');
+    
 
 
     require __DIR__.'/role.php';

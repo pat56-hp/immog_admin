@@ -190,3 +190,19 @@
         @apply bg-background text-foreground;
     }
 }
+
+.overflow-auto:hover,
+.overflow-scroll:hover,
+.overflow-x-auto:hover,
+.overflow-y-auto:hover {
+    scrollbar-color: #cdcdcd transparent;
+}
+
+.overflow-auto,
+.overflow-scroll,
+.overflow-x-auto,
+.overflow-x-scroll,
+.overflow-y-auto,
+.overflow-y-scroll {
+    scrollbar-color: #e3e3e3 transparent;
+}
