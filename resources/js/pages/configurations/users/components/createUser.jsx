@@ -40,6 +40,7 @@ export default function AddUserButton({ roles }) {
                         onSuccess: () => {
                             resolve(true);
                             reset();
+                            toast.success("Utilisateur enregistré avec succès");
                         },
                         onError: (error) => {
                             console.log(error);
@@ -89,6 +90,7 @@ export default function AddUserButton({ roles }) {
                         <PhoneInput
                             className="mt-2 w-full"
                             placeholder="Contact"
+                            defaultCountry="ci"
                             onChange={(phone) => setData("phone", phone)}
                             value={data.phone}
                         />

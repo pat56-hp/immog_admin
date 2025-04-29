@@ -8,7 +8,7 @@ import { Mail, EyeClosed, Eye } from "lucide-react";
 import InputError from "@/components/InputError";
 import { useState } from "react";
 
-export default function Login({ status, canResetPassword }) {
+export default function Login({ status }) {
     const [isOpen, setIsOpen] = useState(false);
 
     const toggleEye = () => setIsOpen(!isOpen);

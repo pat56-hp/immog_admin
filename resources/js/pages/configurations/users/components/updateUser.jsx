@@ -16,6 +16,7 @@ import {
     SelectValue,
 } from "../../../../components/ui/select";
 import { Checkbox } from "../../../../components/ui/checkbox";
+import { toast } from "sonner";
 
 export default function UpdateUser({ user, roles }) {
     const itemRef = useRef(null);
@@ -77,6 +78,9 @@ export default function UpdateUser({ user, roles }) {
                             onSuccess: () => {
                                 resolve(true);
                                 reset();
+                                toast.success(
+                                    "Utilisateur modifié avec succès"
+                                );
                                 const menu = itemRef.current?.closest(
                                     "[data-radix-popper-content-wrapper]"
                                 );

@@ -26,7 +26,7 @@ import {
     SquareActivity,
 } from "lucide-react";
 import { Link } from "@inertiajs/react";
-export default function NavSetting(user) {
+export default function NavSetting() {
     const { isMobile } = useSidebar();
     return (
         <SidebarMenu>
@@ -76,7 +76,7 @@ export default function NavSetting(user) {
                             </DropdownMenuItem>
                         </Link>
                         <DropdownMenuSeparator />
-                        <Link href="#">
+                        <Link href={route("settings.index")}>
                             <DropdownMenuItem>
                                 <Settings2 />
                                 Paramètres

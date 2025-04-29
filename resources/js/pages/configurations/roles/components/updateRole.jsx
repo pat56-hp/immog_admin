@@ -63,7 +63,7 @@ export default function UpdateRole({ role }) {
                         preserveScroll: true,
                         onSuccess: () => {
                             resolve(true);
-                            toast.success("Mise à jour effectuée !");
+                            toast.success("Rôle modifié avec succès !");
                             reset();
                         },
                         onError: (error) => {

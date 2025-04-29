@@ -1,5 +1,6 @@
 import { useForm } from "@inertiajs/react";
 import ActionAlertDialog from "../../../../components/shared/action-alert-dialog";
+import { toast } from "sonner";
 
 export const EditUserStatus = ({ user }) => {
     const { put, processing } = useForm();
@@ -12,7 +13,10 @@ export const EditUserStatus = ({ user }) => {
             } ». Continuer ?`}
             processing={processing}
             onConfirm={() =>
-                put(route("users.status", user.id), { preserveScroll: true })
+                put(route("users.status", user.id), {
+                    preserveScroll: true,
+                    onSuccess: () => toast.success("Mise à jour effectuée"),
+                })
             }
             trigger={
                 <button className="text-yellow-500 hover:text-yellow-600">

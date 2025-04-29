@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import ActionAlertDialog from "../../../../components/shared/action-alert-dialog";
 import { Trash } from "lucide-react";
 import { DropdownMenuItem } from "../../../../components/ui/dropdown-menu";
+import { toast } from "sonner";
 
 export const DeleteUser = ({ user }) => {
     const { delete: destroy, processing } = useForm();
@@ -28,6 +29,8 @@ export const DeleteUser = ({ user }) => {
                 onConfirm={() =>
                     destroy(route("users.delete", user.id), {
                         preserveScroll: true,
+                        onSuccess: () =>
+                            toast.success("Utilisateur supprimé avec succès"),
                     })
                 }
             />

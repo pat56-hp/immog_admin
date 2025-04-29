@@ -10,11 +10,10 @@ import { toast } from "sonner";
 const appName = import.meta.env.VITE_APP_NAME || "ImmoG";
 
 export default function AppLayout({ children }) {
-    const { title, error, success } = usePage().props;
+    const { title, error, setting } = usePage().props;
 
     useEffect(() => {
         error && toast.error("Oups, une erreur s'est produite");
-        success && toast.success(success);
         error && console.log(error);
     }, [children]);
 
@@ -22,10 +21,10 @@ export default function AppLayout({ children }) {
         <>
             <Head>
                 <title>{title ? `${title} - ${appName}` : appName}</title>
-                <meta
-                    name="description"
-                    content="Administration de Gestion des loyers immobiliers"
-                />
+                <link rel="shortcut icon" href={setting?.favicon_url} />
+                <meta name="description" content={setting?.description} />
+                <meta name="keywords" content={setting?.keywords} />
+                <meta name="author" content="Pat56-hp" />
             </Head>
             <SidebarProvider>
                 <AppSidebar variant="inset" />

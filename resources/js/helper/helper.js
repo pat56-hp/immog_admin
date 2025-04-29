@@ -15,4 +15,17 @@ const getDate = (data) => {
     );
 };
 
-export { getDate };
+const showFile = (file, onSetPrevent) => {
+    if (file) {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            onSetPrevent(reader.result);
+        };
+
+        reader.readAsDataURL(file);
+    } else {
+        onSetPrevent(null);
+    }
+};
+
+export { getDate, showFile };
