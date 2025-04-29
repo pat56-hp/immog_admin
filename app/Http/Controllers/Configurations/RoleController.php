@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Configurations;
 
+use App\Http\Controllers\Controller;
 use App\Models\Role;
 use App\Services\ActivityService;
 use Illuminate\Http\Request;

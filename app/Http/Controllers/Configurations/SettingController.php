@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Configurations;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\SettingRequest;
 use App\Repositories\Interfaces\SettingInterface;
 
@@ -21,7 +22,5 @@ class SettingController extends Controller
         } catch (\Throwable $th) {
            return back()->with('error', 'Une erreur est surveneu : '. $th->getMessage());
         }
-    }
-
-    
+    }    
 }
