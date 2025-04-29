@@ -4,15 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Proprietaire extends Model
+class TypeAppartement extends Model
 {
     protected $fillable = [
         'name',
-        'email',
-        'phone',
-        'address',
-        'picture',
-        'type',
+        'description',
         'status'
     ];
 }
