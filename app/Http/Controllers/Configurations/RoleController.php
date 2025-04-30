@@ -11,7 +11,7 @@ use Inertia\Inertia;
 
 class RoleController extends Controller
 {
-    public function __construct(private ActivityService $activityService){}
+    public function __construct(private ActivityService $activityService) {}
     /**
      * Display a listing of the resource.
      */
@@ -21,6 +21,7 @@ class RoleController extends Controller
         $this->activityService->save('Ouverture de la liste des rôles');
 
         return Inertia::render('configurations/roles/index', [
+            'module' => 'Configurations',
             'title' => 'Liste des rôles',
             'roles' => Role::withCount('users')->get()
         ]);
@@ -55,7 +56,7 @@ class RoleController extends Controller
         ]);
 
         //Activity Log
-        $this->activityService->save('Edition du statut du rôle '. $role->libelle. ' à '. ($role->status == 1? 'Actif' : 'Inactif'));
+        $this->activityService->save('Edition du statut du rôle ' . $role->libelle . ' à ' . ($role->status == 1 ? 'Actif' : 'Inactif'));
 
         return back();
     }

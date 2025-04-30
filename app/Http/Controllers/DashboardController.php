@@ -12,13 +12,14 @@ class DashboardController extends Controller
     public function __construct(private ActivityService $activityService)
     {
         Inertia::share([
-            'title' => 'Tableau de bord', 
-            'menu' => 'dashboard', 
+            'module' => 'Tableau de bord',
+            'menu' => 'dashboard',
             'submenu' => ''
-        ]);    
+        ]);
     }
 
-    public function dashboard(){
+    public function dashboard()
+    {
         $this->activityService->save('Ouverture du tableaux de bord');
         return Inertia::render('dashboard');
     }

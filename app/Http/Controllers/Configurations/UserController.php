@@ -14,7 +14,7 @@ use Inertia\Inertia;
 
 class UserController extends Controller
 {
-    public function __construct(private UserInterface $userRepository, private ActivityService $activityService){}
+    public function __construct(private UserInterface $userRepository, private ActivityService $activityService) {}
     /**
      * Recuperation des utilisateurs
      */
@@ -24,6 +24,7 @@ class UserController extends Controller
         $this->activityService->save('Ouverture de la liste des utilisateurs');
 
         return Inertia::render('configurations/users/index', [
+            'module' => 'Configurations',
             'title' => 'Liste des utilisateurs',
             'users' => $this->userRepository->get(),
             'roles' => Role::where('status', 1)->get()
@@ -43,8 +44,8 @@ class UserController extends Controller
         try {
             $this->userRepository->save($data);
             //Activity Log
-            $this->activityService->save('Enregistrement de l\'utilisateur : '. $user->name);
-        
+            $this->activityService->save('Enregistrement de l\'utilisateur : ' . $user->name);
+
             return back()->with('success', 'Enregistrement effectué !');
         } catch (\Throwable $th) {
             logger()->error('Erreur lors de la sauvegarde d\'un utilisateur : ' . $th->getMessage());
@@ -61,7 +62,7 @@ class UserController extends Controller
         try {
             $this->userRepository->destroy($user);
             //Activity Log
-            $this->activityService->save('Suppression de l\'utilisateur : '. $user->name);
+            $this->activityService->save('Suppression de l\'utilisateur : ' . $user->name);
             return back()->with('success', 'Suppression effectuée !');
         } catch (\Throwable $th) {
             logger()->error('Erreur lors de la suppression d\'un utilisateur : ' . $th->getMessage());
@@ -73,15 +74,16 @@ class UserController extends Controller
      * Modification du statut d'un utilisateur
      */
 
-     public function editStatus(User $user){
+    public function editStatus(User $user)
+    {
         try {
             $this->userRepository->status($user);
             //Activity Log
-            $this->activityService->save('Edition du statut de l\'utilisateur : '. $user->name . ' à '. ($user->status == 1? 'Actif' : 'Inactif'));
+            $this->activityService->save('Edition du statut de l\'utilisateur : ' . $user->name . ' à ' . ($user->status == 1 ? 'Actif' : 'Inactif'));
             return back()->with('success', 'Mise à jour effectuée !');
         } catch (\Throwable $th) {
             logger()->error('Erreur lors de la modification du statut d\'un utilisateur : ' . $th->getMessage());
             return back()->with('error', 'Une erreur est survenue : ' . $th->getMessage());
         }
-     }
+    }
 }

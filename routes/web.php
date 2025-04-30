@@ -32,6 +32,7 @@ Route::middleware('auth')->group(function () {
     require __DIR__.'/role.php';
     require __DIR__.'/user.php';
     require __DIR__.'/setting.php';
+    require __DIR__.'/proprietaire.php';
 });
 
 require __DIR__.'/auth.php';

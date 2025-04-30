@@ -5,7 +5,7 @@ import Datatable from "../../../components/datatable";
 import UpdateRole from "./components/updateRole";
 import { EditRoleStatus } from "./components/editStateRole";
 
-export default function Role({ title, roles }) {
+export default function Role({ module, title, roles }) {
     const breadcrumbs = [
         {
             title: "Tableau de bord",
@@ -18,8 +18,9 @@ export default function Role({ title, roles }) {
 
     return (
         <ContentLayout
+            module={module}
             title={title}
-            subtitle="Consulter la liste des rôles d'utilisateur"
+            subtitle="Affichage de la liste des rôles d'utilisateur"
             breadcrumb={breadcrumbs}
         >
             <Datatable

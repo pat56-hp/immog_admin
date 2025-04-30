@@ -12,7 +12,7 @@ import { Loader } from "lucide-react";
 import { showFile } from "../../../helper/helper";
 import { toast } from "sonner";
 
-export default function Setting({ title, setting }) {
+export default function Setting({ module, title, setting }) {
     const [previewLogo, setPreviewLogo] = useState(setting?.logo_url ?? null);
     const [previewFavicon, setPreviewFavicon] = useState(
         setting?.favicon_url ?? null
@@ -71,8 +71,9 @@ export default function Setting({ title, setting }) {
 
     return (
         <ContentLayout
+            module={module}
             title={title}
-            subtitle="Veuillez remplir le formulaire"
+            subtitle="Paramétrage de l'application"
             breadcrumb={breadcrumbs}
         >
             <form onSubmit={handleSubmit}>

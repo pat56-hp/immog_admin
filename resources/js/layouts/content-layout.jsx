@@ -10,14 +10,15 @@ import {
 import PageTitle from "../components/page-title";
 
 export default function ContentLayout({
-    title,
+    module,
+    title = "",
     subtitle = "",
     breadcrumb,
     children,
 }) {
     return (
         <AppLayout>
-            <PageTitle title={title} breadcrumb={breadcrumb} />
+            <PageTitle title={module} breadcrumb={breadcrumb} />
             <Card className="">
                 <CardHeader>
                     <CardTitle className="text-base font-medium">

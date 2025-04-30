@@ -15,4 +15,14 @@ class Proprietaire extends Model
         'type',
         'status'
     ];
+
+    public function setStatusAttribute($value)
+    {
+        return $this->attributes['status'] = $value === 1 ? 'Actif' : 'Inactif';
+    }
+
+    public function setTypeAttribute($value)
+    {
+        return $this->attributes['type'] = ucfirst($value);
+    }
 }

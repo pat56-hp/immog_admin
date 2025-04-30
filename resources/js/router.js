@@ -38,7 +38,7 @@ const routePage = () => {
                     },
                     {
                         title: "Liste des propriétaires",
-                        url: "#",
+                        url: route("proprietaires.index"),
                     },
                 ],
             },

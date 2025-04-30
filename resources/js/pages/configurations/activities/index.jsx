@@ -3,7 +3,7 @@ import ContentLayout from "../../../layouts/content-layout";
 import Datatable from "../../../components/datatable";
 import { getDate } from "../../../helper/helper";
 
-export default function Activities({ title, activities }) {
+export default function Activities({ module, title, activities }) {
     const breadcrumbs = [
         {
             title: "Tableau de bord",
@@ -16,9 +16,10 @@ export default function Activities({ title, activities }) {
 
     return (
         <ContentLayout
+            module={module}
             title={title}
             breadcrumb={breadcrumbs}
-            subtitle="Consulter la liste des activités"
+            subtitle="Affichage de la liste des activités"
         >
             <Datatable
                 data={activities}

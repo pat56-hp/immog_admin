@@ -14,7 +14,7 @@ import { DeleteUser } from "./components/deleteUser";
 import { EditUserStatus } from "./components/editStateUser";
 import UpdateUser from "./components/updateUser";
 
-export default function User({ title, users, roles }) {
+export default function User({ module, title, users, roles }) {
     const breadcrumbs = [
         {
             title: "Tableau de bord",
@@ -27,8 +27,9 @@ export default function User({ title, users, roles }) {
 
     return (
         <ContentLayout
+            module={module}
             title={title}
-            subtitle="Consulter la liste des utilisateurs"
+            subtitle="Affichage de la liste des utilisateurs"
             breadcrumb={breadcrumbs}
         >
             <Datatable

@@ -15,7 +15,7 @@ use Inertia\Response;
 
 class ProfileController extends Controller
 {
-    public function __construct(private ActivityService $activityService){}
+    public function __construct(private ActivityService $activityService) {}
     /**
      * Display the user's profile form.
      */
@@ -25,7 +25,8 @@ class ProfileController extends Controller
         $this->activityService->save('Ouverture de la page de modification de profil');
 
         return Inertia::render('profile/edit', [
-            'title' => 'Mon profil',
+            'module' => 'Mon profil',
+            'title' => 'Modifier mon profil',
         ]);
     }
 
@@ -57,11 +58,13 @@ class ProfileController extends Controller
      *
      * @return void
      */
-    public function password(){
+    public function password()
+    {
         //Activity Log
         $this->activityService->save('Ouverture de la page de modification de mot de passe');
 
         return Inertia::render('profile/edit-password', [
+            'module' => 'Profil',
             'title' => 'Modifier mon mot de passe'
         ]);
     }
@@ -72,7 +75,8 @@ class ProfileController extends Controller
      * @param PasswordRequest $request
      * @return void
      */
-    public function passwordUpdate(PasswordRequest $request){
+    public function passwordUpdate(PasswordRequest $request)
+    {
         $request->user()->update([
             'password' => Hash::make($request->validated('password'))
         ]);
