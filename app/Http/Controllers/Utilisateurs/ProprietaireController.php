@@ -56,38 +56,54 @@ class ProprietaireController extends Controller
         $data = $request->validated();
 
         if ($request->hasFile('picture'))
-            $data['picture'] = storeFile(\Str::slug($data['nom'] . '-proprio'), 'uploads/proprietaires', $request->file('picture'));
+            $data['picture'] = storeFile(\Str::slug($data['name'] . '-proprio'), 'uploads/proprietaires', $request->file('picture'));
 
         try {
             $proprietaire = $this->proprietaireRepository->save($data);
-            $this->activityService->store('Ajout d\'un nouveau propriétaire : ' . ucwords($proprietaire->nom));
+            $this->activityService->save('Ajout d\'un nouveau propriétaire : ' . ucwords($proprietaire->nom));
 
-            return back()->with('success', 'Propriétaire ajouté avec succès');
+            session()->flash('success', 'Propriétaire ajouté avec succès');
+            return to_route('proprietaires.index');
         } catch (\Throwable $th) {
+            logger()->error('Erreur lors de l\'ajout d\'un nouveau propriétaire : ' . $th->getMessage());
             return back()->withErrors($th->getMessage());
         }
+    }
+
+    public function edit(Proprietaire $proprietaire)
+    {
+        $this->activityService->save('Edition du propriétaire : ' . $proprietaire->name);
+        return Inertia::render('users/proprietaires/edit', [
+            'title' => 'Modification d\'un propriétaire',
+            'proprietaire' => $proprietaire
+        ]);
     }
 
     /**
      * Modification d'un propriétaire
      *
      * @param ProprietaireRequest $request
-     * @param [type] $proprietaire
+     * @param Proprietaire $proprietaire
      * @return void
      */
-    public function update(ProprietaireRequest $request, $proprietaire)
+    public function update(ProprietaireRequest $request, Proprietaire $proprietaire)
     {
         $data = $request->validated();
         $data['id'] = $proprietaire->id;
 
-        if ($request->hasFile('picture'))
-            $data['picture'] = storeFile(\Str::slug($data['nom'] . '-proprio'), 'uploads/proprietaires', $request->file('picture'));
 
+        if ($request->hasFile('picture'))
+            $data['picture'] = storeFile(\Str::slug($data['name'] . '-proprio'), 'uploads/proprietaires', $request->file('picture'));
+        else
+            $data['picture'] = $proprietaire->picture;
+
+        //Mise à jour des information
         try {
             $proprietaire = $this->proprietaireRepository->save($data);
-            $this->activityService->store('Modification des informations du propriétaire : ' . ucwords($proprietaire->nom));
+            $this->activityService->save('Modification des informations du propriétaire : ' . ucwords($proprietaire->nom));
 
-            return back()->with('success', 'Propriétaire modifié avec succès');
+            session()->flash('success', 'Propriétaire modifié avec succès');
+            return to_route('proprietaires.index');
         } catch (\Throwable $th) {
             return back()->withErrors($th->getMessage());
         }

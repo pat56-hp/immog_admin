@@ -24,11 +24,11 @@ class ProprietaireRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'email' => ['required', 'string', 'email', 'max:255', request()->method() === 'POST' ? 'unique:proprietaires' : Rule::unique('proprietaires')->ignore($this->proprietaire->id)],
-            'phone' => 'required|string|max:20',
+            'email' => ['required', 'string', 'email', 'max:255', request()->method() === 'POST' ? 'unique:proprietaires' : Rule::unique('proprietaires')->ignore($this->proprietaire)],
+            'phone' => ['required', 'string', 'max:20', request()->method() === 'POST' ? 'unique:proprietaires' : Rule::unique('proprietaires')->ignore($this->proprietaire)],
             'address' => 'nullable|string|max:255',
             'picture' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'type' => 'required|exists:type_appartements,id',
+            'type' => 'required|string',
             'status' => 'required|boolean',
         ];
     }

@@ -139,7 +139,10 @@ export default function Datatable({
                             currentItems.map((row, index) => (
                                 <TableRow key={index}>
                                     {columuns.map((col) => (
-                                        <TableCell key={col.key}>
+                                        <TableCell
+                                            key={col.key}
+                                            className="truncate"
+                                        >
                                             {col.render
                                                 ? col.render(row)
                                                 : row[col.key]}

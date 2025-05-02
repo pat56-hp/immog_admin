@@ -2,7 +2,7 @@ import React from "react";
 import ContentLayout from "../../../layouts/content-layout";
 import FormProprietaire from "./components/formProprietaire";
 
-export default function CreateProprietaire({ module, title }) {
+export default function ProprietaireEdit({ proprietaire, module, title }) {
     const breadcrumbs = [
         {
             title: "Tableau de bord",
@@ -13,18 +13,19 @@ export default function CreateProprietaire({ module, title }) {
             link: route("proprietaires.index"),
         },
         {
-            title: "Ajouter un propriétaire",
+            title: "Editer un propriétaire",
         },
     ];
+
     return (
         <ContentLayout
             module={module}
             title={title}
-            subtitle="Création d'un nouveau propriétaire"
+            subtitle="Edition d'un propriétaire"
             breadcrumb={breadcrumbs}
             backButton={true}
         >
-            <FormProprietaire />
+            <FormProprietaire proprietaire={proprietaire} isUpdate={true} />
         </ContentLayout>
     );
 }

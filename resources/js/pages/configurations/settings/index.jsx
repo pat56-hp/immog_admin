@@ -109,6 +109,7 @@ export default function Setting({ module, title, setting }) {
                     <div className="">
                         <Label htmlFor="contact">Contact</Label>
                         <PhoneInput
+                            id="contact"
                             className="mt-2 w-full"
                             placeholder="Contact de l'application"
                             defaultCountry="ci"

@@ -2,10 +2,16 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Proprietaire extends Model
 {
+    protected $appends = [
+        'image',
+    ];
+
     protected $fillable = [
         'name',
         'email',
@@ -16,13 +22,18 @@ class Proprietaire extends Model
         'status'
     ];
 
-    public function setStatusAttribute($value)
+    public function type(): Attribute
     {
-        return $this->attributes['status'] = $value === 1 ? 'Actif' : 'Inactif';
+        return Attribute::make(get: fn($value) => ucfirst($value));
     }
 
-    public function setTypeAttribute($value)
+    public function getImageAttribute()
     {
-        return $this->attributes['type'] = ucfirst($value);
+        return !empty($this->picture) ? Storage::url($this->picture) : asset('/images/person.png');
+    }
+
+    public function address(): Attribute
+    {
+        return Attribute::make(get: fn($value) => !empty($value) ? $value : 'Inconnue');
     }
 }

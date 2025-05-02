@@ -34,7 +34,7 @@ const routePage = () => {
                 items: [
                     {
                         title: "Ajouter un propriétaire",
-                        url: "#",
+                        url: route("proprietaires.create"),
                     },
                     {
                         title: "Liste des propriétaires",
