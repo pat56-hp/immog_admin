@@ -35,8 +35,10 @@ const routePage = () => {
                     {
                         title: "Ajouter un propriétaire",
                         url: route("proprietaires.create"),
+                        isActive: url.endsWith("proprietaires/create"),
                     },
                     {
+                        isActive: url.endsWith("proprietaires"),
                         title: "Liste des propriétaires",
                         url: route("proprietaires.index"),
                     },

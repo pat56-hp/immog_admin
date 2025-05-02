@@ -61,7 +61,13 @@ export default function NavMain({ items, groupLabel = null }) {
                                             <SidebarMenuSubItem
                                                 key={subItem.title}
                                             >
-                                                <SidebarMenuSubButton asChild>
+                                                <SidebarMenuSubButton
+                                                    asChild
+                                                    data-active={
+                                                        subItem.isActive
+                                                    }
+                                                    className="data-[active=true]:text-red-600"
+                                                >
                                                     <Link href={subItem.url}>
                                                         <span>
                                                             {subItem.title}
