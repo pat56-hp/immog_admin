@@ -52,11 +52,13 @@ const routePage = () => {
                 items: [
                     {
                         title: "Ajouter un locataire",
-                        url: "#",
+                        url: route("locataires.create"),
+                        isActive: url.endsWith("locataires/create"),
                     },
                     {
                         title: "Liste des locataires",
-                        url: "#",
+                        url: route("locataires.index"),
+                        isActive: url.endsWith("locataires"),
                     },
                 ],
             },
@@ -70,11 +72,13 @@ const routePage = () => {
                 items: [
                     {
                         title: "Ajouter un appart",
-                        url: "#",
+                        url: route("appartements.create"),
+                        isActive: url.endsWith("appartements/create"),
                     },
                     {
                         title: "Liste des apparts",
-                        url: "#",
+                        url: route("appartements.index"),
+                        isActive: url.endsWith("appartements"),
                     },
                 ],
             },
