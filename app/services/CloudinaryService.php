@@ -37,7 +37,11 @@ class CloudinaryService
      */
     public function delete($publicId)
     {
-        return $this->cloudinary->uploadApi()->destroy($publicId);
+        try {
+            return $this->cloudinary->uploadApi()->destroy($publicId);
+        } catch (\Throwable $th) {
+            logger()->error("Suppression d'une image cloudinary : " . $th->getMessage());
+        }
     }
 
     /**

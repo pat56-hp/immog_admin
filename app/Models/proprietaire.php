@@ -29,7 +29,7 @@ class Proprietaire extends Model
 
     public function getImageAttribute()
     {
-        return !empty($this->picture) ? Storage::url($this->picture) : asset('/images/person.png');
+        return $this->picture ?? asset('/images/person.png');
     }
 
     public function address(): Attribute

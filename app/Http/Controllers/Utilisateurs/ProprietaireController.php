@@ -7,13 +7,17 @@ use App\Http\Requests\ProprietaireRequest;
 use App\Models\Proprietaire;
 use App\Repositories\Interfaces\utilisateurs\ProprietaireInterface;
 use App\Services\ActivityService;
+use App\Services\CloudinaryService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class ProprietaireController extends Controller
 {
-    public function __construct(private ProprietaireInterface $proprietaireRepository, private ActivityService $activityService)
-    {
+    public function __construct(
+        private ProprietaireInterface $proprietaireRepository,
+        private ActivityService $activityService,
+        private CloudinaryService $cloudinaryService
+    ) {
         Inertia::share(['module' => 'Propriétaires']);
     }
 
@@ -55,10 +59,9 @@ class ProprietaireController extends Controller
     {
         $data = $request->validated();
 
-        if ($request->hasFile('picture'))
-            $data['picture'] = storeFile(\Str::slug($data['name'] . '-proprio'), 'uploads/proprietaires', $request->file('picture'));
 
         try {
+            if ($request->hasFile('picture')) $data['picture'] = $this->cloudinaryService->upload($request->validated('picture'), 'proprietaires/pictures');
             $proprietaire = $this->proprietaireRepository->save($data);
             $this->activityService->save('Ajout d\'un nouveau propriétaire : ' . ucwords($proprietaire->nom));
 
@@ -66,7 +69,7 @@ class ProprietaireController extends Controller
             return to_route('proprietaires.index');
         } catch (\Throwable $th) {
             logger()->error('Erreur lors de l\'ajout d\'un nouveau propriétaire : ' . $th->getMessage());
-            return back()->withErrors($th->getMessage());
+            return back()->with('error', 'Une erreur s\'est produite : ' . $th->getMessage());
         }
     }
 
@@ -91,21 +94,25 @@ class ProprietaireController extends Controller
         $data = $request->validated();
         $data['id'] = $proprietaire->id;
 
-
-        if ($request->hasFile('picture'))
-            $data['picture'] = storeFile(\Str::slug($data['name'] . '-proprio'), 'uploads/proprietaires', $request->file('picture'));
-        else
-            $data['picture'] = $proprietaire->picture;
-
         //Mise à jour des information
         try {
+            if ($request->hasFile('picture')) {
+                if ($proprietaire->picture != null) {
+                    $pictureId = $this->cloudinaryService->extractPublicId($proprietaire->picture);
+                    $this->cloudinaryService->delete($pictureId);
+                }
+
+                $data['picture'] = $this->cloudinaryService->upload($request->validated('picture'), 'proprietaires/pictures');
+            } else
+                $data['picture'] = $proprietaire->picture;
+
             $proprietaire = $this->proprietaireRepository->save($data);
             $this->activityService->save('Modification des informations du propriétaire : ' . ucwords($proprietaire->nom));
 
             session()->flash('success', 'Propriétaire modifié avec succès');
             return to_route('proprietaires.index');
         } catch (\Throwable $th) {
-            return back()->withErrors($th->getMessage());
+            return back()->with('error', 'Une erreur s\'est produite : ' . $th->getMessage());
         }
     }
 
@@ -138,6 +145,10 @@ class ProprietaireController extends Controller
     {
         try {
             $this->proprietaireRepository->destroy($proprietaire);
+            if ($proprietaire->picture != null) {
+                $pictureId = $this->cloudinaryService->extractPublicId($proprietaire->picture);
+                $this->cloudinaryService->delete($pictureId);
+            }
             $this->activityService->save('Suppression du propriétaire : ' . $proprietaire->nom);
             return back()->with('success', 'Propriétaire supprimé avec succès');
         } catch (\Throwable $th) {
