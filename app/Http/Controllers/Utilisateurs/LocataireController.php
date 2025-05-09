@@ -7,14 +7,15 @@ use App\Http\Requests\LocataireRequest;
 use App\Models\Locataire;
 use App\Repositories\Interfaces\utilisateurs\LocataireInterface;
 use App\Services\ActivityService;
-use Illuminate\Http\Request;
+use App\Services\CloudinaryService;
 use Inertia\Inertia;
 
 class LocataireController extends Controller
 {
     public function __construct(
         private LocataireInterface $locataireRepository,
-        private ActivityService $activityService
+        private ActivityService $activityService,
+        private CloudinaryService $cloudinaryService
     ) {
         Inertia::share(['module' => 'Locataires']);
     }
@@ -49,23 +50,19 @@ class LocataireController extends Controller
     {
         $data = $request->validated();
 
-        if ($request->hasFile('picture')) {
-            $data['picture'] = storeFile(
-                \Str::slug($data['nom'] . '-locataire'),
-                'uploads/locataires',
-                $request->file('picture')
-            );
-        }
-
-        if ($request->hasFile('justificatif_identite')) {
-            $data['justificatif_identite'] = storeFile(
-                \Str::slug($data['nom'] . '-justificatif'),
-                'uploads/justificatifs',
-                $request->file('justificatif_identite')
-            );
-        }
-
         try {
+            if ($request->hasFile('picture')) {
+                $data['picture'] = $this->cloudinaryService->upload($request->validated(['picture']), 'locataires/pictures');
+            }
+
+            if ($request->justificatif_identite) {
+                $files = [];
+                foreach ($request->justificatif_identite as $item) {
+                    $files[] = $this->cloudinaryService->upload($item, 'locataires/documents');
+                }
+                $data['justificatif_identite'] = json_encode($files);
+            }
+
             $locataire = $this->locataireRepository->save($data);
             $this->activityService->save('Ajout d\'un nouveau locataire : ' . $locataire->nom_complet);
 
@@ -73,7 +70,7 @@ class LocataireController extends Controller
             return to_route('locataires.index');
         } catch (\Throwable $th) {
             logger()->error('Erreur lors de l\'ajout d\'un nouveau locataire : ' . $th->getMessage());
-            return back()->withErrors($th->getMessage());
+            return back()->with('error', 'Une erreur s\'est produite : ' . $th->getMessage());
         }
     }
 
@@ -124,7 +121,7 @@ class LocataireController extends Controller
             session()->flash('success', 'Locataire modifié avec succès');
             return to_route('locataires.index');
         } catch (\Throwable $th) {
-            return back()->withErrors($th->getMessage());
+            return back()->with('error', 'Une erreur s\'est produite : ' . $th->getMessage());
         }
     }
 
@@ -136,8 +133,8 @@ class LocataireController extends Controller
         try {
             $this->locataireRepository->status($locataire);
             $this->activityService->save(
-                'Edition du statut du locataire : ' . $locataire->nom_complet . ' à ' . 
-                ($locataire->status ? 'Actif' : 'Inactif')
+                'Edition du statut du locataire : ' . $locataire->nom_complet . ' à ' .
+                    ($locataire->status ? 'Actif' : 'Inactif')
             );
             return back()->with('success', 'Mise à jour effectuée !');
         } catch (\Throwable $th) {

@@ -11,6 +11,11 @@ class Locataire extends Model
 {
     use HasFactory;
 
+    protected $appends = [
+        'nom_complet',
+        'image'
+    ];
+
     protected $fillable = [
         'nom',
         'prenom',
@@ -49,6 +54,8 @@ class Locataire extends Model
 
     /**
      * Accesseur pour le nom complet
+     * 
+     * @return string
      */
     public function getNomCompletAttribute(): string
     {
@@ -56,10 +63,12 @@ class Locataire extends Model
     }
 
     /**
-     * Accesseur pour la date d'entrée
+     * Accesseur pour l'image
+     *
+     * @return string
      */
-    public function getDateEntreeAttribute(): string
+    public function getImageAttribute(): string
     {
-        return $this->created_at->format('d/m/Y H:i');
+        return $this->picture ?? asset('images/person.png');
     }
-} 
+}

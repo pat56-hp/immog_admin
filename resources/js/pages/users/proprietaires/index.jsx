@@ -45,7 +45,7 @@ export default function ProprietaireIndex({
                 buttons={[
                     <Link href={route("proprietaires.create")}>
                         <Button className="hover:cursor-pointer">
-                            <Plus className="w-4 h-4"></Plus> Ajouter un
+                            <Plus className="mr-2 w-4 h-4"></Plus> Ajouter un
                             proprietaire
                         </Button>
                     </Link>,

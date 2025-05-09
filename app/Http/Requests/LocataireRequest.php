@@ -16,21 +16,21 @@ class LocataireRequest extends FormRequest
         $rules = [
             'nom' => 'required|string|max:255',
             'prenom' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'telephone' => 'required|string|max:20',
+            'email' => 'nullable|email|max:255',
+            'telephone' => 'required|string|max:20|min:6',
             'adresse' => 'nullable|string',
             'date_naissance' => 'nullable|date',
             'profession' => 'nullable|string|max:255',
             'picture' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'justificatif_identite' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
+            'justificatif_identite' => 'nullable',
             'notes' => 'nullable|string'
         ];
 
         // Si c'est une mise à jour, on ignore l'unicité de l'email pour le locataire actuel
         if ($this->isMethod('PUT')) {
-            $rules['email'] = 'required|email|max:255|unique:locataires,email,' . $this->locataire->id;
+            $rules['telephone'] = 'required|min:6|max:20|unique:locataires,telephone,' . $this->locataire->id;
         } else {
-            $rules['email'] = 'required|email|max:255|unique:locataires,email';
+            $rules['telephone'] = 'required|min:6|max:20|unique:locataires,telephone';
         }
 
         return $rules;
@@ -43,8 +43,9 @@ class LocataireRequest extends FormRequest
             'prenom.required' => 'Le prénom est obligatoire',
             'email.required' => 'L\'email est obligatoire',
             'email.email' => 'L\'email doit être valide',
-            'email.unique' => 'Cet email est déjà utilisé',
+            'telephone.unique' => 'Ce numéro de téléphone est déjà utilisé',
             'telephone.required' => 'Le numéro de téléphone est obligatoire',
+            'telephone.min' => 'Le numéro de téléphone doit avoir 6 caractères au minimum',
             'picture.image' => 'Le fichier doit être une image',
             'picture.mimes' => 'L\'image doit être au format jpeg, png ou jpg',
             'picture.max' => 'L\'image ne doit pas dépasser 2Mo',
@@ -53,4 +54,4 @@ class LocataireRequest extends FormRequest
             'justificatif_identite.max' => 'Le document ne doit pas dépasser 5Mo'
         ];
     }
-} 
+}

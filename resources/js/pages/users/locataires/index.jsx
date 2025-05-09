@@ -1,13 +1,12 @@
-import { Head } from "@inertiajs/react";
-import ContentLayout from "@/layouts/content-layout";
-import { Button } from "@/components/ui/button";
-import { UserPlus } from "lucide-react";
-import { Link } from "@inertiajs/react";
-import Datatable from "@/components/datatable";
-import { Badge } from "@/components/ui/badge";
+import { Eye, UserPlus } from "lucide-react";
 import { toast } from "sonner";
-import { router } from "@inertiajs/react";
+import { Link, router } from "@inertiajs/react";
 import { Pencil, Trash2 } from "lucide-react";
+import ContentLayout from "../../../layouts/content-layout";
+import { Button } from "../../../components/ui/button";
+import Datatable from "../../../components/datatable";
+import EditStatusComponent from "../../../components/editStatus";
+import { getDate } from "../../../helper/helper";
 
 export default function Index({ locataires, title }) {
     const breadcrumb = [
@@ -21,48 +20,51 @@ export default function Index({ locataires, title }) {
     ];
 
     const columns = [
-        { header: "Nom", key: "nom_complet" },
-        { header: "Email", key: "email" },
-        { header: "Téléphone", key: "telephone" },
-        { header: "Profession", key: "profession" },
-        { header: "Date d'entrée", key: "date_entree" },
         {
-            header: "Statut",
-            key: "status",
+            label: "Image",
+            key: "image",
             render: (locataire) => (
-                <Badge
-                    variant={locataire.status ? "success" : "destructive"}
-                    className="cursor-pointer"
-                    onClick={() => handleStatusChange(locataire)}
-                >
-                    {locataire.status ? "Actif" : "Inactif"}
-                </Badge>
+                <img src={locataire.image} className="w-15 h-15 rounded-full" />
             ),
         },
+        { label: "Nom", key: "nom_complet" },
+        { label: "Email", key: "email" },
+        { label: "Téléphone", key: "telephone" },
+        { label: "Profession", key: "profession" },
+
         {
-            header: "Justificatif",
-            key: "justificatif_identite",
-            render: (locataire) =>
-                locataire.justificatif_identite ? (
-                    <a
-                        href={locataire.justificatif_identite}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-600 hover:underline"
-                    >
-                        Voir
-                    </a>
-                ) : (
-                    <span className="text-muted-foreground">Non fourni</span>
-                ),
+            label: "Statut",
+            key: "status",
+            render: (locataire) => (
+                <EditStatusComponent
+                    title={`Changer le statut du propriétaire ${locataire.nom_complet} ?`}
+                    description={`Le statut actuel est « ${locataire.status} ». Continuer ?`}
+                    link={route("locataires.status", locataire.id)}
+                    status={locataire.status}
+                />
+            ),
+        },
+
+        {
+            label: "Créé le",
+            key: "created_at",
+            render: (locataire) => getDate(locataire.created_at),
         },
         {
-            header: "Actions",
+            label: "Actions",
             key: "actions",
             render: (locataire) => (
-                <div className="flex justify-end gap-2">
+                <div className="flex  gap-2">
+                    <Link href={route("locataires.show", locataire.id)}>
+                        <Button variant="secondary" size="icon">
+                            <Eye className="h-4 w-4" />
+                        </Button>
+                    </Link>
                     <Link href={route("locataires.edit", locataire.id)}>
-                        <Button variant="outline" size="icon">
+                        <Button
+                            className="bg-yellow-100 text-black hover:bg-yellow-200"
+                            size="icon"
+                        >
                             <Pencil className="h-4 w-4" />
                         </Button>
                     </Link>
@@ -105,20 +107,19 @@ export default function Index({ locataires, title }) {
             title={title}
             breadcrumb={breadcrumb}
         >
-            <div className="flex justify-end mb-4">
-                <Link href={route("locataires.create")}>
-                    <Button>
-                        <UserPlus className="mr-2 h-4 w-4" />
-                        Nouveau locataire
-                    </Button>
-                </Link>
-            </div>
-
             <Datatable
                 data={locataires}
-                columns={columns}
+                columuns={columns}
                 seachable={true}
                 itemsPerPage={10}
+                buttons={[
+                    <Link href={route("locataires.create")}>
+                        <Button className="hover:cursor-pointer">
+                            <UserPlus className="mr-2 h-4 w-4" />
+                            Nouveau locataire
+                        </Button>
+                    </Link>,
+                ]}
             />
         </ContentLayout>
     );

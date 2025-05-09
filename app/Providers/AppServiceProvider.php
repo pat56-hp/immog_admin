@@ -13,7 +13,7 @@ use App\Repositories\Interfaces\utilisateurs\LocataireInterface;
 use App\Repositories\SettingRepository;
 use App\Repositories\UserRepository;
 use App\Repositories\utilisateurs\ProprietaireRepository;
-use App\Repositories\LocataireRepository;
+use App\Repositories\utilisateurs\LocataireRepository;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
 

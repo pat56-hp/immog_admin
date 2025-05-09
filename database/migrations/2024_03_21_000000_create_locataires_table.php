@@ -12,8 +12,8 @@ return new class extends Migration
             $table->id();
             $table->string('nom');
             $table->string('prenom');
-            $table->string('email')->unique();
-            $table->string('telephone');
+            $table->string('email')->nullable();
+            $table->string('telephone')->unique();
             $table->text('adresse')->nullable();
             $table->date('date_naissance')->nullable();
             $table->string('profession')->nullable();
@@ -29,4 +29,4 @@ return new class extends Migration
     {
         Schema::dropIfExists('locataires');
     }
-}; 
+};

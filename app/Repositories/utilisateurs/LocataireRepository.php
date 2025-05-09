@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Repositories;
+namespace App\Repositories\utilisateurs;
 
 use App\Models\Locataire;
 use App\Repositories\Interfaces\utilisateurs\LocataireInterface;
@@ -8,9 +8,7 @@ use Illuminate\Database\Eloquent\Collection;
 
 class LocataireRepository implements LocataireInterface
 {
-    public function __construct(private Locataire $model)
-    {
-    }
+    public function __construct(private Locataire $model) {}
 
     public function get(): Collection
     {
@@ -38,4 +36,4 @@ class LocataireRepository implements LocataireInterface
     {
         return $locataire->delete();
     }
-} 
+}
