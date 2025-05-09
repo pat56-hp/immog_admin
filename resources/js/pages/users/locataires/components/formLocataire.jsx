@@ -1,6 +1,5 @@
 import React from "react";
 import { useForm } from "@inertiajs/react";
-import { toast } from "sonner";
 import { Input } from "../../../../components/ui/input";
 import { Label } from "../../../../components/ui/label";
 import { Button } from "../../../../components/ui/button";
@@ -11,12 +10,24 @@ import ImageComponent from "../../../../components/imageComponent";
 import Required from "../../../../components/required";
 import { useState } from "react";
 import InputError from "../../../../components/InputError";
+import { getFormattedDate } from "../../../../helper/helper";
 
 export default function FormLocataire({ locataire, isUpdate = false }) {
     const [image, setImage] = useState(
         isUpdate ? [{ data_url: locataire.image }] : []
     );
-    const [identities, setIdentities] = useState([]);
+
+    const [identities, setIdentities] = useState(() => {
+        if (isUpdate && locataire?.justificatif_identite) {
+            const images = JSON.parse(locataire.justificatif_identite);
+
+            return images.map((image) => ({
+                justificatif_identite: image,
+                isLink: true, // Marquer comme lien existant
+            }));
+        }
+        return [];
+    });
 
     const onChangePicture = (image) => {
         if (image.length && image[0]?.file instanceof File) {
@@ -31,9 +42,16 @@ export default function FormLocataire({ locataire, isUpdate = false }) {
     const onChangeIdentity = (images) => {
         console.log(images);
         if (Array.isArray(images) && images.length) {
-            const validFiles = images
+            /*             const validFiles = images
                 .filter((image) => image?.file instanceof File)
-                .map((image) => image.file);
+                .map((image) => image.file); */
+
+            const validFiles = images.map((image) => {
+                // Vérifie si c'est un fichier ou un lien déjà existant
+                return image?.file instanceof File
+                    ? image.file
+                    : image.justificatif_identite;
+            });
 
             setIdentities(images);
             setData("justificatif_identite", validFiles);
@@ -43,13 +61,13 @@ export default function FormLocataire({ locataire, isUpdate = false }) {
         }
     };
 
-    const { data, setData, post, processing, errors } = useForm({
+    const { data, setData, post, processing, errors, reset } = useForm({
         nom: locataire?.nom ?? "",
         prenom: locataire?.prenom ?? "",
         email: locataire?.email ?? "",
         telephone: locataire?.telephone ?? "",
         adresse: locataire?.adresse ?? "",
-        date_naissance: locataire?.date_naissance ?? "",
+        date_naissance: getFormattedDate(locataire?.date_naissance) ?? "",
         profession: locataire?.profession ?? "",
         picture: null,
         notes: locataire?.notes ?? "",
@@ -59,6 +77,7 @@ export default function FormLocataire({ locataire, isUpdate = false }) {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+
         post(
             route(
                 isUpdate ? "locataires.update" : "locataires.store",
@@ -67,7 +86,7 @@ export default function FormLocataire({ locataire, isUpdate = false }) {
             {
                 forceFormData: true,
                 preserveScroll: true,
-                onSuccess: () => toast.success("Locataire créé avec succès"),
+                onSuccess: () => reset(),
                 onError: (errors) => console.log(errors),
             }
         );

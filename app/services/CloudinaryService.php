@@ -35,9 +35,11 @@ class CloudinaryService
      * @param $publicId
      * @return void
      */
-    public function delete($publicId)
+    public function delete($url)
     {
         try {
+            $publicId = $this->extractPublicId($url);
+            if (!$publicId) return null;
             return $this->cloudinary->uploadApi()->destroy($publicId);
         } catch (\Throwable $th) {
             logger()->error("Suppression d'une image cloudinary : " . $th->getMessage());

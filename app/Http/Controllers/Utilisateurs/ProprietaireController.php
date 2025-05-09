@@ -98,8 +98,7 @@ class ProprietaireController extends Controller
         try {
             if ($request->hasFile('picture')) {
                 if ($proprietaire->picture != null) {
-                    $pictureId = $this->cloudinaryService->extractPublicId($proprietaire->picture);
-                    $this->cloudinaryService->delete($pictureId);
+                    $this->cloudinaryService->delete($proprietaire->picture);
                 }
 
                 $data['picture'] = $this->cloudinaryService->upload($request->validated('picture'), 'proprietaires/pictures');
@@ -146,8 +145,7 @@ class ProprietaireController extends Controller
         try {
             $this->proprietaireRepository->destroy($proprietaire);
             if ($proprietaire->picture != null) {
-                $pictureId = $this->cloudinaryService->extractPublicId($proprietaire->picture);
-                $this->cloudinaryService->delete($pictureId);
+                $this->cloudinaryService->delete($proprietaire->picture);
             }
             $this->activityService->save('Suppression du propriétaire : ' . $proprietaire->nom);
             return back()->with('success', 'Propriétaire supprimé avec succès');

@@ -22,6 +22,7 @@ export default function Create({ title }) {
             title={title}
             breadcrumb={breadcrumb}
             backButton={true}
+            subtitle="Création d'un nouveau locataire"
         >
             <FormLocataire />
         </ContentLayout>

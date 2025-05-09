@@ -94,27 +94,45 @@ class LocataireController extends Controller
         $data = $request->validated();
         $data['id'] = $locataire->id;
 
-        if ($request->hasFile('picture')) {
-            $data['picture'] = storeFile(
-                \Str::slug($data['nom'] . '-locataire'),
-                'uploads/locataires',
-                $request->file('picture')
-            );
-        } else {
-            $data['picture'] = $locataire->picture;
-        }
-
-        if ($request->hasFile('justificatif_identite')) {
-            $data['justificatif_identite'] = storeFile(
-                \Str::slug($data['nom'] . '-justificatif'),
-                'uploads/justificatifs',
-                $request->file('justificatif_identite')
-            );
-        } else {
-            $data['justificatif_identite'] = $locataire->justificatif_identite;
-        }
+        //dd($request->justificatif_identite);
 
         try {
+            if ($request->hasFile('picture')) {
+                if (!empty($locataire->picture)) $this->cloudinaryService->delete($locataire->picture);
+
+                $data['picture'] = $this->cloudinaryService->upload($request->validated(['picture']), 'locataires/pictures');
+            } else {
+                $data['picture'] = $locataire->picture;
+            }
+
+            if ($request->justificatif_identite) {
+                $files = [];
+                //Suppression des fichiers existants
+                if ($locataire->justificatif_identite) {
+                    $fileDecodes = json_decode($locataire->justificatif_identite, true);
+                    foreach ($fileDecodes as $file) {
+                        $this->cloudinaryService->delete($file);
+                    }
+                }
+                //Ajout des nouveaux fichiers
+                foreach ($request->justificatif_identite as $item) {
+                    if (is_string($item)) {
+                        // Si c'est un lien, on le garde tel quel
+                        $files[] = $item;
+                    } elseif ($item instanceof \Illuminate\Http\UploadedFile) {
+                        // Si c'est un fichier, on l'upload
+                        $files[] = $this->cloudinaryService->upload($item, 'locataires/documents');
+                    }
+                }
+
+
+
+                $data['justificatif_identite'] = json_encode($files);
+            } else {
+                $data['justificatif_identite'] = $locataire->justificatif_identite;
+            }
+
+
             $locataire = $this->locataireRepository->save($data);
             $this->activityService->save('Modification des informations du locataire : ' . $locataire->nom_complet);
 
