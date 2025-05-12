@@ -22,16 +22,18 @@ export default function TypeAppartement({ types, title }) {
     ];
 
     const columns = [
-        { label: "Libéllé", key: "libelle" },
+        { label: "Libéllé", key: "libelle", sortable: true },
         {
             label: "Description",
             key: "description",
+            sortable: true,
             render: (type) => type.description ?? "Aucune info",
         },
-        { label: "Total appart", key: "appartements_count" },
+        { label: "Total appart", key: "appartements_count", sortable: true },
         {
             label: "Statut",
             key: "status",
+            sortable: true,
             render: (type) => (
                 <EditStatusComponent
                     title={`Changer le statut du type d'appartement ${type.name} ?`}
@@ -44,6 +46,7 @@ export default function TypeAppartement({ types, title }) {
         {
             label: "Créé le",
             key: "created_at",
+            sortable: true,
             render: (type) => getDate(type.created_at),
         },
         {
