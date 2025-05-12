@@ -10,9 +10,16 @@ class Appartement extends Model
 {
     use HasFactory;
 
+    protected $appends = [
+        'statut_formatted',
+        'loyer_formatted',
+        'superficie_formatted',
+        'charges_formatted'
+    ];
+
     protected $fillable = [
         'proprietaire_id',
-        'type_id',
+        'type_appartement_id',
         'nom',
         'description',
         'adresse',
@@ -50,7 +57,7 @@ class Appartement extends Model
      */
     public function type(): BelongsTo
     {
-        return $this->belongsTo(TypeAppartement::class, 'type_id');
+        return $this->belongsTo(TypeAppartement::class, 'type_appartement_id');
     }
 
     /**
@@ -58,7 +65,7 @@ class Appartement extends Model
      */
     public function getStatutFormattedAttribute(): string
     {
-        return match($this->statut) {
+        return match ($this->statut) {
             'disponible' => 'Disponible',
             'occupé' => 'Occupé',
             'en maintenance' => 'En maintenance',
@@ -71,7 +78,7 @@ class Appartement extends Model
      */
     public function getLoyerFormattedAttribute(): string
     {
-        return number_format($this->loyer_mensuel, 0, ',', ' ') . ' FCFA';
+        return number_format($this->loyer_mensuel, 0, '.', ' ') . ' FCFA';
     }
 
     /**
@@ -89,4 +96,4 @@ class Appartement extends Model
     {
         return $this->charges_incluses ? 'Incluses' : 'Non incluses';
     }
-} 
+}

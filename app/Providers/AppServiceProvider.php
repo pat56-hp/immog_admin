@@ -33,6 +33,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(LocataireInterface::class, LocataireRepository::class);
         $this->app->bind(AppartementInterface::class, AppartementRepository::class);
         $this->app->bind(TypeAppartementInterface::class, TypeAppartementRepository::class);
+        $this->app->bind(AppartementInterface::class, AppartementRepository::class);
     }
 
     /**
