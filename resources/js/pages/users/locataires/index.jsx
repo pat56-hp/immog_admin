@@ -33,13 +33,14 @@ export default function Index({ locataires, title, success }) {
                 />
             ),
         },
-        { label: "Nom", key: "nom_complet" },
-        { label: "Email", key: "email" },
-        { label: "Téléphone", key: "telephone" },
-        { label: "Profession", key: "profession" },
+        { label: "Nom", key: "nom_complet", sortable: true },
+        { label: "Email", key: "email", sortable: true },
+        { label: "Téléphone", key: "telephone", sortable: true },
+        { label: "Profession", key: "profession", sortable: true },
         {
             label: "Statut",
             key: "status",
+            sortable: true,
             render: (locataire) => (
                 <EditStatusComponent
                     title={`Changer le statut du propriétaire ${locataire.nom_complet} ?`}
@@ -52,6 +53,7 @@ export default function Index({ locataires, title, success }) {
         {
             label: "Créé le",
             key: "created_at",
+            sortable: true,
             render: (locataire) => getDate(locataire.created_at),
         },
         {
