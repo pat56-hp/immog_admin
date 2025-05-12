@@ -6,7 +6,7 @@ import { Input } from "../../../../components/ui/input";
 import InputError from "../../../../components/InputError";
 import { Checkbox } from "../../../../components/ui/checkbox";
 import { Button } from "../../../../components/ui/button";
-import { Edit } from "lucide-react";
+import { Pencil } from "lucide-react";
 import { toast } from "sonner";
 
 export default function UpdateRole({ role }) {
@@ -75,11 +75,10 @@ export default function UpdateRole({ role }) {
             }}
             trigger={
                 <Button
-                    variant="ghost"
+                    className="bg-yellow-100 h-8 w-8 text-black hover:bg-yellow-200 hover:cursor-pointer"
                     size="icon"
-                    className="h-8 w-8 hover:cursor-pointer"
                 >
-                    <Edit className="h-4 w-4" />
+                    <Pencil className="h-4 w-4" />
                 </Button>
             }
         />

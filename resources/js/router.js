@@ -80,6 +80,11 @@ const routePage = () => {
                         url: route("appartements.index"),
                         isActive: url.endsWith("appartements"),
                     },
+                    {
+                        title: "Types des apparts",
+                        url: route("appartements.types.index"),
+                        isActive: url.endsWith("appartements/types"),
+                    },
                 ],
             },
             {

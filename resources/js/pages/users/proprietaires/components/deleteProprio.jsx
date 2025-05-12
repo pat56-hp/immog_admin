@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { DropdownMenuItem } from "../../../../components/ui/dropdown-menu";
 import ActionAlertDialog from "../../../../components/shared/action-alert-dialog";
 import { useForm } from "@inertiajs/react";
 import { toast } from "sonner";
-import { Trash } from "lucide-react";
+import { Trash2 } from "lucide-react";
+import { Button } from "../../../../components/ui/button";
 
 export const DeleteProprio = ({ proprietaire }) => {
     const [open, setOpen] = useState(false);
@@ -11,16 +11,14 @@ export const DeleteProprio = ({ proprietaire }) => {
 
     return (
         <>
-            <DropdownMenuItem
-                onSelect={(e) => {
-                    e.preventDefault(); // évite la fermeture automatique
-                    setTimeout(() => {
-                        setOpen(true);
-                    }, 10);
-                }}
+            <Button
+                variant="destructive"
+                size="icon"
+                className="hover:cursor-pointer h-8 w-8"
+                onClick={() => setOpen(true)}
             >
-                <Trash className="h-4 w-4" /> Supprimer
-            </DropdownMenuItem>
+                <Trash2 className="h-4 w-4" />
+            </Button>
             <ActionAlertDialog
                 open={open}
                 onOpenChange={setOpen}

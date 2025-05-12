@@ -1,15 +1,8 @@
-import React, { useRef, useState } from "react";
+import React from "react";
 import ContentLayout from "../../../layouts/content-layout";
 import Datatable from "../../../components/datatable";
 import { getDate } from "../../../helper/helper";
 import AddUserButton from "./components/createUser";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuTrigger,
-} from "../../../components/ui/dropdown-menu";
-import { EllipsisVertical } from "lucide-react";
-import { DropdownMenuGroup } from "@radix-ui/react-dropdown-menu";
 import { DeleteUser } from "./components/deleteUser";
 import { EditUserStatus } from "./components/editStateUser";
 import UpdateUser from "./components/updateUser";
@@ -75,7 +68,10 @@ export default function User({ module, title, users, roles }) {
                         key: "action",
                         label: "Actions",
                         render: (user) => (
-                            <UserActions user={user} roles={roles} />
+                            <div className="flex gap-2">
+                                <UpdateUser user={user} roles={roles} asChild />
+                                <DeleteUser user={user} asChild />
+                            </div>
                         ),
                     },
                 ]}
@@ -83,26 +79,3 @@ export default function User({ module, title, users, roles }) {
         </ContentLayout>
     );
 }
-
-const UserActions = ({ user, roles }) => {
-    const [isOpen, setIsOpen] = useState(false);
-
-    return (
-        <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
-            <DropdownMenuTrigger asChild>
-                <EllipsisVertical className="h-4 w-4" />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent
-                className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
-                side={"bottom"}
-                align="end"
-                sideOffset={4}
-            >
-                <DropdownMenuGroup>
-                    <DeleteUser user={user} asChild />
-                    <UpdateUser user={user} roles={roles} asChild />
-                </DropdownMenuGroup>
-            </DropdownMenuContent>
-        </DropdownMenu>
-    );
-};

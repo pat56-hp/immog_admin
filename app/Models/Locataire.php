@@ -13,7 +13,8 @@ class Locataire extends Model
 
     protected $appends = [
         'nom_complet',
-        'image'
+        'image',
+        'status_name'
     ];
 
     protected $fillable = [
@@ -70,5 +71,15 @@ class Locataire extends Model
     public function getImageAttribute(): string
     {
         return $this->picture ?? asset('images/person.png');
+    }
+
+    /**
+     * Accesseur pour le nom du statut
+     *
+     * @return string
+     */
+    public function getStatusNameAttribute(): string
+    {
+        return $this->status ? 'Actif' : 'Inactif';
     }
 }

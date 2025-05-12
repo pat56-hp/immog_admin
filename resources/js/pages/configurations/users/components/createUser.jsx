@@ -1,5 +1,5 @@
 import { useForm } from "@inertiajs/react";
-import React, { useEffect } from "react";
+import React from "react";
 import ActionDialog from "../../../../components/shared/action-dialog";
 import { toast } from "sonner";
 import { Button } from "../../../../components/ui/button";

@@ -1,0 +1,81 @@
+import React from "react";
+import ContentLayout from "../../../layouts/content-layout";
+import Datatable from "../../../components/datatable";
+import EditStatusComponent from "../../../components/editStatus";
+import { getDate } from "../../../helper/helper";
+import ModalTypeAppart from "./components/modalType";
+import DeleteType from "./components/deleteType";
+
+export default function TypeAppartement({ types, title }) {
+    const breadcrumb = [
+        {
+            title: "Tableau de bord",
+            link: route("dashboard"),
+        },
+        {
+            title: "Appartements",
+            link: route("appartements.index"),
+        },
+        {
+            title: "Types d'appartement",
+        },
+    ];
+
+    const columns = [
+        { label: "Libéllé", key: "libelle" },
+        {
+            label: "Description",
+            key: "description",
+            render: (type) => type.description ?? "Aucune info",
+        },
+        { label: "Total appart", key: "appartements_count" },
+        {
+            label: "Statut",
+            key: "status",
+            render: (type) => (
+                <EditStatusComponent
+                    title={`Changer le statut du type d'appartement ${type.name} ?`}
+                    description={`Le statut actuel est « ${type.status_name} ». Continuer ?`}
+                    link={route("appartements.types.status", type.id)}
+                    status={type.status}
+                />
+            ),
+        },
+        {
+            label: "Créé le",
+            key: "created_at",
+            render: (type) => getDate(type.created_at),
+        },
+        {
+            label: "Actions",
+            key: "actions",
+            render: (type) => (
+                <div className="flex gap-2">
+                    <ModalTypeAppart
+                        type={type}
+                        isUpdate={true}
+                        method="PATCH"
+                    />
+                    <DeleteType type={type} />
+                </div>
+            ),
+        },
+    ];
+
+    return (
+        <ContentLayout
+            module="Appartements"
+            title={title}
+            subtitle="Liste des types d'appartement"
+            breadcrumb={breadcrumb}
+        >
+            <Datatable
+                data={types}
+                columuns={columns}
+                seachable={true}
+                itemsPerPage={25}
+                buttons={[<ModalTypeAppart />]}
+            />
+        </ContentLayout>
+    );
+}

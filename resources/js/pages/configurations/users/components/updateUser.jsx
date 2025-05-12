@@ -1,8 +1,7 @@
 import { useForm } from "@inertiajs/react";
 import React, { useEffect, useRef, useState } from "react";
 import ActionDialog from "../../../../components/shared/action-dialog";
-import { Edit, Plus } from "lucide-react";
-import { DropdownMenuItem } from "../../../../components/ui/dropdown-menu";
+import { Pencil } from "lucide-react";
 import { Label } from "../../../../components/ui/label";
 import Required from "../../../../components/required";
 import { Input } from "../../../../components/ui/input";
@@ -17,6 +16,7 @@ import {
 } from "../../../../components/ui/select";
 import { Checkbox } from "../../../../components/ui/checkbox";
 import { toast } from "sonner";
+import { Button } from "../../../../components/ui/button";
 
 export default function UpdateUser({ user, roles }) {
     const itemRef = useRef(null);
@@ -44,27 +44,13 @@ export default function UpdateUser({ user, roles }) {
 
     return (
         <>
-            <DropdownMenuItem
-                ref={itemRef}
-                onSelect={(e) => {
-                    e.preventDefault();
-
-                    const menu = itemRef.current?.closest(
-                        "[data-radix-popper-content-wrapper]"
-                    );
-
-                    if (menu) {
-                        menu.setAttribute("style", "display: none");
-                    }
-
-                    // Lancer modale après un tout petit délai
-                    setTimeout(() => {
-                        setOpen(true);
-                    }, 80);
-                }}
+            <Button
+                className="bg-yellow-100 h-8 w-8 text-black hover:bg-yellow-200 hover:cursor-pointer"
+                size="icon"
+                onClick={() => setOpen(true)}
             >
-                <Edit className="h-4 w-4" /> Modifier
-            </DropdownMenuItem>
+                <Pencil className="h-4 w-4" />
+            </Button>
             <ActionDialog
                 open={open}
                 onOpenChange={setOpen}

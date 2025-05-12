@@ -6,8 +6,9 @@ import { Link } from "@inertiajs/react";
 import { Button } from "../../../components/ui/button";
 import { Plus } from "lucide-react";
 import { getDate } from "../../../helper/helper";
-import ProprietaireAction from "./components/proprietaireAction";
 import { toast } from "sonner";
+import EditProprietaireAction from "./components/editProprietaireAction";
+import { DeleteProprio } from "./components/deleteProprio";
 
 export default function ProprietaireIndex({
     module,
@@ -98,7 +99,12 @@ export default function ProprietaireIndex({
                         key: "action",
                         label: "Action",
                         render: (proprietaire) => (
-                            <ProprietaireAction proprietaire={proprietaire} />
+                            <div className="flex gap-2">
+                                <EditProprietaireAction
+                                    proprietaire={proprietaire}
+                                />
+                                <DeleteProprio proprietaire={proprietaire} />
+                            </div>
                         ),
                     },
                 ]}
@@ -106,25 +112,3 @@ export default function ProprietaireIndex({
         </ContentLayout>
     );
 }
-
-/* const ProprietaireAction = ({ proprietaire }) => {
-    const [isOpen, setIsOpen] = useState(false);
-
-    return (
-        <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
-            <DropdownMenuTrigger asChild>
-                <EllipsisVertical className="h-4 w-4" />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent
-                className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
-                side="bottom"
-                align="end"
-                sideOffset={4}
-            >
-                <DropdownMenuGroup>
-                    <DeleteProprio proprietaire={proprietaire} />
-                </DropdownMenuGroup>
-            </DropdownMenuContent>
-        </DropdownMenu>
-    );
-}; */

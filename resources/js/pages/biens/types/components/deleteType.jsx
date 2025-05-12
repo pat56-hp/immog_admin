@@ -1,13 +1,14 @@
 import { useForm } from "@inertiajs/react";
 import React, { useState } from "react";
-import ActionAlertDialog from "../../../../components/shared/action-alert-dialog";
-import { Trash2 } from "lucide-react";
-import { toast } from "sonner";
 import { Button } from "../../../../components/ui/button";
+import { Trash2 } from "lucide-react";
+import ActionAlertDialog from "../../../../components/shared/action-alert-dialog";
+import { toast } from "sonner";
 
-export const DeleteUser = ({ user }) => {
+export default function DeleteType({ type }) {
     const { delete: destroy, processing } = useForm();
     const [open, setOpen] = useState(false);
+
     return (
         <>
             <Button
@@ -21,17 +22,20 @@ export const DeleteUser = ({ user }) => {
             <ActionAlertDialog
                 open={open}
                 onOpenChange={setOpen}
-                title={`Suppression de l'utilisateur ${user.name}`}
-                description={`Êtes-vous sûr de vouloir supprimer cet utilisateur ? Cette action est irréversible.`}
+                title={`Suppression du type d\'appartement ${type.libelle}`}
+                description={`Êtes-vous sûr de vouloir supprimer ce type d\'appartement ? Cette action est irréversible.`}
                 processing={processing}
                 onConfirm={() =>
-                    destroy(route("users.delete", user.id), {
+                    destroy(route("appartements.types.delete", type.id), {
                         preserveScroll: true,
-                        onSuccess: () =>
-                            toast.success("Utilisateur supprimé avec succès"),
+                        onSuccess: () => {
+                            toast.success(
+                                "Type d'appartement supprimé avec succès"
+                            );
+                        },
                     })
                 }
             />
         </>
     );
-};
+}

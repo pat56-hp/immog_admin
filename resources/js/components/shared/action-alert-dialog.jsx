@@ -40,7 +40,7 @@ export default function ActionAlertDialog({
             <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
             <AlertDialogContent {...props}>
                 <AlertDialogHeader>
-                    <AlertDialogTitle className="mb-4 flex justify-between">
+                    <AlertDialogTitle className="mb-4 flex gap-5 justify-between">
                         {title}
                         <AlertDialogCancel
                             disabled={processing}

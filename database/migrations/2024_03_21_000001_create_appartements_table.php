@@ -11,15 +11,14 @@ return new class extends Migration
         Schema::create('appartements', function (Blueprint $table) {
             $table->id();
             $table->foreignId('proprietaire_id')->constrained('proprietaires')->onDelete('cascade');
-            $table->foreignId('type_id')->constrained('type_appartements')->onDelete('cascade');
+            $table->foreignId('type_appartement_id')->constrained('type_appartements')->onDelete('cascade');
             $table->string('nom');
             $table->text('description')->nullable();
             $table->string('adresse');
             $table->string('ville')->nullable();
-            $table->string('pays')->default('Cote d\'Ivoire');
-            $table->integer('superficie');
+            $table->string('pays')->default('ci');
+            $table->integer('superficie')->nullable();
             $table->integer('nombre_pieces');
-            $table->integer('nombre_sdb');
             $table->decimal('loyer_mensuel', 10, 2);
             $table->boolean('charges_incluses')->default(false);
             $table->enum('statut', ['disponible', 'occupé', 'en maintenance'])->default('disponible');
