@@ -97,6 +97,13 @@ class AppartementController extends Controller
         return Inertia::render('biens/appartements/edit', $data);
     }
 
+    /**
+     * Mise à jour d'un appartement
+     *
+     * @param AppartementRequest $request
+     * @param Appartement $appartement
+     * @return void
+     */
     public function update(AppartementRequest $request, Appartement $appartement)
     {
         $data = $request->validated();
@@ -132,7 +139,23 @@ class AppartementController extends Controller
         }
     }
 
-    public function destroy() {}
+    /**
+     * Suppression d'un appartement
+     *
+     * @param Appartement $appartement
+     * @return void
+     */
+    public function destroy(Appartement $appartement)
+    {
+        try {
+            $this->appartementRepository->destroy($appartement);
+            $this->activityService->save('Suppression de l\'appartement ' . $appartement->libelle);
+            return back()->with('success', 'Appartement supprimé avec succès');
+        } catch (\Throwable $th) {
+            logger()->error('Une erreur est survenue lors de la suppression de l\'appartement', [$th->getMessage()]);
+            return back()->withErrors(['error' => 'Une erreur est survenue lors de la suppression de l\'appartement : ' . $th->getMessage()]);
+        }
+    }
 
     public function status() {}
 }
