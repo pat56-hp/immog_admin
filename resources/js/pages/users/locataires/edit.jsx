@@ -1,7 +1,7 @@
 import ContentLayout from "../../../layouts/content-layout";
 import FormLocataire from "./components/formLocataire";
 
-export default function Edit({ locataire, title }) {
+export default function EditLocataire({ locataire, title }) {
     const breadcrumb = [
         {
             title: "Tableau de bord",

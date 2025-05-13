@@ -15,8 +15,8 @@ class AppartementRequest extends FormRequest
     {
         $rules = [
             'proprietaire_id' => 'required|exists:proprietaires,id',
-            'type_id' => 'required|exists:type_appartements,id',
-            'nom' => 'required|string|max:255',
+            'type_appartement_id' => 'required|exists:type_appartements,id',
+            'libelle' => 'required|string|max:255',
             'description' => 'nullable|string',
             'adresse' => 'required|string|max:255',
             'ville' => 'nullable|string|max:255',
@@ -28,7 +28,7 @@ class AppartementRequest extends FormRequest
             'charges_incluses' => 'required|boolean',
             'statut' => 'required|in:disponible,occupé,en maintenance',
             'photos' => 'nullable|array',
-            'photos.*' => 'nullable|string|url'
+            'photos.*' => 'nullable|string|image|mimes:jpeg,png,jpg,gif|max:2048'
         ];
 
         return $rules;
@@ -65,7 +65,7 @@ class AppartementRequest extends FormRequest
             'statut.required' => 'Le statut est obligatoire',
             'statut.in' => 'Le statut doit être disponible, occupé ou en maintenance',
             'photos.array' => 'Les photos doivent être un tableau',
-            'photos.*.url' => 'Les URLs des photos doivent être valides'
+            'photos.*.image' => 'Les photos doivent être des images valides'
         ];
     }
-} 
+}

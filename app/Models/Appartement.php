@@ -14,13 +14,15 @@ class Appartement extends Model
         'statut_formatted',
         'loyer_formatted',
         'superficie_formatted',
-        'charges_formatted'
+        'charges_formatted',
+        'proprietaire_name',
+        'type_libelle',
     ];
 
     protected $fillable = [
         'proprietaire_id',
         'type_appartement_id',
-        'nom',
+        'libelle',
         'description',
         'adresse',
         'ville',
@@ -58,6 +60,26 @@ class Appartement extends Model
     public function type(): BelongsTo
     {
         return $this->belongsTo(TypeAppartement::class, 'type_appartement_id');
+    }
+
+    /**
+     * Accesseur pour le nom du propriétaire
+     *
+     * @return string
+     */
+    public function getProprietaireNameAttribute(): string
+    {
+        return $this->proprietaire->name ?? 'Inconnu';
+    }
+
+    /**
+     * Accesseur pour le nom du type d'appartement
+     *
+     * @return string
+     */
+    public function getTypeLibelleAttribute(): string
+    {
+        return $this->type->libelle ?? 'Inconnu';
     }
 
     /**

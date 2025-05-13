@@ -11,7 +11,7 @@ import { useEffect } from "react";
 import DeleteLocataire from "./components/DeleteLocataire";
 import ShowLocataire from "./components/showLocataire";
 
-export default function Index({ locataires, title, success }) {
+export default function IndexLocataire({ locataires, title, success }) {
     const breadcrumb = [
         {
             title: "Tableau de bord",

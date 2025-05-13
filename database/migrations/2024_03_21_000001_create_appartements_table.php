@@ -17,8 +17,9 @@ return new class extends Migration
             $table->string('adresse');
             $table->string('ville');
             $table->string('pays')->default('ci');
-            $table->integer('superficie')->nullable();
-            $table->integer('nombre_pieces');
+            $table->integer('superficie')->default(1);
+            $table->integer('nombre_pieces')->default(1);
+            $table->integer('nombre_sdb')->default(1);
             $table->decimal('loyer_mensuel', 10, 2);
             $table->boolean('charges_incluses')->default(false);
             $table->enum('statut', ['disponible', 'occupé', 'en maintenance'])->default('disponible');
