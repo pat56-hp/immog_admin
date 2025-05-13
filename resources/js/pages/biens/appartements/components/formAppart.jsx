@@ -69,6 +69,7 @@ export default function FormAppart({
         charges_incluses: appartement?.charges_incluses ?? false,
         statut: appartement?.statut ?? "disponible",
         photos: null,
+        _method: isUpdate ? "PUT" : "POST",
     });
 
     const handleSubmit = (e) => {
@@ -81,7 +82,7 @@ export default function FormAppart({
             {
                 forceFormData: true,
                 preserveScroll: true,
-                onSuccess: () => reset(),
+                //onSuccess: () => reset(),
                 onError: (errors) => {
                     console.log(errors);
                     toast.error(
@@ -99,7 +100,7 @@ export default function FormAppart({
                         Propriétaire <Required />
                     </Label>
                     <Select
-                        value={data.proprietaire_id}
+                        value={String(data.proprietaire_id)}
                         onValueChange={(value) =>
                             setData("proprietaire_id", value)
                         }
@@ -125,7 +126,7 @@ export default function FormAppart({
                         Type d'appartement <Required />
                     </Label>
                     <Select
-                        value={data.type_appartement_id}
+                        value={String(data.type_appartement_id)}
                         onValueChange={(value) =>
                             setData("type_appartement_id", value)
                         }
