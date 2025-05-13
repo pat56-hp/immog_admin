@@ -1,15 +1,7 @@
-import { useEffect } from "react";
 import ContentLayout from "../../../layouts/content-layout";
 import FormAppart from "./components/formAppart";
-import { toast } from "sonner";
 
-export default function CreateAppart({
-    proprietaires,
-    types,
-    title,
-    module,
-    success,
-}) {
+export default function CreateAppart({ proprietaires, types, title, module }) {
     const breadcrumb = [
         {
             title: "Tableau de bord",
@@ -23,10 +15,6 @@ export default function CreateAppart({
             title: "Nouvel appartement",
         },
     ];
-
-    useEffect(() => {
-        toast.success(success);
-    }, [success]);
 
     return (
         <ContentLayout

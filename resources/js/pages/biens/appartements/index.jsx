@@ -4,8 +4,9 @@ import { Button } from "../../../components/ui/button";
 import { Badge } from "../../../components/ui/badge";
 import ContentLayout from "../../../layouts/content-layout";
 import Datatable from "../../../components/datatable";
+import { useEffect } from "react";
 
-export default function Index({ appartements, module, title }) {
+export default function Index({ appartements, module, title, success }) {
     const breadcrumb = [
         {
             title: "Tableau de bord",
@@ -102,6 +103,12 @@ export default function Index({ appartements, module, title }) {
             ),
         },
     ];
+
+    useEffect(() => {
+        if (success) {
+            toast.success(success);
+        }
+    }, [success]);
 
     return (
         <ContentLayout
