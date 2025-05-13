@@ -1,10 +1,12 @@
-import { HousePlus, Plus } from "lucide-react";
+import { HousePlus, Pencil, Plus } from "lucide-react";
 import { Link } from "@inertiajs/react";
 import { Button } from "../../../components/ui/button";
 import { Badge } from "../../../components/ui/badge";
 import ContentLayout from "../../../layouts/content-layout";
 import Datatable from "../../../components/datatable";
 import { useEffect } from "react";
+import { getFormattedDate } from "../../../helper/helper";
+import DeleteAppart from "./components/deleteAppart";
 
 export default function Index({ appartements, module, title, success }) {
     const breadcrumb = [
@@ -19,8 +21,18 @@ export default function Index({ appartements, module, title, success }) {
 
     const columns = [
         {
+            key: "picture",
+            label: "Image",
+            render: (appartement) => (
+                <img
+                    src={appartement.picture}
+                    className="w-10 h-10 rounded-full object-cover"
+                />
+            ),
+        },
+        {
             key: "libelle",
-            label: "Nom",
+            label: "Libéllé",
             sortable: true,
         },
         {
@@ -49,7 +61,7 @@ export default function Index({ appartements, module, title, success }) {
             label: "Statut",
             key: "statut_formatted",
             sortable: true,
-            render: ({ appartement }) => (
+            render: (appartement) => (
                 <Badge
                     variant={
                         appartement.statut === "disponible"
@@ -67,38 +79,22 @@ export default function Index({ appartements, module, title, success }) {
             label: "Créé le",
             key: "created_at",
             sortable: true,
-            render: ({ appartement }) => formatDate(appartement.created_at),
+            render: (appartement) => getFormattedDate(appartement.created_at),
         },
         {
             label: "Actions",
             key: "action",
-            render: ({ row }) => (
+            render: (appartement) => (
                 <div className="flex items-center gap-2">
-                    <Link href={route("appartements.edit", row.original.id)}>
-                        <Button variant="outline" size="sm">
-                            Modifier
+                    <Link href={route("appartements.edit", appartement.id)}>
+                        <Button
+                            className="bg-yellow-100 h-8 w-8 text-black hover:bg-yellow-200 hover:cursor-pointer"
+                            size="icon"
+                        >
+                            <Pencil className="h-4 w-4" />
                         </Button>
                     </Link>
-                    <Button
-                        variant="destructive"
-                        size="sm"
-                        onClick={() => {
-                            if (
-                                confirm(
-                                    "Êtes-vous sûr de vouloir supprimer cet appartement ?"
-                                )
-                            ) {
-                                router.delete(
-                                    route(
-                                        "appartements.destroy",
-                                        row.original.id
-                                    )
-                                );
-                            }
-                        }}
-                    >
-                        Supprimer
-                    </Button>
+                    <DeleteAppart appartement={appartement} />
                 </div>
             ),
         },

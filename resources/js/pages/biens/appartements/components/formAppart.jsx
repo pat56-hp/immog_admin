@@ -17,6 +17,7 @@ import { Textarea } from "../../../../components/ui/textarea";
 import ImageComponent from "../../../../components/imageComponent";
 import { Button } from "../../../../components/ui/button";
 import { Loader } from "lucide-react";
+import { toast } from "sonner";
 
 export default function FormAppart({
     appartement,
@@ -55,7 +56,7 @@ export default function FormAppart({
 
     const { data, setData, post, processing, errors } = useForm({
         proprietaire_id: appartement?.proprietaire_id ?? "",
-        type_id: appartement?.type_id ?? "",
+        type_appartement_id: appartement?.type_appartement_id ?? "",
         libelle: appartement?.libelle ?? "",
         description: appartement?.description ?? "",
         adresse: appartement?.adresse ?? "",
@@ -81,7 +82,12 @@ export default function FormAppart({
                 forceFormData: true,
                 preserveScroll: true,
                 onSuccess: () => reset(),
-                onError: (errors) => console.log(errors),
+                onError: (errors) => {
+                    console.log(errors);
+                    toast.error(
+                        "Une erreur s'est produite, veuillez vérifier les champs du formulaire"
+                    );
+                },
             }
         );
     };
@@ -119,8 +125,10 @@ export default function FormAppart({
                         Type d'appartement <Required />
                     </Label>
                     <Select
-                        value={data.type_id}
-                        onValueChange={(value) => setData("type_id", value)}
+                        value={data.type_appartement_id}
+                        onValueChange={(value) =>
+                            setData("type_appartement_id", value)
+                        }
                     >
                         <SelectTrigger className="mt-2 w-full !h-12">
                             <SelectValue placeholder="Sélectionner un type" />
@@ -136,7 +144,7 @@ export default function FormAppart({
                             ))}
                         </SelectContent>
                     </Select>
-                    <InputError message={errors.type_id} />
+                    <InputError message={errors.type_appartement_id} />
                 </div>
                 <div className="space-y-2">
                     <Label htmlFor="libelle">
@@ -305,6 +313,7 @@ export default function FormAppart({
                         dataUrl="photo"
                         multiple={true}
                     />
+                    <InputError message={errors.photos} />
                 </div>
             </div>
             <div className="text-center">

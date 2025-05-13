@@ -17,6 +17,7 @@ class Appartement extends Model
         'charges_formatted',
         'proprietaire_name',
         'type_libelle',
+        'picture',
     ];
 
     protected $fillable = [
@@ -117,5 +118,15 @@ class Appartement extends Model
     public function getChargesFormattedAttribute(): string
     {
         return $this->charges_incluses ? 'Incluses' : 'Non incluses';
+    }
+
+    public function getPictureAttribute(): string
+    {
+        if (!empty($this->photos)) {
+            $photos = json_decode($this->photos);
+            return $photos[0];
+        }
+
+        return asset('images/appart.png');
     }
 }
