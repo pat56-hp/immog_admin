@@ -7,6 +7,7 @@ import Datatable from "../../../components/datatable";
 import { useEffect } from "react";
 import { getFormattedDate } from "../../../helper/helper";
 import DeleteAppart from "./components/deleteAppart";
+import { toast } from "sonner";
 
 export default function Index({ appartements, module, title, success }) {
     const breadcrumb = [
@@ -66,7 +67,7 @@ export default function Index({ appartements, module, title, success }) {
                     variant={
                         appartement.statut === "disponible"
                             ? "success"
-                            : row.original.statut === "occupé"
+                            : appartement.statut === "occupé"
                             ? "destructive"
                             : "warning"
                     }
