@@ -93,7 +93,7 @@ export default function FormAppart({
                         Propriétaire <Required />
                     </Label>
                     <Select
-                        defaultValue={String(data.proprietaire_id)}
+                        value={data.proprietaire_id}
                         onValueChange={(value) =>
                             setData("proprietaire_id", value)
                         }
@@ -102,10 +102,10 @@ export default function FormAppart({
                             <SelectValue placeholder="Sélectionner un propriétaire" />
                         </SelectTrigger>
                         <SelectContent>
-                            {proprietaires.map((proprietaire) => (
+                            {proprietaires.map((proprietaire, key) => (
                                 <SelectItem
-                                    key={proprietaire.id}
-                                    value={proprietaire.id}
+                                    key={key}
+                                    value={String(proprietaire.id)}
                                 >
                                     {proprietaire.name}
                                 </SelectItem>
@@ -127,7 +127,10 @@ export default function FormAppart({
                         </SelectTrigger>
                         <SelectContent>
                             {types.map((type) => (
-                                <SelectItem key={type.id} value={type.id}>
+                                <SelectItem
+                                    key={type.id}
+                                    value={String(type.id)}
+                                >
                                     {type.libelle}
                                 </SelectItem>
                             ))}
