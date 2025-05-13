@@ -10,7 +10,6 @@ use App\Repositories\Interfaces\biens\TypeAppartementInterface;
 use App\Repositories\Interfaces\utilisateurs\ProprietaireInterface;
 use App\Services\ActivityService;
 use App\Services\CloudinaryService;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class AppartementController extends Controller
@@ -157,5 +156,21 @@ class AppartementController extends Controller
         }
     }
 
-    public function status() {}
+    /**
+     * Modification du status d'un appartement
+     *
+     * @param Appartement $appartement
+     * @return void
+     */
+    public function status(Appartement $appartement)
+    {
+        try {
+            $this->appartementRepository->status($appartement);
+            $this->activityService->save('Modification du status de l\'appartement ' . $appartement->libelle);
+            return back()->with('success', 'Status de l\'appartement modifié avec succès');
+        } catch (\Throwable $th) {
+            logger()->error('Une erreur est survenue lors de la modification du status de l\'appartement', [$th->getMessage()]);
+            return back()->withErrors(['error' => 'Une erreur est survenue lors de la modification du status de l\'appartement : ' . $th->getMessage()]);
+        }
+    }
 }

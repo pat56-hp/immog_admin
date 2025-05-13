@@ -23,7 +23,7 @@ export default function Index({ appartements, module, title, success }) {
     const columns = [
         {
             key: "picture",
-            label: "Image",
+            label: "",
             render: (appartement) => (
                 <img
                     src={appartement.picture}
