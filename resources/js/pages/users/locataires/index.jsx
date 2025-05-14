@@ -24,7 +24,7 @@ export default function IndexLocataire({ locataires, title, success }) {
 
     const columns = [
         {
-            label: "Image",
+            label: "",
             key: "image",
             render: (locataire) => (
                 <img

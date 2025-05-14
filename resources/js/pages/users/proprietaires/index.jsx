@@ -54,7 +54,7 @@ export default function ProprietaireIndex({
                 columuns={[
                     {
                         key: "image",
-                        label: "Image",
+                        label: "",
                         render: (proprietaire) => (
                             <img
                                 src={proprietaire.image}
