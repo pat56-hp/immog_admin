@@ -1,4 +1,4 @@
-import { HousePlus, Pencil, Plus } from "lucide-react";
+import { Eye, HousePlus, Pencil, Plus } from "lucide-react";
 import { Link } from "@inertiajs/react";
 import { Button } from "../../../components/ui/button";
 import { Badge } from "../../../components/ui/badge";
@@ -87,6 +87,15 @@ export default function Index({ appartements, module, title, success }) {
             key: "action",
             render: (appartement) => (
                 <div className="flex items-center gap-1">
+                    <Link href={route("appartements.show", appartement.id)}>
+                        <Button
+                            variant="secondary"
+                            size="icon"
+                            className="h-8 w-8 bg-white-500 border-1 hover:cursor-pointer"
+                        >
+                            <Eye className="h-4 w-4" />
+                        </Button>
+                    </Link>
                     <Link href={route("appartements.edit", appartement.id)}>
                         <Button
                             className="bg-blue-500 h-8 w-8 hover:bg-blue-600 hover:cursor-pointer"
@@ -113,14 +122,6 @@ export default function Index({ appartements, module, title, success }) {
             module={module}
             breadcrumb={breadcrumb}
             subtitle="Affichage de la liste des appartements"
-            action={
-                <Link href={route("appartements.create")}>
-                    <Button>
-                        <Plus className="mr-2 h-4 w-4" />
-                        Nouvel appartement
-                    </Button>
-                </Link>
-            }
         >
             <Datatable
                 data={appartements}

@@ -113,7 +113,7 @@ export default function Datatable({
                 <Table>
                     {caption && <TableCaption>{caption}</TableCaption>}
                     <TableHeader>
-                        <TableRow>
+                        <TableRow className="bg-muted/50">
                             {columuns.map((col) => (
                                 <TableHead
                                     key={col.key}

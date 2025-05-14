@@ -28,7 +28,7 @@ class AppartementRequest extends FormRequest
             'charges_incluses' => 'required|boolean',
             'statut' => 'required|in:disponible,occupé,en maintenance',
             'photos' => 'nullable|array',
-            'photos.*' => 'nullable|image'
+            'photos.*' => 'nullable'
         ];
 
         return $rules;

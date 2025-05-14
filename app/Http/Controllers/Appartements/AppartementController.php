@@ -81,6 +81,20 @@ class AppartementController extends Controller
     }
 
     /**
+     * Détails d'un appartement
+     *
+     * @param Appartement $appartement
+     * @return void
+     */
+    public function show(Appartement $appartement)
+    {
+        $data['appartement'] = $appartement;
+        $data['title'] = 'Détails de l\'appartement ' . $appartement->libelle;
+        $this->activityService->save('Affichage des détails de l\'appartement ' . $appartement->libelle);
+        return Inertia::render('biens/appartements/show', $data);
+    }
+
+    /**
      * Modification d'un appartement
      *
      * @param Appartement $appartement
@@ -123,8 +137,13 @@ class AppartementController extends Controller
                 //Ajout des nouvelles photos
                 $photos = [];
                 foreach ($request->photos as $photo) {
-                    $photos[] = $this->cloudinaryService->upload($photo, 'appartements/photos');
+                    if (is_string($photo)) {
+                        $photos[] = $photo;
+                    } elseif ($photo instanceof \Illuminate\Http\UploadedFile) {
+                        $photos[] = $this->cloudinaryService->upload($photo, 'appartements/photos');
+                    }
                 }
+
                 $data['photos'] = count($photos) > 0 ? json_encode($photos) : null;
             }
 
@@ -153,24 +172,6 @@ class AppartementController extends Controller
         } catch (\Throwable $th) {
             logger()->error('Une erreur est survenue lors de la suppression de l\'appartement', [$th->getMessage()]);
             return back()->withErrors(['error' => 'Une erreur est survenue lors de la suppression de l\'appartement : ' . $th->getMessage()]);
-        }
-    }
-
-    /**
-     * Modification du status d'un appartement
-     *
-     * @param Appartement $appartement
-     * @return void
-     */
-    public function status(Appartement $appartement)
-    {
-        try {
-            $this->appartementRepository->status($appartement);
-            $this->activityService->save('Modification du status de l\'appartement ' . $appartement->libelle);
-            return back()->with('success', 'Status de l\'appartement modifié avec succès');
-        } catch (\Throwable $th) {
-            logger()->error('Une erreur est survenue lors de la modification du status de l\'appartement', [$th->getMessage()]);
-            return back()->withErrors(['error' => 'Une erreur est survenue lors de la modification du status de l\'appartement : ' . $th->getMessage()]);
         }
     }
 }

@@ -19,17 +19,24 @@ export default function ContentLayout({
     breadcrumb,
     children,
     backButton = false,
+    otherButton = [],
 }) {
     return (
         <AppLayout>
             <PageTitle title={module} breadcrumb={breadcrumb} />
             <Card className="">
-                <CardHeader className="">
+                <CardHeader className="items-center">
                     <CardTitle className="text-base font-medium">
                         {title}
                     </CardTitle>
                     <CardDescription>{subtitle}</CardDescription>
-                    <CardAction>
+                    <CardAction className="flex gap-1">
+                        {otherButton.length > 0 &&
+                            otherButton.map((other) => (
+                                <React.Fragment key={other}>
+                                    {other}
+                                </React.Fragment>
+                            ))}
                         {backButton && (
                             <Link
                                 href="#"

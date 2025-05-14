@@ -18,6 +18,7 @@ class Appartement extends Model
         'proprietaire_name',
         'type_libelle',
         'picture',
+        'adresse_name'
     ];
 
     protected $fillable = [
@@ -128,5 +129,10 @@ class Appartement extends Model
         }
 
         return asset('images/appart.png');
+    }
+
+    public function getAdresseNameAttribute(): string
+    {
+        return $this->adresse . ', ' . $this->ville . ', ' . $this->pays;
     }
 }

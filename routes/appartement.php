@@ -5,11 +5,9 @@ use App\Http\Controllers\Appartements\TypeAppartementController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::resource('appartements', AppartementController::class)->only(['index', 'create', 'store', 'destroy', 'edit', 'update']);
+    Route::resource('appartements', AppartementController::class)->only(['index', 'create', 'store', 'destroy', 'edit', 'update', 'show']);
 
     Route::prefix('appartements')->group(function () {
-        Route::put('appartements/{appartement}/status', [AppartementController::class, 'status'])->name('appartements.status');
-
         Route::prefix('types')->group(function () {
             Route::get('/', [TypeAppartementController::class, 'index'])->name('appartements.types.index');
             Route::get('/create', [TypeAppartementController::class, 'create'])->name('appartements.types.create');

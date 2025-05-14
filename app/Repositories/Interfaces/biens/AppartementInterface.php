@@ -18,11 +18,6 @@ interface AppartementInterface
     public function save(array $data): Appartement;
 
     /**
-     * Mettre à jour le statut d'un appartement
-     */
-    public function status(Appartement $appartement): Appartement;
-
-    /**
      * Supprimer un appartement
      */
     public function destroy(Appartement $appartement): bool;

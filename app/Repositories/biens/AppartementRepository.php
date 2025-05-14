@@ -29,12 +29,6 @@ class AppartementRepository implements AppartementInterface
         return $appartement;
     }
 
-    public function status(Appartement $appartement): Appartement
-    {
-        $appartement->update(['status' => !$appartement->status]);
-        return $appartement;
-    }
-
     public function destroy(Appartement $appartement): bool
     {
         return $appartement->delete();
