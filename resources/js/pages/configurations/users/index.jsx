@@ -68,7 +68,7 @@ export default function User({ module, title, users, roles }) {
                         key: "action",
                         label: "Actions",
                         render: (user) => (
-                            <div className="flex gap-2">
+                            <div className="flex gap-1">
                                 <UpdateUser user={user} roles={roles} asChild />
                                 <DeleteUser user={user} asChild />
                             </div>

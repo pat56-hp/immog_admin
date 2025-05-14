@@ -8,7 +8,7 @@ export default function EditProprietaireAction({ proprietaire }) {
         <>
             <Link href={route("proprietaires.edit", proprietaire.id)}>
                 <Button
-                    className="bg-yellow-100 text-black h-8 w-8 hover:bg-yellow-200 hover:cursor-pointer"
+                    className="bg-blue-500 h-8 w-8 hover:bg-blue-600 hover:cursor-pointer"
                     size="icon"
                 >
                     <Pencil className="h-4 w-4" />

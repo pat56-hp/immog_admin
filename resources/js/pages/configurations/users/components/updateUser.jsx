@@ -45,7 +45,7 @@ export default function UpdateUser({ user, roles }) {
     return (
         <>
             <Button
-                className="bg-yellow-100 h-8 w-8 text-black hover:bg-yellow-200 hover:cursor-pointer"
+                className="bg-blue-500 h-8 w-8 hover:bg-blue-600 hover:cursor-pointer"
                 size="icon"
                 onClick={() => setOpen(true)}
             >

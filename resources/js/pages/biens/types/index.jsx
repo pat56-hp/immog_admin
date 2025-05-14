@@ -53,7 +53,7 @@ export default function TypeAppartement({ types, title }) {
             label: "Actions",
             key: "actions",
             render: (type) => (
-                <div className="flex gap-2">
+                <div className="flex gap-1">
                     <ModalTypeAppart
                         type={type}
                         isUpdate={true}

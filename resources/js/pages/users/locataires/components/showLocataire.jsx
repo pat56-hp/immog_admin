@@ -11,7 +11,7 @@ export default function ShowLocataire({ locataire }) {
             <Button
                 variant="secondary"
                 size="icon"
-                className="h-8 w-8 hover:cursor-pointer"
+                className="h-8 w-8 bg-white-500 border-1 hover:cursor-pointer"
                 onClick={() => setOpen(true)}
             >
                 <Eye className="h-4 w-4" />

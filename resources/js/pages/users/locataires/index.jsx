@@ -60,11 +60,11 @@ export default function IndexLocataire({ locataires, title, success }) {
             label: "Actions",
             key: "actions",
             render: (locataire) => (
-                <div className="flex gap-2">
+                <div className="flex gap-1">
                     <ShowLocataire locataire={locataire} />
                     <Link href={route("locataires.edit", locataire.id)}>
                         <Button
-                            className="bg-yellow-100 h-8 w-8 text-black hover:bg-yellow-200 hover:cursor-pointer"
+                            className="bg-blue-500 h-8 w-8 hover:bg-blue-600 hover:cursor-pointer"
                             size="icon"
                         >
                             <Pencil className="h-4 w-4" />

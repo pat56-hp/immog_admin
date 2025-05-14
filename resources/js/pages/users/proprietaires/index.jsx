@@ -99,7 +99,7 @@ export default function ProprietaireIndex({
                         key: "action",
                         label: "Action",
                         render: (proprietaire) => (
-                            <div className="flex gap-2">
+                            <div className="flex gap-1">
                                 <EditProprietaireAction
                                     proprietaire={proprietaire}
                                 />
