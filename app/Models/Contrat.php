@@ -9,6 +9,7 @@ class Contrat extends Model
     protected $appends = ['debut', 'fin'];
 
     protected $fillable = [
+        'ref',
         'locataire_id',
         'appartement_id',
         'date_debut',

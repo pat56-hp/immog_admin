@@ -13,12 +13,13 @@ return new class extends Migration
     {
         Schema::create('contrats', function (Blueprint $table) {
             $table->id();
+            $table->string('ref');
             $table->foreignId('locataire_id')->constrained('locataires')->onDelete('cascade');
             $table->foreignId('appartement_id')->constrained('appartements')->onDelete('cascade');
             $table->date('date_debut');
             $table->date('date_fin');
             $table->decimal('loyer', 8, 2);
-            $table->enum('statut', ['en cours', 'terminé', 'résilié', 'en attente'])->default('actif');
+            $table->enum('statut', ['en cours', 'terminé', 'résilié', 'en attente'])->default('en attente');
             $table->timestamps();
         });
     }

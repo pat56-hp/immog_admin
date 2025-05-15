@@ -20,7 +20,7 @@ interface ContratInterface
     /**
      * Mettre à jour le statut d'un contrat de logement
      */
-    public function status(Contrat $contrat): Contrat;
+    public function status(string $status, Contrat $contrat): Contrat;
 
     /**
      * Supprimer un contrat de logement
