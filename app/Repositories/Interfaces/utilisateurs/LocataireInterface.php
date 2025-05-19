@@ -12,7 +12,7 @@ interface LocataireInterface
      *
      * @return Collection
      */
-    public function get(): Collection;
+    public function get(array $queries = []): Collection;
 
     /**
      * Sauvegarder un locataire

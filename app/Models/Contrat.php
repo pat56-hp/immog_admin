@@ -3,15 +3,19 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Contrat extends Model
 {
-    protected $appends = ['debut', 'fin', 'proprietaire_name', 'locataire_name'];
+    use SoftDeletes;
+
+    protected $appends = ['debut', 'fin', 'proprietaire_name', 'locataire_name', 'loyer_formatted', 'periode'];
 
     protected $fillable = [
         'ref',
         'locataire_id',
         'appartement_id',
+        'description',
         'date_debut',
         'date_fin',
         'loyer',
@@ -56,5 +60,10 @@ class Contrat extends Model
     public function getLoyerFormattedAttribute(): string
     {
         return number_format($this->loyer, 0, ' ');
+    }
+
+    public function getPeriodeAttribute(): string
+    {
+        return 'Du ' . date('d-m-Y', strtotime($this->date_debut)) . ' au ' . date('d-m-Y', strtotime($this->date_fin));
     }
 }

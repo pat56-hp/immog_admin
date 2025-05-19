@@ -10,9 +10,10 @@ class TypeAppartementRepository implements TypeAppartementInterface
 {
     public function __construct(private TypeAppartement $model) {}
 
-    public function get(): Collection
+    public function get(array $queries = []): Collection
     {
         return $this->model
+            ->when(count($queries) > 0, fn($q) => $q->where($queries))
             ->withCount('appartements')
             ->latest()
             ->get();

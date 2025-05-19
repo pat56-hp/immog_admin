@@ -10,9 +10,12 @@ class LocataireRepository implements LocataireInterface
 {
     public function __construct(private Locataire $model) {}
 
-    public function get(): Collection
+    public function get(array $queries = []): Collection
     {
-        return $this->model->latest()->get();
+        return $this->model
+            ->when(count($queries) > 0, fn($q) => $q->where($queries))
+            ->latest()
+            ->get();
     }
 
     public function save(array $data): Locataire

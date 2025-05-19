@@ -83,15 +83,15 @@ const routePage = () => {
                     {
                         title: "Types des apparts",
                         url: route("appartements.types.index"),
-                        isActive: url.endsWith("appartements/types"),
+                        isActive: url.endsWith("appartements/types/liste"),
                     },
                 ],
             },
             {
                 title: "Contrats de bail",
-                url: "#",
+                url: route("contrats.index"),
                 icon: File,
-                isActive: url.startsWith("/contrats-de-bail"),
+                isActive: url.startsWith("/contrats"),
             },
         ],
         comptabilite: [

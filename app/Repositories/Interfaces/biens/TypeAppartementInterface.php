@@ -10,7 +10,7 @@ interface TypeAppartementInterface
     /**
      * Récupérer tous les types d'appartement
      */
-    public function get(): Collection;
+    public function get(array $queries = []): Collection;
 
     /**
      * Enregistrer un type d'appartement

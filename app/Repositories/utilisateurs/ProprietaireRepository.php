@@ -10,9 +10,12 @@ class ProprietaireRepository implements ProprietaireInterface
 
     public function __construct(private Proprietaire $proprietaire) {}
 
-    public function get(): mixed
+    public function get(array $queries = []): mixed
     {
-        return $this->proprietaire->latest()->get();
+        return $this->proprietaire
+            ->when(count($queries) > 0, fn($q) => $q->where($queries))
+            ->latest()
+            ->get();
     }
 
     public function findById(string $id): ?Proprietaire

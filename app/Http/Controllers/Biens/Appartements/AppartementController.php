@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Appartements;
+namespace App\Http\Controllers\Biens\Appartements;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AppartementRequest;
@@ -45,8 +45,8 @@ class AppartementController extends Controller
         $this->activityService->save('Affichage du formulaire d\'ajout d\'un appartement');
         return Inertia::render('biens/appartements/create', [
             'title' => 'Ajout d\'un appartement',
-            'types' => $this->typeAppartementRepository->get(),
-            'proprietaires' => $this->proprietaireRepository->get(),
+            'types' => $this->typeAppartementRepository->get(['status' => 1]),
+            'proprietaires' => $this->proprietaireRepository->get(['status' => 1]),
         ]);
     }
 
@@ -104,9 +104,10 @@ class AppartementController extends Controller
     {
         $data['appartement'] = $appartement;
         $data['title'] = 'Modification de l\'appartement ' . $appartement->libelle;
-        $data['types'] = $this->typeAppartementRepository->get();
-        $data['proprietaires'] = $this->proprietaireRepository->get();
+        $data['types'] = $this->typeAppartementRepository->get(['status' => 1]);
+        $data['proprietaires'] = $this->proprietaireRepository->get(['status' => 1]);
         $this->activityService->save('Affichage du formulaire de modification de l\'appartement ' . $appartement->libelle);
+
         return Inertia::render('biens/appartements/edit', $data);
     }
 

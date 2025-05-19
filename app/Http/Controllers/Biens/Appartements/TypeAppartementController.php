@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Appartements;
+namespace App\Http\Controllers\Biens\Appartements;
 
 use App\Http\Controllers\Controller;
 use App\Models\TypeAppartement;

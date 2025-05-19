@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Facture extends Model
 {
+    use SoftDeletes;
+
     protected $fillable = [
         'type',
         'type_id',
@@ -17,6 +20,11 @@ class Facture extends Model
         'date_emission',
         'date_echeance'
     ];
+
+    public function elements()
+    {
+        return $this->hasMany(Element::class);
+    }
 
     public function getTypeRefAttribute()
     {

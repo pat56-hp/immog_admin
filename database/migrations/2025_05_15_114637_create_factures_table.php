@@ -23,6 +23,7 @@ return new class extends Migration
             $table->enum('etat', ['brouillon', 'validé']);
             $table->dateTime('date_emission');
             $table->dateTime('date_echeance');
+            $table->softDeletes();
             $table->timestamps();
         });
     }
