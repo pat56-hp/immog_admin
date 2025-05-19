@@ -40,6 +40,7 @@ class ContratController extends Controller
         $this->activityService->save('Affichage du formulaire de génération d\'un contrat de bail');
         return Inertia::render('biens/contrats/create', [
             'proprietaires' => $this->proprietaireRepository->get(['status' => 1]),
+            'locataires' => $this->locataireRepository->get(['status' => 1]),
             'title' => 'Génération de contrat'
         ]);
     }

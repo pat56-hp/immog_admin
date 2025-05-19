@@ -22,6 +22,11 @@ class Proprietaire extends Model
         'status'
     ];
 
+    public function appartements()
+    {
+        return $this->hasMany(Appartement::class);
+    }
+
     public function type(): Attribute
     {
         return Attribute::make(get: fn($value) => ucfirst($value));
