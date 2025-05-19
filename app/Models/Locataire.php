@@ -46,14 +46,6 @@ class Locataire extends Model
     }
 
     /**
-     * Relation avec les paiements
-     */
-    public function paiements(): HasMany
-    {
-        return $this->hasMany(Paiement::class);
-    }
-
-    /**
      * Accesseur pour le nom complet
      * 
      * @return string

@@ -1,7 +1,7 @@
 <?php
 
-use App\Http\Controllers\Appartements\AppartementController;
-use App\Http\Controllers\Appartements\TypeAppartementController;
+use App\Http\Controllers\Biens\Appartements\AppartementController;
+use App\Http\Controllers\Biens\Appartements\TypeAppartementController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -9,7 +9,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::prefix('appartements')->group(function () {
         Route::prefix('types')->group(function () {
-            Route::get('/', [TypeAppartementController::class, 'index'])->name('appartements.types.index');
+            Route::get('/liste', [TypeAppartementController::class, 'index'])->name('appartements.types.index');
             Route::get('/create', [TypeAppartementController::class, 'create'])->name('appartements.types.create');
             Route::post('/store', [TypeAppartementController::class, 'store'])->name('appartements.types.store');
             Route::patch('/{typeAppartement}', [TypeAppartementController::class, 'update'])->name('appartements.types.update');

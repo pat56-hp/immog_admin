@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Contrat extends Model
 {
-    protected $appends = ['debut', 'fin'];
+    protected $appends = ['debut', 'fin', 'proprietaire_name', 'locataire_name'];
 
     protected $fillable = [
         'ref',
@@ -23,6 +23,11 @@ class Contrat extends Model
         return $this->belongsTo(Locataire::class);
     }
 
+    public function proprietaire()
+    {
+        return $this->belongsTo(Proprietaire::class);
+    }
+
     public function appartement()
     {
         return $this->belongsTo(Appartement::class);
@@ -36,5 +41,20 @@ class Contrat extends Model
     public function getFinAttribute(): string
     {
         return date('d/m/Y', strtotime($this->date_fin));
+    }
+
+    public function getProprietaireNameAttribute(): string
+    {
+        return $this->proprietaire->name ?? 'N/A';
+    }
+
+    public function getLocataireNameAttribute(): string
+    {
+        return $this->locataire->nom_complet ?? 'N/A';
+    }
+
+    public function getLoyerFormattedAttribute(): string
+    {
+        return number_format($this->loyer, 0, ' ');
     }
 }

@@ -9,7 +9,7 @@ import { getFormattedDate } from "../../../helper/helper";
 import DeleteAppart from "./components/deleteAppart";
 import { toast } from "sonner";
 
-export default function Index({ appartements, module, title, success }) {
+export default function Appartements({ appartements, module, title, success }) {
     const breadcrumb = [
         {
             title: "Tableau de bord",
