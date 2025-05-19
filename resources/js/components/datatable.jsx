@@ -24,7 +24,7 @@ export default function Datatable({
     columuns,
     caption = null,
     seachable = true,
-    itemsPerPage = 5,
+    itemsPerPage = 25,
     showPagination = true,
     buttons = false,
 }) {
