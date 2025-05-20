@@ -16,8 +16,8 @@ Route::middleware('auth')->group(function () {
     //Profile Routes
     Route::controller(ProfileController::class)->group(function () {
         Route::group(['prefix' => 'profile', 'as' => 'profile.'], function () {
-            Route::get('/', 'index')->name('index');
-            Route::patch('/', 'update')->name('edit');
+            Route::get('/', 'edit')->name('edit');
+            Route::patch('/', 'update')->name('update');
             Route::delete('/', 'destroy')->name('destroy');
             Route::get('/update-password', 'password')->name('password');
             Route::put('/update-password', 'passwordUpdate');
