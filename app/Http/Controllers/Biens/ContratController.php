@@ -35,6 +35,11 @@ class ContratController extends Controller
         ]);
     }
 
+    /**
+     * Creation d'un contrat de bail
+     *
+     * @return void
+     */
     public function create()
     {
         $this->activityService->save('Affichage du formulaire de génération d\'un contrat de bail');
@@ -45,7 +50,29 @@ class ContratController extends Controller
         ]);
     }
 
-    public function store(ContratRequest $request) {}
+    /**
+     * Sauvegarde des infos du contrat
+     *
+     * @param ContratRequest $request
+     * @return void
+     */
+    public function store(ContratRequest $request)
+    {
+        $data = $request->validated();
+
+        try {
+            //Sauvegarde des informations
+            $contrat = $this->contratRepository->save($data);
+
+            //Log activity
+            $this->activityService->save('Création du contrat ' . $contrat->ref);
+
+            return to_route('contrats.index')->with('success', 'Contrat sauvegardé avec succès');
+        } catch (\Throwable $th) {
+            logger()->error('Une erreur est survenue lors de la sauvegarde du contrat', [$th->getMessage()]);
+            return back()->withErrors(['error' => 'Une erreur est survenue lors de la sauvegarde du contrat : ' . $th->getMessage()]);
+        }
+    }
 
     public function update(ContratRequest $request) {}
 

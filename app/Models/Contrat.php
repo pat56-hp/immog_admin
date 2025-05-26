@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 
 class Contrat extends Model
 {
@@ -15,12 +16,26 @@ class Contrat extends Model
         'ref',
         'locataire_id',
         'appartement_id',
+        'garantie',
+        'type', // Bail d'habitation, Bail commercial, Bail professionnel, Bail emphytéotique, Autre type
         'description',
         'date_debut',
         'date_fin',
         'loyer',
         'statut',
     ];
+
+    //Génération automatique de la reference du contrat lors de la creation
+    protected static function booted()
+    {
+        static::creating(function ($contrat) {
+            do {
+                $ref = 'CT-' . strtoupper(Str::random(8));
+            } while (Contrat::where('ref', $ref)->exists());
+
+            $contrat->ref = $ref;
+        });
+    }
 
     public function locataire()
     {

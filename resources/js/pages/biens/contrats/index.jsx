@@ -35,8 +35,8 @@ export default function Contrat({ contrats, title, module }) {
             sortable: true,
         },
         {
-            key: "loyer",
-            label: "loyer_formatted",
+            key: "loyer_formatted",
+            label: "loyer",
             sortable: true,
         },
         {
