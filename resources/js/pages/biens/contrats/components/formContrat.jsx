@@ -15,25 +15,46 @@ import { Input } from "../../../../components/ui/input";
 import { Editor } from "@tinymce/tinymce-react";
 import OpenAI from "openai";
 import { toast } from "sonner";
+import { useForm } from "@inertiajs/react";
 
 export default function FormContrat({
     proprietaires,
     locataires,
     isUpdate = false,
+    contrat,
 }) {
     const [appartements, setAppartements] = useState([]);
-    const [selectedProprietaire, setSelectedProprietaire] = useState("");
-    const [selectedAppartement, setSelectedAppartement] = useState("");
-    const [selectedLocataire, setSelectedLocataire] = useState("");
-    const [dateDebut, setDateDebut] = useState("");
-    const [dateFin, setDateFin] = useState("");
-    const [contratContent, setContratContent] = useState("");
-    const [typeContrat, setTypeContrat] = useState("");
     const [isLoading, setIsLoading] = useState(false);
+    const [modeleContrat, setModeleContrat] = useState("");
+
+    // Chargement du modèle de contrat au montage du composant
+    React.useEffect(() => {
+        fetch("/files/contrat_de_bail.doc")
+            .then((response) => response.text())
+            .then((text) => {
+                setModeleContrat(text);
+            })
+            .catch((error) => {
+                console.error("Erreur lors du chargement du modèle:", error);
+                toast.error("Erreur lors du chargement du modèle de contrat");
+            });
+    }, []);
+
+    const { data, setData, errors, processing, post } = useForm({
+        proprietaire_id: "",
+        locataire_id: "",
+        appartement_id: "",
+        garantie: "",
+        type: "",
+        date_debut: "",
+        date_fin: "",
+        description: "",
+        _method: isUpdate ? "PATCH" : "POST",
+    });
 
     //Recuperation des appartements du proprietaire selectionné
     const handleChangeProprietaire = async (proprio) => {
-        setSelectedProprietaire(proprio);
+        setData("proprietaire_id", proprio);
         try {
             const response = await fetch(`/api/v1/appartements/${proprio}`);
             const result = await response.json();
@@ -56,13 +77,13 @@ export default function FormContrat({
         setIsLoading(true);
 
         const proprietaire = proprietaires.find(
-            (p) => p.id === parseInt(selectedProprietaire)
+            (p) => p.id === parseInt(data.proprietaire_id)
         );
         const appartement = appartements.find(
-            (a) => a.id === parseInt(selectedAppartement)
+            (a) => a.id === parseInt(data.appartement_id)
         );
         const locataire = locataires.find(
-            (l) => l.id === parseInt(selectedLocataire)
+            (l) => l.id === parseInt(data.locataire_id)
         );
 
         //On verifie si les datas sont valide :
@@ -70,9 +91,10 @@ export default function FormContrat({
             !locataire ||
             !appartement ||
             !proprietaire ||
-            !dateDebut ||
-            !dateFin ||
-            !typeContrat
+            !data.date_debut ||
+            !data.date_fin ||
+            !data.type ||
+            !modeleContrat
         ) {
             setIsLoading(false);
             toast.error("Veuillez remplir tous les champs !");
@@ -86,28 +108,24 @@ export default function FormContrat({
                 {
                     role: "system",
                     content: `Vous êtes un expert en droit immobilier ivoirien, spécialisé dans la rédaction de contrats de bail. 
-                    Votre tâche est de générer un contrat de bail professionnel et conforme à la législation ivoirienne.
+                    Votre tâche est de générer un contrat de bail professionnel et conforme à la législation ivoirienne en utilisant un modèle de contrat que je soumet.
                     
                     Instructions importantes :
                     1. Générez UNIQUEMENT le contenu HTML du contrat, sans aucun marqueur de code (comme \`\`\`html) ou commentaires
-                    2. Le contenu doit être directement utilisable dans un éditeur TinyMCE
-                    3. Structurez le document avec des sections clairement définies
-                    4. Utilisez uniquement des balises HTML standard
+                    2. Utilisez le modèle de contrat fourni comme base
+                    3. Le contenu doit être directement utilisable dans un éditeur TinyMCE
+                    4. Structurez le document avec des sections clairement définies, en utilisant toujours le modèle fornit
+                    5. Utilisez uniquement des balises HTML standard
                     
-                    Structure attendue du contrat :
-                    - En-tête avec titre et date
-                    - Section des parties (bailleur et locataire)
-                    - Description du bien
-                    - Conditions du bail
-                    - Obligations des parties
-                    - Clauses spécifiques
-                    - Signature et date
+                    Modèle de contrat :
+                    ${modeleContrat}
+
                     
                     IMPORTANT : Ne pas inclure de marqueurs de code ou de commentaires dans la sortie.`,
                 },
                 {
                     role: "user",
-                    content: `Générez un contrat de bail professionnel en utilisant les informations suivantes :
+                    content: `Aprés une analyse du fichier modèle, générez un contrat de bail professionnel en utilisant les informations suivantes à la place des pointillés figurants dans le fichier modèle sans supprimer du contenu provenant du modèle mais styliser le contenu et corriger les éventuelles fautes:
                     
                     Informations du bailleur :
                     - Nom : ${proprietaire.name}
@@ -116,11 +134,11 @@ export default function FormContrat({
                     
                     Informations du bien :
                     - Type : ${appartement.libelle}
-                    - Adresse : ${appartement.adresse_name}
-                    - Loyer : ${appartement.loyer_formatted}
-                    - Superficie : ${appartement.superficie_formatted}
-                    - Nombre de pièces : ${appartement.nombre_pieces}
-                    - Charges comprises : ${appartement.charges_formatted}
+                    - Adresse : ${appartement.adresse}
+                    - Loyer : ${appartement.loyer}
+                    - Superficie : ${appartement.supercifie}
+                    - Nombre de pièces : ${appartement.nombre_de_piece}
+                    - Charges comprises : ${appartement.charge}
                     
                     Informations du locataire :
                     - Nom : ${locataire.nom_complet}
@@ -129,7 +147,13 @@ export default function FormContrat({
                     - Profession : ${locataire.profession}
                     
                     Durée du bail
-                    - Du ${dateDebut} au ${dateFin}
+                    - Du ${data.date_debut} au ${data.date_fin}
+
+                    - Type de contrat : ${data.type}
+                    - Montant de la garantie : ${
+                        appartement.loyer * data.garantie
+                    } FCFA
+                    - Nombre de mois de la garantie : ${data.garantie} mois
                     
                     IMPORTANT : Générez uniquement le contenu HTML du contrat, sans aucun marqueur de code ou commentaires.`,
                 },
@@ -138,7 +162,7 @@ export default function FormContrat({
 
         completion
             .then((result) => {
-                setContratContent(result.choices[0].message.content);
+                setData("description", result.choices[0].message.content);
             })
             .catch((error) => {
                 console.error(error);
@@ -157,28 +181,17 @@ export default function FormContrat({
     //Soumission du formulaire
     const handleSubmit = async (e) => {
         e.preventDefault();
-        try {
-            const response = await fetch("/api/v1/contrats", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    proprietaire_id: selectedProprietaire,
-                    appartement_id: selectedAppartement,
-                    locataire_id: selectedLocataire,
-                    date_debut: dateDebut,
-                    date_fin: dateFin,
-                    contenu: contratContent,
-                }),
-            });
 
-            if (response.ok) {
-                // Redirection ou notification de succès
-            }
-        } catch (error) {
-            console.error(error.message);
-        }
+        const url = isUpdate ? "contrats.update" : "contrats.store";
+        post(route(url, contrat?.id), {
+            preserveScroll: true,
+            onError: (errors) => {
+                console.log(errors);
+                toast.error(
+                    "Une erreur s'est produite, veuillez vérifier les champs du formulaire"
+                );
+            },
+        });
     };
 
     return (
@@ -189,7 +202,7 @@ export default function FormContrat({
                         Propriétaire <Required />
                     </Label>
                     <Select
-                        value={selectedProprietaire}
+                        value={String(data.proprietaire_id)}
                         onValueChange={handleChangeProprietaire}
                     >
                         <SelectTrigger
@@ -212,15 +225,17 @@ export default function FormContrat({
                     <i className="text-muted-foreground text-xs">
                         Veuillez choisir un propriétaire, pour commencer
                     </i>
-                    <InputError message={""} />
+                    <InputError message={errors.proprietaire_id} />
                 </div>
                 <div className="space-y-2">
                     <Label htmlFor="appartement_id">
                         Appartement <Required />
                     </Label>
                     <Select
-                        value={selectedAppartement}
-                        onValueChange={setSelectedAppartement}
+                        value={String(data.appartement_id)}
+                        onValueChange={(value) =>
+                            setData("appartement_id", value)
+                        }
                     >
                         <SelectTrigger
                             id="appartement_id"
@@ -239,15 +254,17 @@ export default function FormContrat({
                             ))}
                         </SelectContent>
                     </Select>
-                    <InputError message={""} />
+                    <InputError message={errors.appartement_id} />
                 </div>
                 <div className="space-y-2">
                     <Label htmlFor="locataire_id">
                         Locataire <Required />
                     </Label>
                     <Select
-                        value={selectedLocataire}
-                        onValueChange={setSelectedLocataire}
+                        value={String(data.locataire_id)}
+                        onValueChange={(value) =>
+                            setData("locataire_id", value)
+                        }
                     >
                         <SelectTrigger
                             id="locataire_id"
@@ -267,13 +284,16 @@ export default function FormContrat({
                             ))}
                         </SelectContent>
                     </Select>
-                    <InputError message={""} />
+                    <InputError message={errors.locataire_id} />
                 </div>
                 <div className="space-y-2">
                     <Label htmlFor="type">
                         Type de contrat <Required />
                     </Label>
-                    <Select value={typeContrat} onValueChange={setTypeContrat}>
+                    <Select
+                        value={data.type}
+                        onValueChange={(value) => setData("type", value)}
+                    >
                         <SelectTrigger
                             id="type"
                             className="mb-0 w-full !h-12"
@@ -299,37 +319,57 @@ export default function FormContrat({
                             </SelectItem>
                         </SelectContent>
                     </Select>
-                    <InputError message={""} />
+                    <InputError message={errors.type} />
                 </div>
                 <div className="space-y-2">
-                    <Label htmlFor="date_debut">
-                        Debut <Required />
+                    <Label htmlFor="garantie">
+                        Garantie (Mois) <Required />
                     </Label>
                     <Input
-                        type="date"
-                        id="date_debut"
+                        type="number"
+                        id="garantie"
                         name="date_debut"
-                        value={dateDebut}
-                        onChange={(e) => setDateDebut(e.target.value)}
+                        value={data.garantie ?? 4}
+                        onChange={(e) => setData("garantie", e.target.value)}
+                        placeholder="Nombre de mois de la garantie"
                         required
                     />
                 </div>
-                <div className="space-y-2">
-                    <Label htmlFor="date_fin">
-                        Fin <Required />
-                    </Label>
-                    <Input
-                        type="date"
-                        id="date_fin"
-                        name="date_fin"
-                        value={dateFin}
-                        onChange={(e) => setDateFin(e.target.value)}
-                        required
-                    />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                        <Label htmlFor="date_debut">
+                            Debut <Required />
+                        </Label>
+                        <Input
+                            type="date"
+                            id="date_debut"
+                            name="date_debut"
+                            value={data.date_debut}
+                            onChange={(e) =>
+                                setData("date_debut", e.target.value)
+                            }
+                            required
+                        />
+                    </div>
+                    <div className="space-y-2">
+                        <Label htmlFor="date_fin">
+                            Fin <Required />
+                        </Label>
+                        <Input
+                            type="date"
+                            id="date_fin"
+                            name="date_fin"
+                            value={data.date_fin}
+                            onChange={(e) =>
+                                setData("date_fin", e.target.value)
+                            }
+                            required
+                        />
+                    </div>
                 </div>
             </div>
 
-            {contratContent && (
+            {data.description && (
                 <div className="space-y-4">
                     <div className="flex justify-between">
                         <Label>Contenu du contrat</Label>
@@ -351,8 +391,10 @@ export default function FormContrat({
                     </div>
                     <Editor
                         apiKey={import.meta.env.VITE_TINYMCE_API_KEY}
-                        value={contratContent}
-                        onEditorChange={(content) => setContratContent(content)}
+                        value={data.description}
+                        onEditorChange={(content) =>
+                            setData("description", content)
+                        }
                         init={{
                             height: 600,
                             menubar: true,
@@ -429,7 +471,7 @@ export default function FormContrat({
             )}
 
             <div className="text-center space-x-4">
-                {!contratContent && (
+                {!data.description && (
                     <Button
                         type="button"
                         className="w-2xl h-12 bg-red-400 hover:bg-red-500 hover:cursor-pointer"
@@ -447,12 +489,14 @@ export default function FormContrat({
                     </Button>
                 )}
 
-                {contratContent && (
+                {data.description && (
                     <Button
                         type="submit"
                         className="w-2xl h-12 bg-red-400 hover:bg-red-500 hover:cursor-pointer"
+                        disabled={processing}
                     >
-                        Enregistrer le contrat
+                        Enregistrer le contrat{" "}
+                        {processing && <Loader className="w-2 h-2" />}
                     </Button>
                 )}
             </div>
