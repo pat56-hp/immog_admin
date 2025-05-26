@@ -17,7 +17,12 @@ class AppartementResource extends JsonResource
         return [
             'id' => $this->id,
             'libelle' => $this->libelle,
-            'loyer_formatted' => $this->loyer_formatted
+            'adresse' => $this->adresse_name,
+            'loyer' => $this->loyer_formatted,
+            'supercifie' => $this->superficie_formatted,
+            'charge' => $this->charges_formatted,
+            'nombre_de_piece' => $this->nombre_pieces,
+
         ];
     }
 }
