@@ -35,4 +35,13 @@ return [
         ],
     ],
 
+    'deepseek' => [
+        'api_key' => env('DEEPSEEK_API_KEY'),
+        'api_url' => env('DEEPSEEK_API_URL')
+    ],
+
+    'tinymce' => [
+        'api_key' => env('TINYMCE_API_KEY')
+    ]
+
 ];
