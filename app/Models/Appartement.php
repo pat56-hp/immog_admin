@@ -56,6 +56,11 @@ class Appartement extends Model
         return $this->belongsTo(Proprietaire::class);
     }
 
+    public function contrats()
+    {
+        return $this->hasMany(Contrat::class);
+    }
+
     /**
      * Relation avec le type d'appartement
      */

@@ -20,7 +20,6 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->date('date_debut');
             $table->date('date_fin');
-            $table->decimal('loyer', 8, 2);
             $table->enum('statut', ['en cours', 'terminé', 'résilié', 'en attente'])->default('en attente');
             $table->softDeletes();
             $table->timestamps();

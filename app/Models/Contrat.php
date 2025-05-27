@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
@@ -10,7 +11,7 @@ class Contrat extends Model
 {
     use SoftDeletes;
 
-    protected $appends = ['debut', 'fin', 'proprietaire_name', 'locataire_name', 'loyer_formatted', 'periode'];
+    protected $appends = ['debut', 'fin', 'proprietaire_name', 'locataire_name', 'loyer_formatted', 'periode', 'garantie_amount'];
 
     protected $fillable = [
         'ref',
@@ -21,7 +22,6 @@ class Contrat extends Model
         'description',
         'date_debut',
         'date_fin',
-        'loyer',
         'statut',
     ];
 
@@ -44,7 +44,14 @@ class Contrat extends Model
 
     public function proprietaire()
     {
-        return $this->belongsTo(Proprietaire::class);
+        return $this->hasOneThrough(
+            Proprietaire::class,
+            Appartement::class,
+            'id',
+            'id',
+            'appartement_id',
+            'proprietaire_id'
+        );
     }
 
     public function appartement()
@@ -54,12 +61,22 @@ class Contrat extends Model
 
     public function getDebutAttribute(): string
     {
-        return date('d/m/Y', strtotime($this->date_debut));
+        $date = Carbon::parse($this->date_debut)->locale('fr');
+
+        $jour = $date->day === 1 ? '1er' : $date->day;
+        $moisAnnee = $date->translatedFormat('M Y'); // Mois & Annee : Mai 2025
+
+        return "{$jour} {$moisAnnee}";
     }
 
     public function getFinAttribute(): string
     {
-        return date('d/m/Y', strtotime($this->date_fin));
+        $date = Carbon::parse($this->date_fin)->locale('fr');
+
+        $jour = $date->day === 1 ? '1er' : $date->day;
+        $moisAnnee = $date->translatedFormat('M Y'); // Mois & Annee : Mai 2025
+
+        return "{$jour} {$moisAnnee}";
     }
 
     public function getProprietaireNameAttribute(): string
@@ -80,5 +97,10 @@ class Contrat extends Model
     public function getPeriodeAttribute(): string
     {
         return 'Du ' . date('d-m-Y', strtotime($this->date_debut)) . ' au ' . date('d-m-Y', strtotime($this->date_fin));
+    }
+
+    public function getGarantieAmountAttribute(): string
+    {
+        return number_format($this->garantie * $this->loyer, 0, '.', ' ') . ' FCFA';
     }
 }

@@ -42,7 +42,7 @@ export default function FormContrat({
             });
     }, []);
 
-    const { data, setData, errors, processing, post } = useForm({
+    const { data, setData, errors, setError, processing, post } = useForm({
         proprietaire_id: "",
         locataire_id: "",
         appartement_id: "",
@@ -52,7 +52,7 @@ export default function FormContrat({
         date_fin: "",
         description: "",
         statut: "en attente",
-        mail_send: false,
+        mail_send: true,
         _method: isUpdate ? "PATCH" : "POST",
     });
 
@@ -73,6 +73,15 @@ export default function FormContrat({
     const handleGenerate = (e) => {
         e.preventDefault();
         setIsLoading(true);
+
+        //Mise à jour des erreurs
+        setError("appartement_id", "");
+        setError("date_debut", "");
+        setError("date_fin", "");
+        setError("garantie", "");
+        setError("locataire_id", "");
+        setError("proprietaire_id", "");
+        setError("type", "");
 
         setTimeout(async () => {
             try {
@@ -117,13 +126,13 @@ export default function FormContrat({
 
                 if (error.data) {
                     console.log("Détails de l'erreur :", error.data);
-                    errors.appartement_id = error.data?.appartement;
-                    errors.date_debut = error.data?.date_debut;
-                    errors.date_fin = error.data?.date_fin;
-                    errors.garantie = error.data?.garantie;
-                    errors.locataire_id = error.data?.locataire;
-                    errors.proprietaire_id = error.data?.proprietaire;
-                    errors.type = error.data?.type;
+                    setError("appartement_id", error.data?.appartement);
+                    setError("date_debut", error.data?.date_debut);
+                    setError("date_fin", error.data?.date_fin);
+                    setError("garantie", error.data?.garantie);
+                    setError("locataire_id", error.data?.locataire);
+                    setError("proprietaire_id", error.data?.proprietaire);
+                    setError("type", error.data?.type);
                 }
             } finally {
                 setIsLoading(false);
@@ -363,6 +372,7 @@ export default function FormContrat({
                         placeholder="Nombre de mois de la garantie"
                         required
                     />
+                    <InputError message={errors.garantie} />
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
@@ -379,6 +389,7 @@ export default function FormContrat({
                             }
                             required
                         />
+                        <InputError message={errors.date_debut} />
                     </div>
                     <div className="space-y-2">
                         <Label htmlFor="date_fin">
@@ -394,6 +405,7 @@ export default function FormContrat({
                             }
                             required
                         />
+                        <InputError message={errors.date_fin} />
                     </div>
                 </div>
             </div>
@@ -536,19 +548,21 @@ export default function FormContrat({
                             </Select>
                             <InputError message={errors.statut} />
                         </div>
-                        <div className="flex items-center space-x-2">
-                            <Switch
-                                id="mail_send"
-                                checked={data.mail_send}
-                                onCheckedChange={(checked) =>
-                                    setData("mail_send", checked)
-                                }
-                            />
-                            <Label htmlFor="mail_send">
-                                Envoyer le contrat aux deux parties
-                            </Label>
-                            <InputError message={errors.mail_send} />
-                        </div>
+                        {data.statut === "En cours" && (
+                            <div className="flex items-center space-x-2">
+                                <Switch
+                                    id="mail_send"
+                                    checked={data.mail_send}
+                                    onCheckedChange={(checked) =>
+                                        setData("mail_send", checked)
+                                    }
+                                />
+                                <Label htmlFor="mail_send">
+                                    Envoyer le contrat aux deux parties
+                                </Label>
+                                <InputError message={errors.mail_send} />
+                            </div>
+                        )}
                     </div>
                 </>
             )}

@@ -5,10 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Notifications\Notifiable;
 
 class Locataire extends Model
 {
-    use HasFactory;
+    use HasFactory, Notifiable;
 
     protected $appends = [
         'nom_complet',
@@ -52,6 +53,11 @@ class Locataire extends Model
     public function getNomCompletAttribute(): string
     {
         return ucwords($this->prenom . ' ' . $this->nom);
+    }
+
+    public function getNameAttribute(): string
+    {
+        return ucwords($this->prenom . '' . $this->nom);
     }
 
     /**

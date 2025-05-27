@@ -37,7 +37,7 @@ class ContratRepository implements ContratInterface
         }
 
         //Generation de la reference du contrat
-        $data['ref'] = Str::random(8);
+        //$data['ref'] = Str::random(8);
         return $this->model->create($data);
     }
 

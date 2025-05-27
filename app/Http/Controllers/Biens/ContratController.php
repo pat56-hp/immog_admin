@@ -9,13 +9,20 @@ use App\Repositories\Interfaces\biens\ContratInterface;
 use App\Repositories\Interfaces\utilisateurs\LocataireInterface;
 use App\Repositories\Interfaces\utilisateurs\ProprietaireInterface;
 use App\Services\ActivityService;
+use App\Services\MailService;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class ContratController extends Controller
 {
-    public function __construct(private ActivityService $activityService, private ContratInterface $contratRepository, private ProprietaireInterface $proprietaireRepository, private LocataireInterface $locataireRepository,)
-    {
+    public function __construct(
+        private ActivityService $activityService,
+        private ContratInterface $contratRepository,
+        private ProprietaireInterface $proprietaireRepository,
+        private LocataireInterface $locataireRepository,
+        private MailService $mailService
+    ) {
         Inertia::share([
             'module' => 'Contrats'
         ]);
@@ -64,6 +71,9 @@ class ContratController extends Controller
             //Sauvegarde des informations
             $contrat = $this->contratRepository->save($data);
 
+            //Envoie du contrat aux deux parties si la condition est cochée
+            !$request->mail_send ?: $this->mailService->sendContratToPart($contrat);
+
             //Log activity
             $this->activityService->save('Création du contrat ' . $contrat->ref);
 
@@ -79,4 +89,17 @@ class ContratController extends Controller
     public function destroy(Contrat $contrat) {}
 
     public function status(Request $request, Contrat $contrat) {}
+
+    /**
+     * Téléchargement du contrat
+     * 
+     * @param Contrat $contrat
+     * @return void
+     */
+    public function download(Contrat $contrat)
+    {
+        $pdf = PDF::loadHTML("{$contrat->description}");
+        $contrat_name = "contrat_{$contrat->ref}.pdf";
+        return $pdf->download($contrat_name);
+    }
 }

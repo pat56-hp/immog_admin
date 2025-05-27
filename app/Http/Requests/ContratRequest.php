@@ -22,14 +22,15 @@ class ContratRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //'proprietaire_id' => 'required|exists:proprietaires,id',
+            'proprietaire_id' => 'required|exists:proprietaires,id',
             'locataire_id' => 'required|exists:locataires,id',
             'appartement_id' => 'required|exists:appartements,id',
             'type' => 'required|string',
-            'garantie' => 'required|interger',
+            'garantie' => 'required|integer',
             'date_debut' => 'required|date',
             'date_fin' => 'required|date|after:date_debut',
-            'description' => 'required'
+            'description' => 'required',
+            'statut' => 'required|string'
         ];
     }
 }

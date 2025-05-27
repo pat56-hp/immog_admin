@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import ContentLayout from "../../../layouts/content-layout";
 import Datatable from "../../../components/datatable";
 import { Link } from "@inertiajs/react";
@@ -6,8 +6,9 @@ import { Button } from "../../../components/ui/button";
 import { Eye, Pencil, Plus } from "lucide-react";
 import { getFormattedDate } from "../../../helper/helper";
 import { Badge } from "../../../components/ui/badge";
+import { toast } from "sonner";
 
-export default function Contrat({ contrats, title, module }) {
+export default function Contrat({ contrats, title, module, success }) {
     const breadcrumb = [
         {
             title: "Tableau de bord",
@@ -96,6 +97,10 @@ export default function Contrat({ contrats, title, module }) {
             ),
         },
     ];
+
+    useEffect(() => {
+        toast.success(success);
+    }, [success]);
 
     return (
         <ContentLayout
