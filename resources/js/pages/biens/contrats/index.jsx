@@ -99,7 +99,9 @@ export default function Contrat({ contrats, title, module, success }) {
     ];
 
     useEffect(() => {
-        toast.success(success);
+        if (success) {
+            toast.success(success);
+        }
     }, [success]);
 
     return (
