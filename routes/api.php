@@ -11,5 +11,5 @@ Route::get('/user', function (Request $request) {
 
 Route::group(['prefix' => 'v1'], function () {
     Route::get('/appartements/{proprietaire}', [AppartementController::class, 'getByProprio']);
-    Route::post('/contrats/generate-contrat', ContratController::class);
+    Route::post('/contrats/generate-contrat', [ContratController::class, 'generateContrat']);
 });

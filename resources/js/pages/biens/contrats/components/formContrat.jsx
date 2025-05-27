@@ -16,6 +16,8 @@ import { Editor } from "@tinymce/tinymce-react";
 import OpenAI from "openai";
 import { toast } from "sonner";
 import { useForm } from "@inertiajs/react";
+import { Switch } from "../../../../components/ui/switch";
+import { Skeleton } from "../../../../components/ui/skeleton";
 
 export default function FormContrat({
     proprietaires,
@@ -49,6 +51,8 @@ export default function FormContrat({
         date_debut: "",
         date_fin: "",
         description: "",
+        statut: "en attente",
+        mail_send: false,
         _method: isUpdate ? "PATCH" : "POST",
     });
 
@@ -65,97 +69,122 @@ export default function FormContrat({
         }
     };
 
-    //Initialisation de OPENAI
-    const openai = new OpenAI({
-        apiKey: import.meta.env.VITE_OPENAI_KEY_TEST,
-        dangerouslyAllowBrowser: true,
-    });
-
-    //Generation du contrat à partir de l'IA
-    const handleGenerate = async (e) => {
+    //Generation du contrat
+    const handleGenerate = (e) => {
         e.preventDefault();
         setIsLoading(true);
 
-        const proprietaire = proprietaires.find(
-            (p) => p.id === parseInt(data.proprietaire_id)
-        );
-        const appartement = appartements.find(
-            (a) => a.id === parseInt(data.appartement_id)
-        );
-        const locataire = locataires.find(
-            (l) => l.id === parseInt(data.locataire_id)
-        );
+        setTimeout(async () => {
+            try {
+                const response = await fetch(
+                    "/api/v1/contrats/generate-contrat",
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            accept: "application/json",
+                        },
+                        body: JSON.stringify({
+                            locataire: data.locataire_id,
+                            appartement: data.appartement_id,
+                            proprietaire: data.proprietaire_id,
+                            date_debut: data.date_debut,
+                            date_fin: data.date_fin,
+                            garantie: data.garantie,
+                            type: data.type,
+                        }),
+                    }
+                );
 
-        //On verifie si les datas sont valide :
-        if (
-            !locataire ||
-            !appartement ||
-            !proprietaire ||
-            !data.date_debut ||
-            !data.date_fin ||
-            !data.type ||
-            !modeleContrat
-        ) {
-            setIsLoading(false);
-            toast.error("Veuillez remplir tous les champs !");
-            return;
-        }
+                const result = await response.json();
 
-        const completion = openai.chat.completions.create({
+                if (!response.ok) {
+                    //Capture de l'erreur de la requête
+                    throw {
+                        status: response.status,
+                        message: result.message || "Une erreur est survenue.",
+                        data: result.errors || result,
+                    };
+                }
+
+                setData("description", result.data);
+            } catch (error) {
+                // Gestion des erreurs
+                toast.error(
+                    error.message ||
+                        "Oups, une erreur s'est produite. Verifiez les données renseignées et rééssayez."
+                );
+
+                if (error.data) {
+                    console.log("Détails de l'erreur :", error.data);
+                    errors.appartement_id = error.data?.appartement;
+                    errors.date_debut = error.data?.date_debut;
+                    errors.date_fin = error.data?.date_fin;
+                    errors.garantie = error.data?.garantie;
+                    errors.locataire_id = error.data?.locataire;
+                    errors.proprietaire_id = error.data?.proprietaire;
+                    errors.type = error.data?.type;
+                }
+            } finally {
+                setIsLoading(false);
+            }
+        }, 3000);
+
+        /* const completion = openai.chat.completions.create({
             model: "gpt-4.1-mini",
             store: true,
+            max_completion_tokens: 1000,
             messages: [
                 {
                     role: "system",
-                    content: `Vous êtes un expert en droit immobilier ivoirien, spécialisé dans la rédaction de contrats de bail. 
-                    Votre tâche est de générer un contrat de bail professionnel et conforme à la législation ivoirienne en utilisant un modèle de contrat que je soumet.
-                    
-                    Instructions importantes :
-                    1. Générez UNIQUEMENT le contenu HTML du contrat, sans aucun marqueur de code (comme \`\`\`html) ou commentaires
-                    2. Utilisez le modèle de contrat fourni comme base
-                    3. Le contenu doit être directement utilisable dans un éditeur TinyMCE
-                    4. Structurez le document avec des sections clairement définies, en utilisant toujours le modèle fornit
-                    5. Utilisez uniquement des balises HTML standard
-                    
+                    content: `
+                    Vous êtes un expert en droit immobilier ivoirien. 
+                    Générez un contrat de type "${data.type}" conforme à la législation ivoirienne à partir du modèle ci-dessous.
+              
+                    Consignes :
+                    - Utilisez le modèle fourni comme base sans en retirer de contenu
+                    - Remplacez uniquement les pointillés par les données fournies
+                    - Corrigez les fautes éventuelles et appliquez un style HTML lisible
+                    - N’incluez AUCUN marqueur de code ou commentaire
+                    - Le résultat doit être directement utilisable dans un éditeur TinyMCE
+              
                     Modèle de contrat :
                     ${modeleContrat}
-
-                    
-                    IMPORTANT : Ne pas inclure de marqueurs de code ou de commentaires dans la sortie.`,
+                  `,
                 },
                 {
                     role: "user",
-                    content: `Aprés une analyse du fichier modèle, générez un contrat de bail professionnel en utilisant les informations suivantes à la place des pointillés figurants dans le fichier modèle sans supprimer du contenu provenant du modèle mais styliser le contenu et corriger les éventuelles fautes:
-                    
-                    Informations du bailleur :
+                    content: `
+                    Générez un contrat HTML stylisé en remplaçant les pointillés du modèle avec les données suivantes :
+              
+                    Bailleur :
                     - Nom : ${proprietaire.name}
                     - Contact : ${proprietaire.phone} / ${proprietaire.email}
                     - Adresse : ${proprietaire.address}
-                    
-                    Informations du bien :
+              
+                    Bien loué :
                     - Type : ${appartement.libelle}
                     - Adresse : ${appartement.adresse}
-                    - Loyer : ${appartement.loyer}
+                    - Loyer : ${appartement.loyer} FCFA
                     - Superficie : ${appartement.supercifie}
-                    - Nombre de pièces : ${appartement.nombre_de_piece}
-                    - Charges comprises : ${appartement.charge}
-                    
-                    Informations du locataire :
+                    - Pièces : ${appartement.nombre_de_piece}
+                    - Charges : ${appartement.charge}
+              
+                    Locataire :
                     - Nom : ${locataire.nom_complet}
                     - Contact : ${locataire.telephone} / ${locataire.email}
                     - Adresse : ${locataire.adresse}
                     - Profession : ${locataire.profession}
-                    
-                    Durée du bail
-                    - Du ${data.date_debut} au ${data.date_fin}
-
-                    - Type de contrat : ${data.type}
-                    - Montant de la garantie : ${
+              
+                    Contrat :
+                    - Période : du ${data.date_debut} au ${data.date_fin}
+                    - Type : ${data.type}
+                    - Garantie : ${data.garantie} mois (${
                         appartement.loyer * data.garantie
-                    } FCFA
-                    - Nombre de mois de la garantie : ${data.garantie} mois
-                    
-                    IMPORTANT : Générez uniquement le contenu HTML du contrat, sans aucun marqueur de code ou commentaires.`,
+                    } FCFA)
+              
+                    IMPORTANT : ne retournez que le contenu HTML, sans marqueur de code ni commentaire.
+                  `,
                 },
             ],
         });
@@ -175,7 +204,7 @@ export default function FormContrat({
             })
             .finally(() => {
                 setIsLoading(false);
-            });
+            }); */
     };
 
     //Soumission du formulaire
@@ -368,106 +397,160 @@ export default function FormContrat({
                     </div>
                 </div>
             </div>
-
             {data.description && (
-                <div className="space-y-4">
-                    <div className="flex justify-between">
-                        <Label>Contenu du contrat</Label>
-                        <Button
-                            type="button"
-                            className=" bg-yellow-400 hover:bg-yellow-500 hover:cursor-pointer"
-                            onClick={handleGenerate}
-                            disabled={isLoading}
-                        >
-                            {isLoading
-                                ? "Génération en cours..."
-                                : "Générer le contrat"}{" "}
-                            {isLoading ? (
-                                <Loader className="w-2 h-2" />
-                            ) : (
-                                <ArrowRight />
-                            )}
-                        </Button>
+                <>
+                    <div className="space-y-4 grid-cols-1">
+                        <div className="flex justify-between">
+                            <Label>Aperçu du contrat</Label>
+                            <Button
+                                type="button"
+                                className=" bg-yellow-400 hover:bg-yellow-500 hover:cursor-pointer"
+                                onClick={handleGenerate}
+                                disabled={isLoading}
+                            >
+                                {isLoading
+                                    ? "Génération en cours..."
+                                    : "Regénérer le contrat"}{" "}
+                                {isLoading ? (
+                                    <Loader className="w-2 h-2" />
+                                ) : (
+                                    <ArrowRight />
+                                )}
+                            </Button>
+                        </div>
+                        {isLoading ? (
+                            <Skeleton className="w-full h-[200px]" />
+                        ) : (
+                            <Editor
+                                apiKey={import.meta.env.VITE_TINYMCE_API_KEY}
+                                value={data.description}
+                                onEditorChange={(content) =>
+                                    setData("description", content)
+                                }
+                                init={{
+                                    height: 600,
+                                    menubar: true,
+                                    language: "fr_FR",
+                                    plugins: [
+                                        "advlist",
+                                        "autolink",
+                                        "lists",
+                                        "link",
+                                        "charmap",
+                                        "preview",
+                                        "anchor",
+                                        "searchreplace",
+                                        "visualblocks",
+                                        "code",
+                                        "fullscreen",
+                                        "insertdatetime",
+                                        "table",
+                                        "help",
+                                        "wordcount",
+                                        "pagebreak",
+                                    ],
+                                    toolbar:
+                                        "undo redo | formatselect | " +
+                                        "bold italic underline strikethrough | alignleft aligncenter " +
+                                        "alignright alignjustify | bullist numlist outdent indent | " +
+                                        "removeformat | pagebreak | help",
+                                    content_style: `
+                                    body { 
+                                        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+                                        font-size: 14px;
+                                        line-height: 1.6;
+                                        padding: 20px;
+                                    }
+                                    h1, h2, h3, h4, h5, h6 {
+                                        margin-top: 1.5em;
+                                        margin-bottom: 0.5em;
+                                    }
+                                    p {
+                                        margin-bottom: 1em;
+                                    }
+                                `,
+                                    formats: {
+                                        bold: { inline: "strong" },
+                                        italic: { inline: "em" },
+                                        underline: { inline: "u" },
+                                        strikethrough: { inline: "s" },
+                                    },
+                                    style_formats: [
+                                        { title: "Titre 1", block: "h1" },
+                                        { title: "Titre 2", block: "h2" },
+                                        { title: "Titre 3", block: "h3" },
+                                        { title: "Paragraphe", block: "p" },
+                                    ],
+                                    pagebreak_separator:
+                                        '<hr class="page-break" style="page-break-after: always;" />',
+                                    setup: (editor) => {
+                                        editor.on("init", () => {
+                                            editor.getContainer().style.transition =
+                                                "border-color 0.15s ease-in-out";
+                                        });
+                                        editor.on("focus", () => {
+                                            editor.getContainer().style.borderColor =
+                                                "#2563eb";
+                                        });
+                                        editor.on("blur", () => {
+                                            editor.getContainer().style.borderColor =
+                                                "#e5e7eb";
+                                        });
+                                    },
+                                }}
+                            />
+                        )}
                     </div>
-                    <Editor
-                        apiKey={import.meta.env.VITE_TINYMCE_API_KEY}
-                        value={data.description}
-                        onEditorChange={(content) =>
-                            setData("description", content)
-                        }
-                        init={{
-                            height: 600,
-                            menubar: true,
-                            language: "fr_FR",
-                            plugins: [
-                                "advlist",
-                                "autolink",
-                                "lists",
-                                "link",
-                                "charmap",
-                                "preview",
-                                "anchor",
-                                "searchreplace",
-                                "visualblocks",
-                                "code",
-                                "fullscreen",
-                                "insertdatetime",
-                                "table",
-                                "help",
-                                "wordcount",
-                                "pagebreak",
-                            ],
-                            toolbar:
-                                "undo redo | formatselect | " +
-                                "bold italic underline strikethrough | alignleft aligncenter " +
-                                "alignright alignjustify | bullist numlist outdent indent | " +
-                                "removeformat | pagebreak | help",
-                            content_style: `
-                                body { 
-                                    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-                                    font-size: 14px;
-                                    line-height: 1.6;
-                                    padding: 20px;
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-2">
+                            <Label htmlFor="statut">
+                                Statut <Required />
+                            </Label>
+                            <Select
+                                value={data.statut}
+                                onValueChange={(value) =>
+                                    setData("statut", value)
                                 }
-                                h1, h2, h3, h4, h5, h6 {
-                                    margin-top: 1.5em;
-                                    margin-bottom: 0.5em;
+                            >
+                                <SelectTrigger
+                                    id="statut"
+                                    className="mb-0 w-full !h-12"
+                                    required
+                                >
+                                    <SelectValue placeholder="Sélectionner un statut" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="En attente">
+                                        En attente
+                                    </SelectItem>
+                                    <SelectItem value="En cours">
+                                        En cours
+                                    </SelectItem>
+                                    <SelectItem value="Terminé">
+                                        Terminé
+                                    </SelectItem>
+                                    <SelectItem value="Résilié">
+                                        Résilié
+                                    </SelectItem>
+                                </SelectContent>
+                            </Select>
+                            <InputError message={errors.statut} />
+                        </div>
+                        <div className="flex items-center space-x-2">
+                            <Switch
+                                id="mail_send"
+                                checked={data.mail_send}
+                                onCheckedChange={(checked) =>
+                                    setData("mail_send", checked)
                                 }
-                                p {
-                                    margin-bottom: 1em;
-                                }
-                            `,
-                            formats: {
-                                bold: { inline: "strong" },
-                                italic: { inline: "em" },
-                                underline: { inline: "u" },
-                                strikethrough: { inline: "s" },
-                            },
-                            style_formats: [
-                                { title: "Titre 1", block: "h1" },
-                                { title: "Titre 2", block: "h2" },
-                                { title: "Titre 3", block: "h3" },
-                                { title: "Paragraphe", block: "p" },
-                            ],
-                            pagebreak_separator:
-                                '<hr class="page-break" style="page-break-after: always;" />',
-                            setup: (editor) => {
-                                editor.on("init", () => {
-                                    editor.getContainer().style.transition =
-                                        "border-color 0.15s ease-in-out";
-                                });
-                                editor.on("focus", () => {
-                                    editor.getContainer().style.borderColor =
-                                        "#2563eb";
-                                });
-                                editor.on("blur", () => {
-                                    editor.getContainer().style.borderColor =
-                                        "#e5e7eb";
-                                });
-                            },
-                        }}
-                    />
-                </div>
+                            />
+                            <Label htmlFor="mail_send">
+                                Envoyer le contrat aux deux parties
+                            </Label>
+                            <InputError message={errors.mail_send} />
+                        </div>
+                    </div>
+                </>
             )}
 
             <div className="text-center space-x-4">
