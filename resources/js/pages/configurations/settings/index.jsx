@@ -272,7 +272,9 @@ export default function Setting({ module, title, setting }) {
                         className="w-2xl h-12 bg-red-400 hover:bg-red-500 hover:cursor-pointer"
                     >
                         Sauvegarder
-                        {processing && <Loader />}
+                        {processing && (
+                            <Loader className="w-4 h-4 animate-spin" />
+                        )}
                     </Button>
                 </div>
             </form>

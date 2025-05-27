@@ -146,7 +146,7 @@ export default function FormProprietaire({ proprietaire, isUpdate = false }) {
                     className="w-2xl h-12 bg-red-400 hover:bg-red-500 hover:cursor-pointer"
                 >
                     Sauvegarder
-                    {processing && <Loader />}
+                    {processing && <Loader className="animate-spin" />}
                 </Button>
             </div>
         </form>

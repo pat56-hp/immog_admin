@@ -153,7 +153,10 @@ export default function EditPassword() {
                                     disabled={processing}
                                     className="h-12 w-50 bg-red-400 hover:bg-red-500 hover:cursor-pointer"
                                 >
-                                    {processing && <Loader />} Enregistrer
+                                    {processing && (
+                                        <Loader className="w-4 h-4 animate-spin" />
+                                    )}{" "}
+                                    Enregistrer
                                 </Button>
                             </div>
                         </form>

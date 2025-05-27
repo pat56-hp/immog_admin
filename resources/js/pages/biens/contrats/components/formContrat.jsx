@@ -424,7 +424,7 @@ export default function FormContrat({
                                     ? "Génération en cours..."
                                     : "Regénérer le contrat"}{" "}
                                 {isLoading ? (
-                                    <Loader className="w-2 h-2" />
+                                    <Loader className="w-2 h-2 animate-spin" />
                                 ) : (
                                     <ArrowRight />
                                 )}
@@ -579,7 +579,7 @@ export default function FormContrat({
                             ? "Génération en cours..."
                             : "Générer le contrat"}{" "}
                         {isLoading ? (
-                            <Loader className="w-2 h-2" />
+                            <Loader className="w-2 h-2 animate-spin" />
                         ) : (
                             <ArrowRight />
                         )}
@@ -593,7 +593,9 @@ export default function FormContrat({
                         disabled={processing}
                     >
                         Enregistrer le contrat{" "}
-                        {processing && <Loader className="w-2 h-2" />}
+                        {processing && (
+                            <Loader className="w-2 h-2 animate-spin" />
+                        )}
                     </Button>
                 )}
             </div>

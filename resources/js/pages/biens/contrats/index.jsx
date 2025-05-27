@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import ContentLayout from "../../../layouts/content-layout";
 import Datatable from "../../../components/datatable";
 import { Link } from "@inertiajs/react";
@@ -7,6 +7,7 @@ import {
     Download,
     EllipsisVertical,
     Eye,
+    Loader,
     Pencil,
     Plus,
     Send,
@@ -25,6 +26,9 @@ import {
 } from "../../../components/ui/dropdown-menu";
 
 export default function Contrat({ contrats, title, module, success }) {
+    const [download, setDownload] = useState(false);
+    const [isOpen, setIsOpen] = useState(false);
+
     const breadcrumb = [
         {
             title: "Tableau de bord",
@@ -95,7 +99,7 @@ export default function Contrat({ contrats, title, module, success }) {
             key: "action",
             render: (contrat) => (
                 <div className="w-full text-center">
-                    <DropdownMenu>
+                    <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
                         <DropdownMenuTrigger asChild>
                             <Button
                                 variant="secondary"
@@ -117,9 +121,12 @@ export default function Contrat({ contrats, title, module, success }) {
                                         Modifier
                                     </DropdownMenuItem>
                                 </Link>
-                                <DropdownMenuItem className="">
+                                <DropdownMenuItem
+                                    onClick={(e) => downloadContrat(e, contrat)}
+                                >
                                     <Download className="w-4 h-4" />
                                     Télécharger
+                                    {download && <Loader className="w-2 h-2" />}
                                 </DropdownMenuItem>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuItem
@@ -142,6 +149,43 @@ export default function Contrat({ contrats, title, module, success }) {
             toast.success(success);
         }
     }, [success]);
+
+    /** Telechargement du contrat */
+    const downloadContrat = (e, contrat) => {
+        e.preventDefault();
+
+        setDownload(true);
+        setIsOpen(true);
+        setTimeout(() => {
+            fetch(route("contrats.download", contrat.id), {
+                method: "GET",
+                headers: {
+                    Accept: "application/pdf",
+                },
+            })
+                .then((response) => response.blob())
+                .then((blob) => {
+                    const url = window.URL.createObjectURL(blob);
+                    const link = document.createElement("a");
+                    link.href = url;
+                    link.download = `contrat_${contrat.ref}.pdf`;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    window.URL.revokeObjectURL(url);
+                })
+                .catch((error) => {
+                    console.log(error);
+                    toast.error(
+                        "Une erreur est survenue lors du téléchargement du contrat."
+                    );
+                })
+                .finally(() => {
+                    setDownload(false);
+                    setIsOpen(false);
+                });
+        }, [3000]);
+    };
 
     return (
         <ContentLayout

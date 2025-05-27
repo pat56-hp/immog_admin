@@ -70,7 +70,10 @@ export default function ActionDialog({
                         onClick={handleConfirm}
                         className="bg-red-400 hover:bg-red-500 hover:cursor-pointer"
                     >
-                        Enregistrer {processing && <Loader />}
+                        Enregistrer{" "}
+                        {processing && (
+                            <Loader className="animate-spin w-4 h-4" />
+                        )}
                     </Button>
                 </DialogFooter>
             </DialogContent>
