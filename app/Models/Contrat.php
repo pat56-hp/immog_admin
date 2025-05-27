@@ -91,7 +91,7 @@ class Contrat extends Model
 
     public function getLoyerFormattedAttribute(): string
     {
-        return number_format($this->loyer, 0, ' ');
+        return $this->appartement->loyer_formatted ?? 'N/A';
     }
 
     public function getPeriodeAttribute(): string
