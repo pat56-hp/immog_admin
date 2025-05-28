@@ -20,7 +20,7 @@
             Cel : {{ $contact_proprietaire }}<br />
             Email : {{ $email_proprietaire }}<br />
             Adresse : {{ $adresse_proprietaire }}<br />
-            <span style="text-align: end; display: block">D'une part</span>
+            <span style="float-right; display: block!">D'une part</span>
         </p>
         <p>
             Et {{ $nom_locataire }}<br />
@@ -28,7 +28,7 @@
             Cel : {{ $contact_locataire }}<br />
             Email : {{ $email_locataire }}<br />
             Adresse : {{ $adresse_locataire }}<br />
-            <span style="text-align: end; display: block">D'autre part</span>
+            <span style="float-right; display: block!">D'autre part</span>
         </p>
         <p>
             Il a été convenu et arrêté ce qui suit :<br />

@@ -126,7 +126,9 @@ export default function Contrat({ contrats, title, module, success }) {
                                 >
                                     <Download className="w-4 h-4" />
                                     Télécharger
-                                    {download && <Loader className="w-2 h-2" />}
+                                    {download && (
+                                        <Loader className="w-2 h-2 animate-spin" />
+                                    )}
                                 </DropdownMenuItem>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuItem
