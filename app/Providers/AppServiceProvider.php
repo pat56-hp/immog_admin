@@ -6,10 +6,12 @@ use App\Repositories\ActivityRepository;
 use App\Repositories\biens\AppartementRepository;
 use App\Repositories\biens\ContratRepository;
 use App\Repositories\biens\TypeAppartementRepository;
+use App\Repositories\comptabilites\FactureRepository;
 use App\Repositories\Interfaces\ActivityInterface;
 use App\Repositories\Interfaces\biens\AppartementInterface;
 use App\Repositories\Interfaces\biens\ContratInterface;
 use App\Repositories\Interfaces\biens\TypeAppartementInterface;
+use App\Repositories\Interfaces\comptabilites\FactureInterface;
 use App\Repositories\Interfaces\SettingInterface;
 use App\Repositories\Interfaces\UserInterface;
 use App\Repositories\Interfaces\utilisateurs\ProprietaireInterface;
@@ -37,6 +39,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(TypeAppartementInterface::class, TypeAppartementRepository::class);
         $this->app->bind(AppartementInterface::class, AppartementRepository::class);
         $this->app->bind(ContratInterface::class, ContratRepository::class);
+        $this->app->bind(FactureInterface::class, FactureRepository::class);
     }
 
     /**

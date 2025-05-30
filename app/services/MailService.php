@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Contrat;
+use App\Models\Facture;
 use App\Models\Proprietaire;
 use App\Notifications\LocataireNotification;
 use App\Notifications\ProprietaireNotification;
@@ -15,6 +16,7 @@ class MailService
      * Envoie du contrat aux deux parties (Proprietaire & Locataire)
      * 
      * @param Contrat $contrat
+     * @return void
      */
     public function sendContratToPart(Contrat $contrat)
     {
@@ -35,6 +37,26 @@ class MailService
             $contrat->locataire->notify(new LocataireNotification($data));
         } catch (\Throwable $th) {
             logger()->error('Erreur survenue lors de l\'envoie du contrat aux deux parties', [$th->getMessage()]);
+        }
+    }
+
+    /**
+     * Envoie de la facture au locataire
+     *
+     * @param Facture $facture
+     * @return void
+     */
+    public function sendFactureToLocataire(Facture $facture)
+    {
+        $data['view'] = 'mails.factures.locataire';
+        $data['facture'] = $facture;
+
+        try {
+            //Envoie de la notification
+            $data['subject'] = 'Facture de ' . $facture->typeModel->type . ' N° ' . $facture->typeModel->ref;
+            $facture->typeUser->notify(new LocataireNotification(($data)));
+        } catch (\Throwable $th) {
+            logger()->error('Erreur survenue lors de l\'envoie de la facture ' . $facture->ref . ' au locataire ' . $facture->typeUser->nom_complet, [$th->getMessage()]);
         }
     }
 }

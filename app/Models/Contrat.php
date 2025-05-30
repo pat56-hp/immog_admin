@@ -30,6 +30,7 @@ class Contrat extends Model
     protected static function booted()
     {
         static::creating(function ($contrat) {
+            //Verification de l'unicité de la reference
             do {
                 $ref = 'CT-' . strtoupper(Str::random(8));
             } while (Contrat::where('ref', $ref)->exists());

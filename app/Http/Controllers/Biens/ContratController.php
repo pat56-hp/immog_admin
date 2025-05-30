@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\ContratRequest;
 use App\Models\Contrat;
 use App\Repositories\Interfaces\biens\ContratInterface;
+use App\Repositories\Interfaces\comptabilites\FactureInterface;
 use App\Repositories\Interfaces\utilisateurs\LocataireInterface;
 use App\Repositories\Interfaces\utilisateurs\ProprietaireInterface;
 use App\Services\ActivityService;
@@ -19,6 +20,7 @@ class ContratController extends Controller
     public function __construct(
         private ActivityService $activityService,
         private ContratInterface $contratRepository,
+        private FactureInterface $factureRepository,
         private ProprietaireInterface $proprietaireRepository,
         private LocataireInterface $locataireRepository,
         private MailService $mailService
@@ -68,14 +70,32 @@ class ContratController extends Controller
         $data = $request->validated();
 
         try {
-            //Sauvegarde des informations
+            //Sauvegarde des informations du contrat
             $contrat = $this->contratRepository->save($data);
+
+            //Génération de la facture du contrat
+            $factureData['type'] = 'contrat';
+            $factureData['type_id'] = $contrat->id;
+            $factureData['montant'] = $contrat->garantie * $contrat->appartement->loyer;
+            $factureData['user_type'] = 'locataire';
+            $factureData['user_id'] = $contrat->locataire_id;
+            $factureData['statut'] = 'en attente';
+            $factureData['etat'] = 'validé';
+            $factureData['date_emission'] = now();
+            $factureData['date_echeance'] = now()->addDays(30); //30 jours après la date d'émission
+            $factureData['element'] = 'Contrat de ' . $contrat->type . ', ' . $contrat->garantie . ' mois de garantie';
+            $factureData['element_montant'] = $contrat->garantie * $contrat->appartement->loyer;
+
+            $facture = $this->factureRepository->save($factureData);
 
             //Envoie du contrat aux deux parties si la condition est cochée
             !$request->mail_send ?: $this->mailService->sendContratToPart($contrat);
 
+            //Envoie de la facture au locataire par email
+            $this->mailService->sendFactureToLocataire($facture);
+
             //Log activity
-            $this->activityService->save('Création du contrat ' . $contrat->ref);
+            $this->activityService->save('Création du contrat ' . $contrat->ref . ' et génération de la facture ' . $facture->ref);
 
             return to_route('contrats.index')->with('success', 'Contrat sauvegardé avec succès');
         } catch (\Throwable $th) {
@@ -101,6 +121,13 @@ class ContratController extends Controller
         ]);
     }
 
+    /**
+     * Sauvegarde des modifications d'un contrat
+     *
+     * @param ContratRequest $request
+     * @param Contrat $contrat
+     * @return void
+     */
     public function update(ContratRequest $request, Contrat $contrat)
     {
         $data = $request->validated();
