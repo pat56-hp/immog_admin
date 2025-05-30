@@ -101,7 +101,24 @@ class ContratController extends Controller
         ]);
     }
 
-    public function update(ContratRequest $request) {}
+    public function update(ContratRequest $request, Contrat $contrat)
+    {
+        $data = $request->validated();
+        $data['id'] = $contrat->id;
+
+        try {
+            //Suavegarde des modifications
+            $contrat = $this->contratRepository->save($data);
+
+            //Log Activity
+            $this->activityService->save('Modification du contrat ' . $contrat->ref);
+
+            return to_route('contrats.index')->with('success', 'Les modifications ont été appliquées');
+        } catch (\Throwable $th) {
+            logger()->error('Une erreur est survenue lors de la modification du contrat', [$th->getMessage()]);
+            return back()->withErrors(['error' => 'Une erreur est survenue lors de la modification du contrat : ' . $th->getMessage()]);
+        }
+    }
 
     public function destroy(Contrat $contrat) {}
 

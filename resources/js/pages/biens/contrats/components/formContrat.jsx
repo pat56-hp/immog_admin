@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "../../../../components/ui/button";
 import { ArrowRight, Loader } from "lucide-react";
 import Required from "../../../../components/required";
@@ -26,8 +26,6 @@ export default function FormContrat({
 }) {
     const [appartements, setAppartements] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
-
-    console.log(contrat);
 
     const { data, setData, errors, setError, processing, post } = useForm({
         proprietaire_id: contrat?.proprietaire?.id ?? "",
@@ -142,6 +140,23 @@ export default function FormContrat({
             },
         });
     };
+
+    useEffect(() => {
+        async function fetchData() {
+            try {
+                const response = await fetch(
+                    `/api/v1/appartements/${contrat?.proprietaire?.id}`
+                );
+                const result = await response.json();
+                const data = result.data;
+                setAppartements(data);
+            } catch (error) {
+                console.error(error.message);
+            }
+        }
+
+        fetchData();
+    }, [isUpdate]);
 
     return (
         <form className="space-y-6" onSubmit={handleSubmit}>
@@ -443,23 +458,23 @@ export default function FormContrat({
                                     <SelectValue placeholder="Sélectionner un statut" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="En attente">
+                                    <SelectItem value="en attente">
                                         En attente
                                     </SelectItem>
-                                    <SelectItem value="En cours">
+                                    <SelectItem value="en cours">
                                         En cours
                                     </SelectItem>
-                                    <SelectItem value="Terminé">
+                                    <SelectItem value="terminé">
                                         Terminé
                                     </SelectItem>
-                                    <SelectItem value="Résilié">
+                                    <SelectItem value="résilié">
                                         Résilié
                                     </SelectItem>
                                 </SelectContent>
                             </Select>
                             <InputError message={errors.statut} />
                         </div>
-                        {data.statut === "En cours" && (
+                        {data.statut === "en cours" && (
                             <div className="flex items-center space-x-2">
                                 <Switch
                                     id="mail_send"

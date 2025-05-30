@@ -6,7 +6,6 @@ import { Button } from "../../../components/ui/button";
 import {
     Download,
     EllipsisVertical,
-    Eye,
     Loader,
     Pencil,
     Plus,
