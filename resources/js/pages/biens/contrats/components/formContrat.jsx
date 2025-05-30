@@ -13,7 +13,6 @@ import { Label } from "../../../../components/ui/label";
 import InputError from "../../../../components/InputError";
 import { Input } from "../../../../components/ui/input";
 import { Editor } from "@tinymce/tinymce-react";
-import OpenAI from "openai";
 import { toast } from "sonner";
 import { useForm } from "@inertiajs/react";
 import { Switch } from "../../../../components/ui/switch";
@@ -27,32 +26,20 @@ export default function FormContrat({
 }) {
     const [appartements, setAppartements] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
-    const [modeleContrat, setModeleContrat] = useState("");
 
-    // Chargement du modèle de contrat au montage du composant
-    React.useEffect(() => {
-        fetch("/files/contrat_de_bail.doc")
-            .then((response) => response.text())
-            .then((text) => {
-                setModeleContrat(text);
-            })
-            .catch((error) => {
-                console.error("Erreur lors du chargement du modèle:", error);
-                toast.error("Erreur lors du chargement du modèle de contrat");
-            });
-    }, []);
+    console.log(contrat);
 
     const { data, setData, errors, setError, processing, post } = useForm({
-        proprietaire_id: "",
-        locataire_id: "",
-        appartement_id: "",
-        garantie: "",
-        type: "",
-        date_debut: "",
-        date_fin: "",
-        description: "",
-        statut: "en attente",
-        mail_send: true,
+        proprietaire_id: contrat?.proprietaire?.id ?? "",
+        locataire_id: contrat?.locataire_id ?? "",
+        appartement_id: contrat?.appartement?.id ?? "",
+        garantie: contrat?.garantie ?? "",
+        type: contrat?.type ?? "",
+        date_debut: contrat?.date_debut ?? "",
+        date_fin: contrat?.date_fin ?? "",
+        description: contrat?.description ?? "",
+        statut: contrat?.statut ?? "en attente",
+        mail_send: contrat?.statut === "en cours" ? true : false,
         _method: isUpdate ? "PATCH" : "POST",
     });
 
@@ -138,82 +125,6 @@ export default function FormContrat({
                 setIsLoading(false);
             }
         }, 3000);
-
-        /* const completion = openai.chat.completions.create({
-            model: "gpt-4.1-mini",
-            store: true,
-            max_completion_tokens: 1000,
-            messages: [
-                {
-                    role: "system",
-                    content: `
-                    Vous êtes un expert en droit immobilier ivoirien. 
-                    Générez un contrat de type "${data.type}" conforme à la législation ivoirienne à partir du modèle ci-dessous.
-              
-                    Consignes :
-                    - Utilisez le modèle fourni comme base sans en retirer de contenu
-                    - Remplacez uniquement les pointillés par les données fournies
-                    - Corrigez les fautes éventuelles et appliquez un style HTML lisible
-                    - N’incluez AUCUN marqueur de code ou commentaire
-                    - Le résultat doit être directement utilisable dans un éditeur TinyMCE
-              
-                    Modèle de contrat :
-                    ${modeleContrat}
-                  `,
-                },
-                {
-                    role: "user",
-                    content: `
-                    Générez un contrat HTML stylisé en remplaçant les pointillés du modèle avec les données suivantes :
-              
-                    Bailleur :
-                    - Nom : ${proprietaire.name}
-                    - Contact : ${proprietaire.phone} / ${proprietaire.email}
-                    - Adresse : ${proprietaire.address}
-              
-                    Bien loué :
-                    - Type : ${appartement.libelle}
-                    - Adresse : ${appartement.adresse}
-                    - Loyer : ${appartement.loyer} FCFA
-                    - Superficie : ${appartement.supercifie}
-                    - Pièces : ${appartement.nombre_de_piece}
-                    - Charges : ${appartement.charge}
-              
-                    Locataire :
-                    - Nom : ${locataire.nom_complet}
-                    - Contact : ${locataire.telephone} / ${locataire.email}
-                    - Adresse : ${locataire.adresse}
-                    - Profession : ${locataire.profession}
-              
-                    Contrat :
-                    - Période : du ${data.date_debut} au ${data.date_fin}
-                    - Type : ${data.type}
-                    - Garantie : ${data.garantie} mois (${
-                        appartement.loyer * data.garantie
-                    } FCFA)
-              
-                    IMPORTANT : ne retournez que le contenu HTML, sans marqueur de code ni commentaire.
-                  `,
-                },
-            ],
-        });
-
-        completion
-            .then((result) => {
-                setData("description", result.choices[0].message.content);
-            })
-            .catch((error) => {
-                console.error(error);
-                toast.error(
-                    error.message ||
-                        "Oups, une erreur s'est produite. Verifiez les données renseignées et rééssayez."
-                );
-
-                setIsLoading(false);
-            })
-            .finally(() => {
-                setIsLoading(false);
-            }); */
     };
 
     //Soumission du formulaire

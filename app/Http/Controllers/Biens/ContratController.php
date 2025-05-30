@@ -84,6 +84,23 @@ class ContratController extends Controller
         }
     }
 
+    /**
+     * Edition d'un contrat
+     * 
+     * @param Contrat $contrat
+     * @return void
+     */
+    public function edit(Contrat $contrat)
+    {
+        $this->activityService->save('Affichage du formulaire d\'édition du contrat ' . $contrat->ref);
+        return Inertia::render('biens/contrats/edit', [
+            'proprietaires' => $this->proprietaireRepository->get(['status' => 1]),
+            'locataires' => $this->locataireRepository->get(['status' => 1]),
+            'contrat' => $contrat,
+            'title' => 'Édition du contrat' . $contrat->ref
+        ]);
+    }
+
     public function update(ContratRequest $request) {}
 
     public function destroy(Contrat $contrat) {}

@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api\Biens;
 
 use App\Http\Controllers\Controller;
 use App\Models\Appartement;
-use App\Models\Contrat;
 use App\Models\Locataire;
 use App\Models\Proprietaire;
 use Carbon\Carbon;
@@ -139,12 +138,4 @@ class ContratController extends Controller
             ], JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
-
-    /**
-     * Telechargement du contrat en pdf
-     *
-     * @param Contrat $contrat
-     * @return void
-     */
-    public function download(Contrat $contrat) {}
 }
