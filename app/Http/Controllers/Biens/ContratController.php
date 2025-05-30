@@ -13,6 +13,7 @@ use App\Services\ActivityService;
 use App\Services\MailService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class ContratController extends Controller
@@ -69,6 +70,8 @@ class ContratController extends Controller
     {
         $data = $request->validated();
 
+        DB::beginTransaction();
+
         try {
             //Sauvegarde des informations du contrat
             $contrat = $this->contratRepository->save($data);
@@ -83,8 +86,10 @@ class ContratController extends Controller
             $factureData['etat'] = 'validé';
             $factureData['date_emission'] = now();
             $factureData['date_echeance'] = now()->addDays(30); //30 jours après la date d'émission
-            $factureData['element'] = 'Contrat de ' . $contrat->type . ', ' . $contrat->garantie . ' mois de garantie';
-            $factureData['element_montant'] = $contrat->garantie * $contrat->appartement->loyer;
+            $factureData['elements'][] = [
+                'libelle' => 'Contrat de ' . $contrat->type . ', ' . $contrat->garantie . ' mois de garantie',
+                'montant' => $contrat->garantie * $contrat->appartement->loyer
+            ];
 
             $facture = $this->factureRepository->save($factureData);
 
@@ -97,8 +102,10 @@ class ContratController extends Controller
             //Log activity
             $this->activityService->save('Création du contrat ' . $contrat->ref . ' et génération de la facture ' . $facture->ref);
 
+            DB::commit();
             return to_route('contrats.index')->with('success', 'Contrat sauvegardé avec succès');
         } catch (\Throwable $th) {
+            DB::rollBack();
             logger()->error('Une erreur est survenue lors de la sauvegarde du contrat', [$th->getMessage()]);
             return back()->withErrors(['error' => 'Une erreur est survenue lors de la sauvegarde du contrat : ' . $th->getMessage()]);
         }

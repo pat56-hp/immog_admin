@@ -155,7 +155,9 @@ export default function FormContrat({
             }
         }
 
-        fetchData();
+        if (isUpdate) {
+            fetchData();
+        }
     }, [isUpdate]);
 
     return (

@@ -28,7 +28,21 @@ class FactureRepository implements FactureInterface
      */
     public function save(array $data): Facture
     {
-        return $this->model->create($data);
+        if (isset($data['id'])) {
+            $facture = $this->model->findOrFail($data['id']);
+            //On supprime les anciens elements
+            $facture->elements->delete();
+
+            //Enregsitre les modifications
+            $facture->update($data);
+        } else
+            $facture = $this->model->create($data);
+
+
+        //On enregistre les elements rattachés
+        foreach ($data['elements'] as $element) {
+            $facture->elements()->create($element);
+        }
     }
 
     /**

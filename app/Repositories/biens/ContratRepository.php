@@ -33,12 +33,18 @@ class ContratRepository implements ContratInterface
         if (isset($data['id'])) {
             $contrat = $this->model->findOrFail($data['id']);
             $contrat->update($data);
-            return $contrat;
+        } else
+            $contrat = $this->model->create($data);
+
+
+        //On verifie le statut du contrat pour mettre à jour la disponibilité de l'appartement
+        if ($contrat->statut === 'en cours') {
+            $contrat->appartement->update(['statut' => 'occupé']);
+        } else {
+            $contrat->appartement->update(['statut' => 'disponible']);
         }
 
-        //Generation de la reference du contrat
-        //$data['ref'] = Str::random(8);
-        return $this->model->create($data);
+        return $contrat;
     }
 
     /**

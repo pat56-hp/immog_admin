@@ -13,4 +13,12 @@ export default defineConfig({
         react(),
         tailwindcss(),
     ],
+    optimizeDeps: {
+        exclude: ["some-lib"],
+    },
+    server: {
+        watch: {
+            usePolling: true,
+        },
+    },
 });
