@@ -79,4 +79,9 @@ class Locataire extends Model
     {
         return $this->status ? 'Actif' : 'Inactif';
     }
+
+    public function contrats()
+    {
+        return $this->hasMany(Contrat::class, 'locataire_id');
+    }
 }

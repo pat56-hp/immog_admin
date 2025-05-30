@@ -43,6 +43,8 @@ class FactureRepository implements FactureInterface
         foreach ($data['elements'] as $element) {
             $facture->elements()->create($element);
         }
+
+        return $facture;
     }
 
     /**

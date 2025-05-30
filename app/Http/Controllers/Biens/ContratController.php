@@ -7,8 +7,8 @@ use App\Http\Requests\ContratRequest;
 use App\Models\Contrat;
 use App\Repositories\Interfaces\biens\ContratInterface;
 use App\Repositories\Interfaces\comptabilites\FactureInterface;
-use App\Repositories\Interfaces\utilisateurs\LocataireInterface;
 use App\Repositories\Interfaces\utilisateurs\ProprietaireInterface;
+use App\Repositories\utilisateurs\LocataireRepository;
 use App\Services\ActivityService;
 use App\Services\MailService;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -23,7 +23,7 @@ class ContratController extends Controller
         private ContratInterface $contratRepository,
         private FactureInterface $factureRepository,
         private ProprietaireInterface $proprietaireRepository,
-        private LocataireInterface $locataireRepository,
+        private LocataireRepository $locataireRepository,
         private MailService $mailService
     ) {
         Inertia::share([
@@ -82,7 +82,7 @@ class ContratController extends Controller
             $factureData['montant'] = $contrat->garantie * $contrat->appartement->loyer;
             $factureData['user_type'] = 'locataire';
             $factureData['user_id'] = $contrat->locataire_id;
-            $factureData['statut'] = 'en attente';
+            $factureData['statut'] = 'impayé';
             $factureData['etat'] = 'validé';
             $factureData['date_emission'] = now();
             $factureData['date_echeance'] = now()->addDays(30); //30 jours après la date d'émission
@@ -107,7 +107,7 @@ class ContratController extends Controller
         } catch (\Throwable $th) {
             DB::rollBack();
             logger()->error('Une erreur est survenue lors de la sauvegarde du contrat', [$th->getMessage()]);
-            return back()->withErrors(['error' => 'Une erreur est survenue lors de la sauvegarde du contrat : ' . $th->getMessage()]);
+            return back()->with(['error' => 'Une erreur est survenue lors de la sauvegarde du contrat : ' . $th->getMessage()]);
         }
     }
 
@@ -150,7 +150,7 @@ class ContratController extends Controller
             return to_route('contrats.index')->with('success', 'Les modifications ont été appliquées');
         } catch (\Throwable $th) {
             logger()->error('Une erreur est survenue lors de la modification du contrat', [$th->getMessage()]);
-            return back()->withErrors(['error' => 'Une erreur est survenue lors de la modification du contrat : ' . $th->getMessage()]);
+            return back()->with(['error' => 'Une erreur est survenue lors de la modification du contrat : ' . $th->getMessage()]);
         }
     }
 
