@@ -117,7 +117,7 @@ class TypeAppartementController extends Controller
             $this->activityService->save('Suppression du type d\'appartement : ' . $typeAppartement->libelle);
             return back()->with('success', 'Type d\'appartement supprimé avec succès');
         } catch (\Throwable $th) {
-            return back()->withErrors($th->getMessage());
+            return back()->with(['error', $th->getMessage()]);
         }
     }
 

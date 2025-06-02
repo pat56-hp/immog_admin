@@ -154,7 +154,22 @@ class ContratController extends Controller
         }
     }
 
-    public function destroy(Contrat $contrat) {}
+    /**
+     * Suppression du contrat
+     *
+     * @param Contrat $contrat
+     * @return void
+     */
+    public function destroy(Contrat $contrat)
+    {
+        try {
+            $this->contratRepository->destroy($contrat);
+            $this->activityService->save('Suppression du contrat : ' . $contrat->ref);
+            return back()->with('success', 'Contrat supprimé avec succès');
+        } catch (\Throwable $th) {
+            return back()->with(['error', 'Une erreur s\'est produite pendant la suppression : ' . $th->getMessage()]);
+        }
+    }
 
     public function status(Request $request, Contrat $contrat) {}
 

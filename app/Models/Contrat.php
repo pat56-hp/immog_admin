@@ -29,6 +29,7 @@ class Contrat extends Model
     //Génération automatique de la reference du contrat lors de la creation
     protected static function booted()
     {
+        //Pendant la creation
         static::creating(function ($contrat) {
             //Verification de l'unicité de la reference
             do {
@@ -36,6 +37,12 @@ class Contrat extends Model
             } while (Contrat::where('ref', $ref)->exists());
 
             $contrat->ref = $ref;
+        });
+
+        //Pendant la suppression
+        static::deleting(function ($contrat) {
+            //On supprime la facture
+            $contrat->facture->delete();
         });
     }
 
@@ -104,5 +111,10 @@ class Contrat extends Model
     public function getGarantieAmountAttribute(): string
     {
         return number_format($this->garantie * $this->loyer, 0, '.', ' ') . ' FCFA';
+    }
+
+    public function facture()
+    {
+        return $this->hasOne(Facture::class, 'type_id')->where('type', 'contrat');
     }
 }

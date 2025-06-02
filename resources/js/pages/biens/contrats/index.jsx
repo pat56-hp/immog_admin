@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ContentLayout from "../../../layouts/content-layout";
 import Datatable from "../../../components/datatable";
-import { Link } from "@inertiajs/react";
+import { Link, useForm } from "@inertiajs/react";
 import { Button } from "../../../components/ui/button";
 import {
     Download,
@@ -23,10 +23,13 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "../../../components/ui/dropdown-menu";
+import ActionAlertDialog from "../../../components/shared/action-alert-dialog";
 
 export default function Contrat({ contrats, title, module, success }) {
     const [download, setDownload] = useState(false);
-    const [isOpen, setIsOpen] = useState(false);
+    const [openMenuId, setOpenMenuId] = useState(null);
+    const [openDialogId, setOpenDialogId] = useState(null);
+    const { delete: destroy, processing } = useForm();
 
     const breadcrumb = [
         {
@@ -56,10 +59,16 @@ export default function Contrat({ contrats, title, module, success }) {
         },
         {
             key: "loyer_formatted",
-            label: "loyer",
+            label: "Appartement",
             sortable: true,
             render: (contrat) => (
-                <Badge variant="warning">{contrat.loyer_formatted}</Badge>
+                <div className="space-y-1">
+                    <Badge variant="success">
+                        {contrat.appartement.libelle}
+                    </Badge>
+                    <br />
+                    <Badge variant="warning">{contrat.loyer_formatted}</Badge>
+                </div>
             ),
         },
         {
@@ -98,7 +107,12 @@ export default function Contrat({ contrats, title, module, success }) {
             key: "action",
             render: (contrat) => (
                 <div className="w-full text-center">
-                    <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
+                    <DropdownMenu
+                        open={openDialogId === contrat.ref}
+                        onOpenChange={(open) =>
+                            setOpenDialogId(open ? contrat.id : null)
+                        }
+                    >
                         <DropdownMenuTrigger asChild>
                             <Button
                                 variant="secondary"
@@ -133,6 +147,13 @@ export default function Contrat({ contrats, title, module, success }) {
                                 <DropdownMenuItem
                                     className=" bg-red-400 text-white hover:!bg-red-500 hover:!text-white"
                                     variant="delete"
+                                    onClick={() => {
+                                        setDropdownOpenId(null); // ferme le menu
+                                        setTimeout(
+                                            () => setOpenDialogId(contrat.ref),
+                                            10
+                                        ); // ouvre le dialog
+                                    }}
                                 >
                                     <Trash2Icon className="w-4 h-4 text-white" />
                                     Supprimer
@@ -156,7 +177,6 @@ export default function Contrat({ contrats, title, module, success }) {
         e.preventDefault();
 
         setDownload(true);
-        setIsOpen(true);
         setTimeout(() => {
             fetch(route("contrats.download", contrat.id), {
                 method: "GET",
@@ -183,7 +203,7 @@ export default function Contrat({ contrats, title, module, success }) {
                 })
                 .finally(() => {
                     setDownload(false);
-                    setIsOpen(false);
+                    setOpenMenuId(null);
                 });
         }, [3000]);
     };
@@ -209,6 +229,27 @@ export default function Contrat({ contrats, title, module, success }) {
                     </Link>,
                 ]}
             />
+
+            {openDialogId && (
+                <ActionAlertDialog
+                    open={true}
+                    onOpenChange={(open) => {
+                        if (!open) setOpenDialogId(null);
+                    }}
+                    title={`Suppression du contrat #${openDialogId}`}
+                    description={`Êtes-vous sûr de vouloir supprimer ce contrat ? Cette action est irréversible.`}
+                    processing={processing}
+                    onConfirm={() => {
+                        destroy(route("contrats.destroy", openDialogId), {
+                            preserveScroll: true,
+                            onSuccess: () => {
+                                toast.success("Contrat supprimé avec succès");
+                                setOpenDialogId(null); // Ferme la boîte
+                            },
+                        });
+                    }}
+                />
+            )}
         </ContentLayout>
     );
 }

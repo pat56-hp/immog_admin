@@ -34,6 +34,11 @@ class Facture extends Model
 
             $facture->ref = $ref;
         });
+
+        static::deleting(function ($facture) {
+            //On supprime les elements
+            $facture->elements()->delete();
+        });
     }
 
     public function elements()
