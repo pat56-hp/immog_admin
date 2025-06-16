@@ -42,7 +42,7 @@ class CloudinaryService
             if (!$publicId) return null;
             return $this->cloudinary->uploadApi()->destroy($publicId);
         } catch (\Throwable $th) {
-            logger()->error("Suppression d'une image cloudinary : " . $th->getMessage());
+            logger()->error(">> Error de suppression d'une image cloudinary : " . $th->getMessage());
         }
     }
 
