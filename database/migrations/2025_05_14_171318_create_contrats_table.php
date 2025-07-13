@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('ref');
             $table->foreignId('locataire_id')->constrained('locataires')->onDelete('cascade');
             $table->foreignId('appartement_id')->constrained('appartements')->onDelete('cascade');
-            $table->string('type')->default("Bail d'habitation");
+            $table->string('type')->default("Bail d\'habitation");
             $table->text('description')->nullable();
             $table->date('date_debut');
             $table->date('date_fin');

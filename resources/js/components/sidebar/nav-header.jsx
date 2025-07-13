@@ -10,9 +10,9 @@ export default function NavHeader() {
                 <img
                     src={setting.logo_url}
                     alt="Logo"
-                    className="h-8 w-8 rounded-full"
+                    //className="h-8 w-8 rounded-full"
                 />
-                <span className="text-lg font-bold">{setting.name}</span>
+                {/* <span className="text-lg font-bold">{setting.name}</span> */}
             </div>
         </div>
     );
