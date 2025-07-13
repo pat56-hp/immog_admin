@@ -5,7 +5,7 @@ export default function NavHeader() {
     const { setting } = usePage().props;
 
     return (
-        <div className="flex items-center justify-between  py-4">
+        <div className="flex items-center justify-center  py-4">
             <div className="flex items-center space-x-5">
                 <img
                     src={setting.logo_url}

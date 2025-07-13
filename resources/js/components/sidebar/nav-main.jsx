@@ -29,12 +29,22 @@ export default function NavMain({ items, groupLabel = null }) {
                         defaultOpen={item.isActive}
                         className="group/collapsible"
                     >
-                        <SidebarMenuItem>
+                        <SidebarMenuItem
+                            className={
+                                item.isActive
+                                    ? "border-l-4 border-[#ff6467] bg-[#fff6f6] text-[#ff6467]"
+                                    : "border-l-4 border-transparent hover:border-[#ff6467] hover:bg-[#fff6f6] hover:text-[#ff6467]"
+                            }
+                        >
                             {item.items ? (
                                 <CollapsibleTrigger asChild>
                                     <SidebarMenuButton
                                         tooltip={item.title}
-                                        className="!py-5 data-[active=true]:bg-red-400 data-[active=true]:text-white data-[active=true]:hover:bg-red-400 data-[active=true]:hover:text-white data-[state=open]:data-[active=true]:hover:bg-red-400 data-[state=open]:data-[active=true]:hover:text-white hover:cursor-pointer"
+                                        className={`!py-5 pl-4 border-transparent transition-colors
+        hover:bg-[#fff6f6] hover:border-[#ff6467] hover:text-[#ff6467]
+        data-[active=true]:bg-[#fff6f6] data-[active=true]:border-[#ff6467] data-[active=true]:text-[#ff6467]
+        data-[state=open]:data-[active=true]:bg-[#fff6f6] data-[state=open]:data-[active=true]:border-[#ff6467] data-[state=open]:data-[active=true]:text-[#ff6467]
+        hover:cursor-pointer`}
                                         data-active={item.isActive}
                                     >
                                         {item.icon && <item.icon />}
@@ -46,7 +56,10 @@ export default function NavMain({ items, groupLabel = null }) {
                                 <Link href={item.url}>
                                     <SidebarMenuButton
                                         tooltip={item.title}
-                                        className="!py-5 data-[active=true]:bg-red-400 data-[active=true]:text-white data-[active=true]:hover:bg-red-400 data-[active=true]:hover:text-white data-[state=open]:data-[active=true]:hover:bg-red-400 data-[state=open]:data-[active=true]:hover:text-white hover:cursor-pointer"
+                                        className={`!py-5 pl-4 border-transparent transition-colors
+        hover:bg-[#fff6f6] hover:border-[#ff6467] hover:text-[#ff6467]
+        data-[active=true]:bg-[#fff6f6] data-[active=true]:border-[#ff6467] data-[active=true]:text-[#ff6467]
+        hover:cursor-pointer`}
                                         data-active={item.isActive}
                                     >
                                         {item.icon && <item.icon />}
@@ -56,7 +69,13 @@ export default function NavMain({ items, groupLabel = null }) {
                             )}
                             {item.items && (
                                 <CollapsibleContent>
-                                    <SidebarMenuSub>
+                                    <SidebarMenuSub
+                                        className={
+                                            item.isActive
+                                                ? "!border-l-0 bg-[#fff6f6]"
+                                                : ""
+                                        }
+                                    >
                                         {item.items?.map((subItem) => (
                                             <SidebarMenuSubItem
                                                 key={subItem.title}
@@ -66,7 +85,9 @@ export default function NavMain({ items, groupLabel = null }) {
                                                     data-active={
                                                         subItem.isActive
                                                     }
-                                                    className="data-[active=true]:text-red-600"
+                                                    className={`transition-colors
+        hover:bg-[#fff6f6] hover:text-[#ff6467]
+        data-[active=true]:bg-[#fff6f6] data-[active=true]:text-[#ff6467]`}
                                                 >
                                                     <Link href={subItem.url}>
                                                         <span>
