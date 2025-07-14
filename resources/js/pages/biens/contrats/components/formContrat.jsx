@@ -13,10 +13,9 @@ import { Label } from "../../../../components/ui/label";
 import InputError from "../../../../components/InputError";
 import { Input } from "../../../../components/ui/input";
 import { Editor } from "@tinymce/tinymce-react";
-import { toast } from "sonner";
-import { useForm } from "@inertiajs/react";
 import { Switch } from "../../../../components/ui/switch";
 import { Skeleton } from "../../../../components/ui/skeleton";
+import { useContrat } from "../../../../hooks/useContrat";
 
 export default function FormContrat({
     proprietaires,
@@ -24,141 +23,17 @@ export default function FormContrat({
     isUpdate = false,
     contrat,
 }) {
-    const [appartements, setAppartements] = useState([]);
-    const [isLoading, setIsLoading] = useState(false);
-
-    const { data, setData, errors, setError, processing, post } = useForm({
-        proprietaire_id: contrat?.proprietaire?.id ?? "",
-        locataire_id: contrat?.locataire_id ?? "",
-        appartement_id: contrat?.appartement?.id ?? "",
-        garantie: contrat?.garantie ?? "",
-        type: contrat?.type ?? "",
-        date_debut: contrat?.date_debut ?? "",
-        date_fin: contrat?.date_fin ?? "",
-        description: contrat?.description ?? "",
-        statut: contrat?.statut ?? "en attente",
-        mail_send: contrat?.statut === "en cours" ? true : false,
-        _method: isUpdate ? "PATCH" : "POST",
-    });
-
-    //Recuperation des appartements du proprietaire selectionné
-    const handleChangeProprietaire = async (proprio) => {
-        setData("proprietaire_id", proprio);
-        try {
-            const response = await fetch(`/api/v1/appartements/${proprio}`);
-            const result = await response.json();
-            const data = result.data;
-            setAppartements(data);
-        } catch (error) {
-            console.error(error.message);
-        }
-    };
-
-    //Generation du contrat
-    const handleGenerate = (e) => {
-        e.preventDefault();
-        setIsLoading(true);
-
-        //Mise à jour des erreurs
-        setError("appartement_id", "");
-        setError("date_debut", "");
-        setError("date_fin", "");
-        setError("garantie", "");
-        setError("locataire_id", "");
-        setError("proprietaire_id", "");
-        setError("type", "");
-
-        setTimeout(async () => {
-            try {
-                const response = await fetch(
-                    "/api/v1/contrats/generate-contrat",
-                    {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                            accept: "application/json",
-                        },
-                        body: JSON.stringify({
-                            locataire: data.locataire_id,
-                            appartement: data.appartement_id,
-                            proprietaire: data.proprietaire_id,
-                            date_debut: data.date_debut,
-                            date_fin: data.date_fin,
-                            garantie: data.garantie,
-                            type: data.type,
-                        }),
-                    }
-                );
-
-                const result = await response.json();
-
-                if (!response.ok) {
-                    //Capture de l'erreur de la requête
-                    throw {
-                        status: response.status,
-                        message: result.message || "Une erreur est survenue.",
-                        data: result.errors || result,
-                    };
-                }
-
-                setData("description", result.data);
-            } catch (error) {
-                // Gestion des erreurs
-                toast.error(
-                    error.message ||
-                        "Oups, une erreur s'est produite. Verifiez les données renseignées et rééssayez."
-                );
-
-                if (error.data) {
-                    console.log("Détails de l'erreur :", error.data);
-                    setError("appartement_id", error.data?.appartement);
-                    setError("date_debut", error.data?.date_debut);
-                    setError("date_fin", error.data?.date_fin);
-                    setError("garantie", error.data?.garantie);
-                    setError("locataire_id", error.data?.locataire);
-                    setError("proprietaire_id", error.data?.proprietaire);
-                    setError("type", error.data?.type);
-                }
-            } finally {
-                setIsLoading(false);
-            }
-        }, 3000);
-    };
-
-    //Soumission du formulaire
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-
-        const url = isUpdate ? "contrats.update" : "contrats.store";
-        post(route(url, contrat?.id), {
-            preserveScroll: true,
-            onError: (errors) => {
-                console.log(errors);
-                toast.error(
-                    "Une erreur s'est produite, veuillez vérifier les champs du formulaire"
-                );
-            },
-        });
-    };
-
-    useEffect(() => {
-        async function fetchData() {
-            try {
-                const response = await fetch(
-                    `/api/v1/appartements/${contrat?.proprietaire?.id}`
-                );
-                const result = await response.json();
-                const data = result.data;
-                setAppartements(data);
-            } catch (error) {
-                console.error(error.message);
-            }
-        }
-
-        if (isUpdate) {
-            fetchData();
-        }
-    }, [isUpdate]);
+    const {
+        data,
+        setData,
+        errors,
+        processing,
+        isLoading,
+        appartements,
+        handleChangeProprietaire,
+        handleGenerateContrat,
+        handleSubmit,
+    } = useContrat(contrat, isUpdate);
 
     return (
         <form className="space-y-6" onSubmit={handleSubmit}>
@@ -345,7 +220,7 @@ export default function FormContrat({
                             <Button
                                 type="button"
                                 className=" bg-yellow-400 hover:bg-yellow-500 hover:cursor-pointer"
-                                onClick={handleGenerate}
+                                onClick={handleGenerateContrat}
                                 disabled={isLoading}
                             >
                                 {isLoading
@@ -500,7 +375,7 @@ export default function FormContrat({
                     <Button
                         type="button"
                         className="w-2xl h-12 bg-red-400 hover:bg-red-500 hover:cursor-pointer"
-                        onClick={handleGenerate}
+                        onClick={handleGenerateContrat}
                         disabled={isLoading}
                     >
                         {isLoading
