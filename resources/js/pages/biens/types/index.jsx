@@ -52,16 +52,7 @@ export default function TypeAppartement({ types, title }) {
         {
             label: "Actions",
             key: "actions",
-            render: (type) => (
-                <div className="flex gap-1">
-                    <ModalTypeAppart
-                        type={type}
-                        isUpdate={true}
-                        method="PATCH"
-                    />
-                    <DeleteType type={type} />
-                </div>
-            ),
+            render: (type) => <ActionType type={type} />,
         },
     ];
 
@@ -77,8 +68,22 @@ export default function TypeAppartement({ types, title }) {
                 columuns={columns}
                 seachable={true}
                 itemsPerPage={25}
-                buttons={[<ModalTypeAppart />]}
+                buttons={[<ModalTypeAppart key={"create"} />]}
             />
         </ContentLayout>
+    );
+}
+
+function ActionType({ type }) {
+    return (
+        <div className="flex gap-1">
+            <ModalTypeAppart
+                key={type.id}
+                type={type}
+                isUpdate={true}
+                method="PATCH"
+            />
+            <DeleteType type={type} />
+        </div>
     );
 }

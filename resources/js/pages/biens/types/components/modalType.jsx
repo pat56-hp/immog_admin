@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "../../../../components/ui/button";
 import { Pencil, Plus } from "lucide-react";
 import ActionDialog from "../../../../components/shared/action-dialog";
@@ -11,18 +11,33 @@ import { toast } from "sonner";
 import InputError from "../../../../components/InputError";
 
 export default function ModalTypeAppart({
-    type,
+    type = {},
     isUpdate = false,
     method = "POST",
 }) {
+    const [isOpen, setIsOpen] = useState(false);
+
     const { data, setData, processing, errors, reset, post } = useForm({
-        libelle: type?.libelle ?? "",
-        description: type?.description ?? "",
+        libelle: "",
+        description: "",
         _method: method,
     });
 
+    useEffect(() => {
+        console.log("Modal ouvert, type=", type);
+        if (isOpen) {
+            setData({
+                libelle: type?.libelle ?? "",
+                description: type?.description ?? "",
+                _method: method,
+            });
+        }
+    }, [isOpen]);
+
     return (
         <ActionDialog
+            open={isOpen}
+            onOpenChange={setIsOpen}
             title={
                 isUpdate
                     ? `Modification du type d\'appartement ${type?.libelle}`
@@ -32,6 +47,7 @@ export default function ModalTypeAppart({
             processing={processing}
             onConfirm={async () => {
                 return new Promise((resolve, reject) => {
+                    console.log(data);
                     post(
                         isUpdate
                             ? route("appartements.types.update", type?.id)
@@ -40,6 +56,7 @@ export default function ModalTypeAppart({
                             preserveScroll: true,
                             onSuccess: () => {
                                 resolve(true);
+                                setIsOpen(false);
                                 reset();
                                 toast.success(
                                     "Informations enregistrées avec succès"
@@ -89,9 +106,9 @@ export default function ModalTypeAppart({
                             id="name"
                             className="mt-2"
                             value={data.description}
-                            onChange={(e) =>
-                                setData("description", e.target.description)
-                            }
+                            onChange={(e) => {
+                                setData("description", e.target.value);
+                            }}
                             placeholder="Renseignez une description"
                             required
                         />
