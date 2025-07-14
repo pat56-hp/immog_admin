@@ -11,7 +11,6 @@ export default function AppartementInfo({ appartement }) {
     return (
         <Card className="">
             <CardHeader>
-                <CardTitle>{appartement.libelle}</CardTitle>
                 <div className="flex items-center text-muted-foreground">
                     <MapPin className="h-4 w-4 mr-1" />
                     {appartement.adresse_name}

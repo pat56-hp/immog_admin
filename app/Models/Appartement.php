@@ -24,7 +24,7 @@ class Appartement extends Model
     protected $fillable = [
         'proprietaire_id',
         'type_appartement_id',
-        'libelle',
+        //'libelle',
         'description',
         'adresse',
         'ville',

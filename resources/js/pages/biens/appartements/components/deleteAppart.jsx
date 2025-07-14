@@ -22,7 +22,7 @@ export default function DeleteAppart({ appartement }) {
             <ActionAlertDialog
                 open={open}
                 onOpenChange={setOpen}
-                title={`Suppression de l'appartement ${appartement.libelle}`}
+                title={`Suppression de l'appartement`}
                 description={`Êtes-vous sûr de vouloir supprimer cet appartement ? Cette action est irréversible.`}
                 processing={processing}
                 onConfirm={() =>

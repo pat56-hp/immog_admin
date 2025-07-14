@@ -18,6 +18,7 @@ import ImageComponent from "../../../../components/imageComponent";
 import { Button } from "../../../../components/ui/button";
 import { Loader } from "lucide-react";
 import { toast } from "sonner";
+import { useAppartement } from "../../../../hooks/useAppartement";
 
 export default function FormAppart({
     appartement,
@@ -25,73 +26,17 @@ export default function FormAppart({
     types,
     isUpdate = false,
 }) {
-    const countries = countryList().getData();
-    const [images, setImages] = useState(() => {
-        if (isUpdate && appartement?.photos) {
-            const images = JSON.parse(appartement.photos);
+    const {
+        images,
+        data,
+        setData,
+        processing,
+        errors,
+        countries,
+        onChangeImage,
+        handleSubmit,
+    } = useAppartement(appartement, isUpdate);
 
-            return images.map((image) => ({
-                photo: image,
-                isLink: true, // Marquer comme lien existant
-            }));
-        }
-        return [];
-    });
-
-    //Uplodate des images
-    const onChangeImage = (images) => {
-        if (Array.isArray(images) && images.length) {
-            const validFiles = images.map((image) => {
-                // Vérifie si c'est un fichier ou un lien déjà existant
-                return image?.file instanceof File ? image.file : image.photo;
-            });
-
-            setImages(images);
-            setData("photos", validFiles);
-        } else {
-            setImages([]);
-            setData("photos", null);
-        }
-    };
-
-    const { data, setData, post, processing, errors } = useForm({
-        proprietaire_id: appartement?.proprietaire_id ?? "",
-        type_appartement_id: appartement?.type_appartement_id ?? "",
-        libelle: appartement?.libelle ?? "",
-        description: appartement?.description ?? "",
-        adresse: appartement?.adresse ?? "",
-        ville: appartement?.ville ?? "",
-        pays: appartement?.pays ?? "CI",
-        superficie: appartement?.superficie ?? "1",
-        nombre_pieces: appartement?.nombre_pieces ?? "1",
-        nombre_sdb: appartement?.nombre_sdb ?? "1",
-        loyer_mensuel: appartement?.loyer_mensuel ?? "0",
-        charges_incluses: appartement?.charges_incluses ?? false,
-        statut: appartement?.statut ?? "disponible",
-        photos: null,
-        _method: isUpdate ? "PUT" : "POST",
-    });
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        post(
-            route(
-                isUpdate ? "appartements.update" : "appartements.store",
-                appartement?.id
-            ),
-            {
-                forceFormData: true,
-                preserveScroll: true,
-                //onSuccess: () => reset(),
-                onError: (errors) => {
-                    console.log(errors);
-                    toast.error(
-                        "Une erreur s'est produite, veuillez vérifier les champs du formulaire"
-                    );
-                },
-            }
-        );
-    };
     return (
         <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -147,7 +92,7 @@ export default function FormAppart({
                     </Select>
                     <InputError message={errors.type_appartement_id} />
                 </div>
-                <div className="space-y-2">
+                {/* <div className="space-y-2">
                     <Label htmlFor="libelle">
                         Libéllé <Required />
                     </Label>
@@ -158,7 +103,7 @@ export default function FormAppart({
                         onChange={(e) => setData("libelle", e.target.value)}
                     />
                     <InputError message={errors.libelle} />
-                </div>
+                </div> */}
                 <div className="space-y-2">
                     <Label htmlFor="pays">
                         Pays <Required />
@@ -283,17 +228,7 @@ export default function FormAppart({
                     </Select>
                     <InputError message={errors.statut} />
                 </div>
-                <div className="flex items-center space-x-2">
-                    <Switch
-                        id="charges_incluses"
-                        checked={data.charges_incluses}
-                        onCheckedChange={(checked) =>
-                            setData("charges_incluses", checked)
-                        }
-                    />
-                    <Label htmlFor="charges_incluses">Charges incluses</Label>
-                    <InputError message={errors.charges_incluses} />
-                </div>
+
                 <div className="space-y-2">
                     <Label htmlFor="description">Description</Label>
                     <Textarea
@@ -315,6 +250,17 @@ export default function FormAppart({
                         multiple={true}
                     />
                     <InputError message={errors.photos} />
+                </div>
+                <div className="flex items-center space-x-2">
+                    <Switch
+                        id="charges_incluses"
+                        checked={data.charges_incluses}
+                        onCheckedChange={(checked) =>
+                            setData("charges_incluses", checked)
+                        }
+                    />
+                    <Label htmlFor="charges_incluses">Charges incluses</Label>
+                    <InputError message={errors.charges_incluses} />
                 </div>
             </div>
             <div className="text-center">

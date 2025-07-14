@@ -12,7 +12,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('proprietaire_id')->constrained('proprietaires')->onDelete('cascade');
             $table->foreignId('type_appartement_id')->constrained('type_appartements')->onDelete('cascade');
-            $table->string('libelle');
+            //$table->string('libelle');
             $table->text('description')->nullable();
             $table->string('adresse');
             $table->string('ville');

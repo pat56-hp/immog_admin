@@ -32,11 +32,6 @@ export default function Appartements({ appartements, module, title, success }) {
             ),
         },
         {
-            key: "libelle",
-            label: "Libéllé",
-            sortable: true,
-        },
-        {
             key: "proprietaire_name",
             label: "Propriétaire",
             sortable: true,

@@ -1,16 +1,8 @@
 import React from "react";
 import ContentLayout from "../../../layouts/content-layout";
 import { Button } from "../../../components/ui/button";
-import { Bath, BedDouble, Home, MapPin, Pencil } from "lucide-react";
+import { Pencil } from "lucide-react";
 import { Link } from "@inertiajs/react";
-import {
-    Card,
-    CardContent,
-    CardHeader,
-    CardTitle,
-} from "../../../components/ui/card";
-import { Separator } from "../../../components/ui/separator";
-import { Badge } from "../../../components/ui/badge";
 import AppartementImages from "./components/images";
 import AppartementInfo from "./components/info";
 import AppartementResume from "./components/resume";

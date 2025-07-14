@@ -16,7 +16,7 @@ class AppartementRequest extends FormRequest
         $rules = [
             'proprietaire_id' => 'required|exists:proprietaires,id',
             'type_appartement_id' => 'required|exists:type_appartements,id',
-            'libelle' => 'required|string|max:255',
+            //'libelle' => 'required|string|max:255',
             'description' => 'nullable|string',
             'adresse' => 'required|string|max:255',
             'ville' => 'nullable|string|max:255',
