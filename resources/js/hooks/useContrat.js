@@ -4,7 +4,7 @@ import { getAppartementByProprio } from "../services/proprietaireService";
 import { generateContrat } from "../services/contratService";
 import { toast } from "sonner";
 
-export function useContrat(contrat, isUpdate) {
+export function useContrat(contrat, isUpdate = false) {
     const [isLoading, setIsLoading] = useState(false);
     const [appartements, setAppartements] = useState([]);
     const { data, setData, errors, setError, processing, post } = useForm({
@@ -26,6 +26,7 @@ export function useContrat(contrat, isUpdate) {
         setData("proprietaire_id", proprioId);
         try {
             const result = await getAppartementByProprio(proprioId);
+            setAppartements(result);
         } catch (error) {
             console.error(error.message);
         }
@@ -34,7 +35,8 @@ export function useContrat(contrat, isUpdate) {
     //Génération du contrat
     const handleGenerateContrat = (e) => {
         e.preventDefault();
-        setIsLoading(true)[
+        setIsLoading(true);
+        [
             //Reset des erreurs
             ("appartement_id",
             "date_debut",
@@ -42,7 +44,7 @@ export function useContrat(contrat, isUpdate) {
             "garantie",
             "locataire_id",
             "proprietaire_id",
-            "type")
+            "type"),
         ].forEach((field) => setError(field, ""));
 
         setTimeout(async () => {
@@ -57,7 +59,7 @@ export function useContrat(contrat, isUpdate) {
                     type: data.type,
                 });
 
-                setData("description", result.data);
+                setData("description", result);
             } catch (error) {
                 toast.error(
                     error.message ||
@@ -82,6 +84,7 @@ export function useContrat(contrat, isUpdate) {
 
         post(route(url, contrat?.id), {
             preserveScroll: true,
+            onSuccess: (success) => toast.success(success),
             onError: () =>
                 toast.error("Une erreur est survenue, vérifiez les champs"),
         });

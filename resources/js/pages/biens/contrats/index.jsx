@@ -24,11 +24,14 @@ import {
     DropdownMenuTrigger,
 } from "../../../components/ui/dropdown-menu";
 import ActionAlertDialog from "../../../components/shared/action-alert-dialog";
+import { downloadContratService } from "../../../services/contratService";
+import DeleteContrat from "./components/deleteContrat";
 
 export default function Contrat({ contrats, title, module, success }) {
     const [download, setDownload] = useState(false);
     const [openMenuId, setOpenMenuId] = useState(null);
     const [openDialogId, setOpenDialogId] = useState(null);
+    const [contratRef, setContratRef] = useState(null);
     const { delete: destroy, processing } = useForm();
 
     const breadcrumb = [
@@ -64,7 +67,7 @@ export default function Contrat({ contrats, title, module, success }) {
             render: (contrat) => (
                 <div className="space-y-1">
                     <Badge variant="success">
-                        {contrat.appartement.libelle}
+                        {contrat.appartement.type_libelle}
                     </Badge>
                     <br />
                     <Badge variant="warning">{contrat.loyer_formatted}</Badge>
@@ -108,9 +111,9 @@ export default function Contrat({ contrats, title, module, success }) {
             render: (contrat) => (
                 <div className="w-full text-center">
                     <DropdownMenu
-                        open={openDialogId === contrat.ref}
+                        open={openMenuId === contrat.ref}
                         onOpenChange={(open) =>
-                            setOpenDialogId(open ? contrat.id : null)
+                            setOpenMenuId(open ? contrat.ref : null)
                         }
                     >
                         <DropdownMenuTrigger asChild>
@@ -148,11 +151,11 @@ export default function Contrat({ contrats, title, module, success }) {
                                     className=" bg-red-400 text-white hover:!bg-red-500 hover:!text-white"
                                     variant="delete"
                                     onClick={() => {
-                                        setDropdownOpenId(null); // ferme le menu
-                                        setTimeout(
-                                            () => setOpenDialogId(contrat.ref),
-                                            10
-                                        ); // ouvre le dialog
+                                        //setDropdownOpenId(null); // ferme le menu
+                                        setTimeout(() => {
+                                            setOpenDialogId(contrat.id),
+                                                setContratRef(contrat.ref);
+                                        }, 10); // ouvre le dialog
                                     }}
                                 >
                                     <Trash2Icon className="w-4 h-4 text-white" />
@@ -169,6 +172,7 @@ export default function Contrat({ contrats, title, module, success }) {
     useEffect(() => {
         if (success) {
             toast.success(success);
+            window.history.replaceState({}, "", window.location.pathname);
         }
     }, [success]);
 
@@ -177,34 +181,28 @@ export default function Contrat({ contrats, title, module, success }) {
         e.preventDefault();
 
         setDownload(true);
-        setTimeout(() => {
-            fetch(route("contrats.download", contrat.id), {
-                method: "GET",
-                headers: {
-                    Accept: "application/pdf",
-                },
-            })
-                .then((response) => response.blob())
-                .then((blob) => {
-                    const url = window.URL.createObjectURL(blob);
-                    const link = document.createElement("a");
-                    link.href = url;
-                    link.download = `contrat_${contrat.ref}.pdf`;
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                    window.URL.revokeObjectURL(url);
-                })
-                .catch((error) => {
-                    console.log(error);
-                    toast.error(
-                        "Une erreur est survenue lors du téléchargement du contrat."
-                    );
-                })
-                .finally(() => {
-                    setDownload(false);
-                    setOpenMenuId(null);
-                });
+        setTimeout(async () => {
+            try {
+                const result = await downloadContratService(contrat.id);
+                const url = window.URL.createObjectURL(result);
+                const link = document.createElement("a");
+                link.href = url;
+                link.download = `contrat_${contrat.ref}.pdf`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                window.URL.revokeObjectURL(url);
+
+                return;
+            } catch (error) {
+                console.error(error);
+                toast.error(
+                    "Une erreur est survenue lors du téléchargement du contrat."
+                );
+            } finally {
+                setDownload(false);
+                setOpenMenuId(null);
+            }
         }, [3000]);
     };
 
@@ -231,23 +229,10 @@ export default function Contrat({ contrats, title, module, success }) {
             />
 
             {openDialogId && (
-                <ActionAlertDialog
-                    open={true}
-                    onOpenChange={(open) => {
-                        if (!open) setOpenDialogId(null);
-                    }}
-                    title={`Suppression du contrat #${openDialogId}`}
-                    description={`Êtes-vous sûr de vouloir supprimer ce contrat ? Cette action est irréversible.`}
-                    processing={processing}
-                    onConfirm={() => {
-                        destroy(route("contrats.destroy", openDialogId), {
-                            preserveScroll: true,
-                            onSuccess: () => {
-                                toast.success("Contrat supprimé avec succès");
-                                setOpenDialogId(null); // Ferme la boîte
-                            },
-                        });
-                    }}
+                <DeleteContrat
+                    openDialogId={openDialogId}
+                    onSetOpenDialogId={setOpenDialogId}
+                    contratRef={contratRef}
                 />
             )}
         </ContentLayout>

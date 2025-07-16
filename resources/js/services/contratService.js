@@ -21,3 +21,26 @@ export async function generateContrat(payload) {
 
     return result.data;
 }
+
+/**
+ * Exportation du contrat
+ * @param {Integer} contratId
+ * @returns
+ */
+export async function downloadContratService(contratId) {
+    const response = await fetch(route("contrats.download", contratId), {
+        method: "GET",
+        headers: {
+            Accept: "application/pdf",
+        },
+    });
+
+    if (!response.ok) {
+        throw {
+            status: response.status,
+            message: "Une erreur s'est produite",
+        };
+    }
+
+    return response.blob().then((rep) => rep);
+}

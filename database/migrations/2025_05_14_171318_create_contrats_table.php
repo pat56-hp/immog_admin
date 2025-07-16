@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignId('appartement_id')->constrained('appartements')->onDelete('cascade');
             $table->string('type')->default("Bail d\'habitation");
             $table->text('description')->nullable();
+            $table->integer('garantie')->default(2);
             $table->date('date_debut');
             $table->date('date_fin');
             $table->enum('statut', ['en cours', 'terminé', 'résilié', 'en attente'])->default('en attente');

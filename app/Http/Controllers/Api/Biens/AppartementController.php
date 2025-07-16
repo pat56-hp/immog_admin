@@ -16,7 +16,7 @@ class AppartementController extends Controller
     /**
      * Recuperation des appartements d'un proprietaire
      *
-     * @param Request $request
+     * @param Proprietaire $proprietaire
      * @return void
      */
     public function getByProprio(Proprietaire $proprietaire)

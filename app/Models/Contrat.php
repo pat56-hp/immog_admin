@@ -12,7 +12,7 @@ class Contrat extends Model
 {
     use SoftDeletes;
 
-    protected $appends = ['debut', 'fin', 'proprietaire_name', 'locataire_name', 'loyer_formatted', 'periode', 'garantie_amount'];
+    protected $appends = ['debut', 'fin', 'proprietaire_name', 'locataire_name', 'appartement_type', 'loyer_formatted', 'periode', 'garantie_amount'];
 
     protected $fillable = [
         'ref',
@@ -66,6 +66,11 @@ class Contrat extends Model
     public function appartement()
     {
         return $this->belongsTo(Appartement::class);
+    }
+
+    public function getAppartementTypeAttribute(): string
+    {
+        return $this->appartement->type_libelle;
     }
 
     public function getDebutAttribute(): string
