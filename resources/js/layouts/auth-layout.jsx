@@ -7,12 +7,16 @@ import { Toaster } from "@/components/ui/sonner";
 const appName = import.meta.env.VITE_APP_NAMe || "ImmoG";
 
 export default function AuthLayout({ children }) {
-    const { title } = usePage().props;
+    const { title, setting } = usePage().props;
 
     return (
         <>
             <Head>
                 <title>{title ? `${title} - ${appName}` : appName}</title>
+                <link rel="shortcut icon" href={setting?.favicon_url} />
+                <meta name="description" content={setting?.description} />
+                <meta name="keywords" content={setting?.keywords} />
+                <meta name="author" content="Pat56-hp" />
             </Head>
             <div className="flex min-h-svh flex-col items-center justify-center bg-muted p-6 md:p-10">
                 <div className="w-full max-w-sm md:max-w-3xl">
@@ -22,11 +26,10 @@ export default function AuthLayout({ children }) {
                             className="flex items-center gap-2 self-center font-medium"
                         >
                             <img
-                                src="/images/logo.png"
+                                src={setting?.logo_url}
                                 alt="Logo"
-                                className="h-13 w-13 rounded-full"
+                                className=""
                             />
-                            <h1 className="text-2xl">ImmoG</h1>
                         </a>
                         <Card className="overflow-hidden p-0">
                             <CardContent className="grid p-0 md:grid-cols-2">

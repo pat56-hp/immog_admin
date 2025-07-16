@@ -1,5 +1,7 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@import "../js/styles/_variables.scss";
+@import "../js/styles/_keyframe-animations.scss";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -191,6 +193,10 @@
     }
 }
 
+body {
+    overflow: auto !important;
+}
+
 .overflow-auto:hover,
 .overflow-scroll:hover,
 .overflow-x-auto:hover,
@@ -205,4 +211,23 @@
 .overflow-y-auto,
 .overflow-y-scroll {
     scrollbar-color: #e8e8e8 transparent;
+}
+
+.simple-editor-content .tiptap.ProseMirror {
+    padding: 3rem 0 !important;
+}
+
+.content-wrapper {
+    height: 500px !important;
+}
+
+.simple-editor-content {
+    max-width: 900px !important;
+}
+
+.description_section {
+    border: 1px solid var(--input);
+    border-radius: calc(var(--radius) - 2px);
+    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow),
+        var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
 }
