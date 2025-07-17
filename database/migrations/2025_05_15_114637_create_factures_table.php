@@ -14,13 +14,13 @@ return new class extends Migration
         Schema::create('factures', function (Blueprint $table) {
             $table->id();
             $table->string('ref');
-            $table->string('type')->default('contrat');
-            $table->bigInteger('type_id');
+            $table->string('type_model_type')->nullable();
+            $table->unsignedBigInteger('type_model_id')->nullable();
             $table->decimal('montant', 8, 2);
             $table->string('user_type')->default('locataire');
             $table->bigInteger('user_id');
-            $table->enum('statut', ['payé', 'impayé']);
-            $table->enum('etat', ['brouillon', 'validé']);
+            $table->enum('statut', ['payée', 'impayée']);
+            $table->enum('etat', ['brouillon', 'validée']);
             $table->dateTime('date_emission');
             $table->dateTime('date_echeance');
             $table->softDeletes();

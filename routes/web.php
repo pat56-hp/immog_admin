@@ -34,6 +34,7 @@ Route::middleware('auth')->group(function () {
     require __DIR__ . '/locataire.php';
     require __DIR__ . '/appartement.php';
     require __DIR__ . '/contrat.php';
+    require __DIR__ . '/comptabilite.php';
 });
 
 require __DIR__ . '/auth.php';

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Biens;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ContratRequest;
 use App\Models\Contrat;
+use App\Models\Locataire;
 use App\Repositories\Interfaces\biens\ContratInterface;
 use App\Repositories\Interfaces\comptabilites\FactureInterface;
 use App\Repositories\Interfaces\utilisateurs\ProprietaireInterface;
@@ -77,13 +78,13 @@ class ContratController extends Controller
             $contrat = $this->contratRepository->save($data);
 
             //Génération de la facture du contrat
-            $factureData['type'] = 'contrat';
-            $factureData['type_id'] = $contrat->id;
+            $factureData['type_model_type'] = Contrat::class;
+            $factureData['type_model_id'] = $contrat->id;
             $factureData['montant'] = $contrat->garantie * $contrat->appartement->loyer;
-            $factureData['user_type'] = 'locataire';
-            $factureData['user_id'] = $contrat->locataire_id;
-            $factureData['statut'] = 'impayé';
-            $factureData['etat'] = 'validé';
+            $factureData['type_user_type'] = Locataire::class;
+            $factureData['type_user_id'] = $contrat->locataire_id;
+            $factureData['statut'] = 'impayée';
+            $factureData['etat'] = 'validée';
             $factureData['date_emission'] = now();
             $factureData['date_echeance'] = now()->addDays(30); //30 jours après la date d'émission
             $factureData['elements'][] = [

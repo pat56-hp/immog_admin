@@ -10,13 +10,14 @@ class Facture extends Model
 {
     use SoftDeletes;
 
+    protected $appends = ['user_name', 'user_type', 'type', 'montant_formatted'];
     protected $fillable = [
         'ref',
-        'type',
-        'type_id',
+        'type_model_type',
+        'type_model_id',
         'montant',
-        'user_type',
-        'user_id',
+        'type_user_type',
+        'type_user_id',
         'statut',
         'etat',
         'date_emission',
@@ -53,19 +54,39 @@ class Facture extends Model
 
     public function typeModel()
     {
-        match ($this->type) {
-            'contrat' => $this->belongsTo(Contrat::class, 'type_id'),
-            'abonnement' => null,
-            'loyer' => null
-        };
+        return $this->morphTo();
     }
 
     public function typeUser()
     {
-        return match ($this->user_type) {
-            'proprietaire' => $this->belongsTo(Proprietaire::class, 'user_id'),
-            'locataire' => $this->belongsTo(Locataire::class, 'user_id'),
-            default => null
+        return $this->morphTo();
+    }
+
+    public function getUserNameAttribute(): string
+    {
+        return $this->typeUser->nom_complet;
+    }
+
+    public function getTypeAttribute(): string
+    {
+        return match ($this->type_model_type) {
+            "App\Models\Contrat" => 'Contrat',
+            "App\Models\Abonnement" => 'Abonnement',
+            default => 'Autre',
         };
+    }
+
+    public function getUserTypeAttribute(): string
+    {
+        return match ($this->type_user_type) {
+            "App\\Models\\Locataire" => 'Locataire',
+            "App\\Models\\Proprietaire" => 'Proprietaire',
+            default => 'Autre',
+        };
+    }
+
+    public function getMontantFormattedAttribute(): string
+    {
+        return number_format($this->montant, 0, '.', ' ') . ' FCFA';
     }
 }

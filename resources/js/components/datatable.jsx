@@ -6,7 +6,7 @@ import {
     ChevronUp,
     Search,
 } from "lucide-react";
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import {
@@ -27,13 +27,83 @@ export default function Datatable({
     itemsPerPage = 25,
     showPagination = true,
     buttons = false,
+    pagination = null, // nouvelle prop
+    onPageChange = null, // nouvelle prop
+    onSearchChange = null, // nouvelle prop
+    searchValue = "", // nouvelle prop
 }) {
     const [sortConfig, setSortConfig] = useState({
         key: null,
         direction: null,
     });
-    const [searchTerm, setSearchTem] = useState("");
+    const [searchTerm, setSearchTem] = useState(searchValue);
     const [currentPage, setCurrentPage] = useState(1);
+
+    // Synchronise searchTerm avec searchValue externe
+    useEffect(() => {
+        setSearchTem(searchValue);
+    }, [searchValue]);
+
+    // Détecte si on est en mode pagination backend
+    const isBackendPaginate = pagination && Array.isArray(pagination.data);
+
+    // Recherche : côté backend, on ne filtre pas (on affiche la page courante)
+    const filteredData = useMemo(() => {
+        if (isBackendPaginate) return pagination.data;
+        return data.filter((item) =>
+            Object.values(item).some((value) =>
+                value
+                    ?.toString()
+                    .toLowerCase()
+                    .includes(searchTerm.toLowerCase())
+            )
+        );
+    }, [data, searchTerm, isBackendPaginate, pagination]);
+
+    // Tri : côté backend, on ne trie que la page courante
+    const sortedData = useMemo(() => {
+        if (!sortConfig.key) return filteredData;
+        return [...filteredData].sort((a, b) => {
+            const aVal = a[sortConfig.key];
+            const bVal = b[sortConfig.key];
+            if (aVal == null || bVal == null) return 0;
+            return sortConfig.direction === "asc"
+                ? aVal > bVal
+                    ? 1
+                    : -1
+                : aVal < bVal
+                ? 1
+                : -1;
+        });
+    }, [filteredData, sortConfig]);
+
+    // Pagination
+    const totalPages = isBackendPaginate
+        ? pagination.last_page
+        : Math.ceil(sortedData.length / itemsPerPage);
+
+    const indexOfFirstItem = (currentPage - 1) * itemsPerPage;
+    const currentItems = isBackendPaginate
+        ? sortedData // backend gère la page courante
+        : showPagination
+        ? sortedData.slice(indexOfFirstItem, indexOfFirstItem + itemsPerPage)
+        : sortedData;
+
+    // Pagination controls
+    const handlePageChange = (newPage) => {
+        setCurrentPage(newPage);
+        if (isBackendPaginate && onPageChange) {
+            onPageChange(newPage);
+        }
+    };
+
+    // Recherche : côté backend, déclenche le callback parent
+    const handleSearch = (e) => {
+        setSearchTem(e.target.value);
+        if (isBackendPaginate && onSearchChange) {
+            onSearchChange(e.target.value);
+        }
+    };
 
     const handleSort = (key) => {
         let direction = "asc";
@@ -52,39 +122,6 @@ export default function Datatable({
         );
     };
 
-    const filteredData = useMemo(() => {
-        return data.filter((item) =>
-            Object.values(item).some((value) =>
-                value
-                    ?.toString()
-                    .toLowerCase()
-                    .includes(searchTerm.toLowerCase())
-            )
-        );
-    }, [data, searchTerm]);
-
-    const sortedData = useMemo(() => {
-        if (!sortConfig.key) return filteredData;
-        return [...filteredData].sort((a, b) => {
-            const aVal = a[sortConfig.key];
-            const bVal = b[sortConfig.key];
-            if (aVal == null || bVal == null) return 0;
-            return sortConfig.direction === "asc"
-                ? aVal > bVal
-                    ? 1
-                    : -1
-                : aVal < bVal
-                ? 1
-                : -1;
-        });
-    }, [filteredData, sortConfig]);
-
-    const totalPages = Math.ceil(sortedData.length / itemsPerPage);
-    const indexOfFirstItem = (currentPage - 1) * itemsPerPage;
-    const currentItems = showPagination
-        ? sortedData.slice(indexOfFirstItem, indexOfFirstItem + itemsPerPage)
-        : sortedData;
-
     return (
         <>
             <div className="mt-3 mb-6 gap-4">
@@ -96,7 +133,7 @@ export default function Datatable({
                                 type="text"
                                 placeholder="Filtrer"
                                 value={searchTerm}
-                                onChange={(e) => setSearchTem(e.target.value)}
+                                onChange={handleSearch}
                                 className="mx-2 pl-8 w-full text-sm focus:border-transparent active:border-transparent"
                             />
                         </div>
@@ -166,20 +203,27 @@ export default function Datatable({
             {showPagination && (
                 <div className="flex items-center justify-between mt-6">
                     <div className="text-sm text-muted-foreground">
-                        Affichage {indexOfFirstItem + 1}-
-                        {Math.min(
-                            indexOfFirstItem + itemsPerPage,
-                            sortedData.length
-                        )}{" "}
-                        à {sortedData.length}
+                        {isBackendPaginate ? (
+                            <>
+                                Affichage {pagination.from} à {pagination.to}{" "}
+                                sur {pagination.total}
+                            </>
+                        ) : (
+                            <>
+                                Affichage {indexOfFirstItem + 1}-
+                                {Math.min(
+                                    indexOfFirstItem + itemsPerPage,
+                                    sortedData.length
+                                )}{" "}
+                                à {sortedData.length}
+                            </>
+                        )}
                     </div>
                     <div className="flex items-center space-x-2">
                         <Button
                             variant="outline"
                             size="sm"
-                            onClick={() =>
-                                setCurrentPage((prev) => Math.max(prev - 1, 1))
-                            }
+                            onClick={() => handlePageChange(currentPage - 1)}
                             disabled={currentPage === 1}
                         >
                             <ChevronLeft className="h-4 w-4" />
@@ -190,11 +234,7 @@ export default function Datatable({
                         <Button
                             variant="outline"
                             size="sm"
-                            onClick={() =>
-                                setCurrentPage((prev) =>
-                                    Math.min(prev + 1, totalPages)
-                                )
-                            }
+                            onClick={() => handlePageChange(currentPage + 1)}
                             disabled={
                                 currentPage === totalPages || totalPages === 0
                             }

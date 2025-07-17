@@ -43,4 +43,9 @@ class Proprietaire extends Model
     {
         return Attribute::make(get: fn($value) => !empty($value) ? $value : 'Inconnue');
     }
+
+    public function getNomCompletAttribute(): string
+    {
+        return $this->name;
+    }
 }

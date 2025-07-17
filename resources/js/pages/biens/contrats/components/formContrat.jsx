@@ -42,7 +42,7 @@ export default function FormContrat({
                     <Label htmlFor="proprietaire_id">
                         Propriétaire <Required />
                     </Label>
-                    {isUpdate && contrat.statut !== "en cours" ? (
+                    {!isUpdate && contrat?.statut !== "en cours" ? (
                         <>
                             <Select
                                 value={String(data.proprietaire_id)}
@@ -86,7 +86,7 @@ export default function FormContrat({
                     <Label htmlFor="appartement_id">
                         Appartement <Required />
                     </Label>
-                    {isUpdate && contrat.statut !== "en cours" ? (
+                    {!isUpdate && contrat?.statut !== "en cours" ? (
                         <Select
                             value={String(data.appartement_id)}
                             onValueChange={(value) =>
