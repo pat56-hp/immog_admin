@@ -108,7 +108,7 @@ const routePage = () => {
                     {
                         title: "Liste des factures",
                         url: route("factures.index"),
-                        isActive: url.endsWith("factures/index"),
+                        isActive: url.endsWith("factures"),
                     },
                 ],
             },
